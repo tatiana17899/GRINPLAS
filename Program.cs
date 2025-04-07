@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+    
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -27,9 +28,9 @@ using (var scope = app.Services.CreateScope())
     {
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var signInManager = services.GetRequiredService<SignInManager<ApplicationUser>>();
         var context = services.GetRequiredService<ApplicationDbContext>();
 
-        // Crear roles si no existen
         if (!await roleManager.RoleExistsAsync("GerenteGeneral"))
         {
             await roleManager.CreateAsync(new IdentityRole("GerenteGeneral"));
@@ -40,8 +41,11 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole("Administrador"));
         }
 
-        // Crear usuario administrador
         var adminEmail = "nicanorguevara332@gmail.com";
+        var adminPassword = "Tatiana123%&"; 
+        var gerenteEmail = "mayraguevara332@gmail.com";
+        var gerentePassword = "Tatiana132%&"; 
+
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
@@ -52,15 +56,19 @@ using (var scope = app.Services.CreateScope())
                 EmailConfirmed = true 
             };
             
-            var createAdminResult = await userManager.CreateAsync(adminUser, "Tatiana123%&");
-            if (createAdminResult.Succeeded)
+            var createAdminResult = await userManager.CreateAsync(adminUser, adminPassword);
+            if (!createAdminResult.Succeeded)
             {
-                await userManager.AddToRoleAsync(adminUser, "Administrador");
+                throw new Exception($"Error al crear usuario administrador: {string.Join(", ", createAdminResult.Errors)}");
             }
+            
         }
 
-        // Crear usuario gerente
-        var gerenteEmail = "mayraguevara332@gmail.com";
+        if (!await userManager.IsInRoleAsync(adminUser, "Administrador"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Administrador");
+        }
+
         var gerenteUser = await userManager.FindByEmailAsync(gerenteEmail);
         if (gerenteUser == null)
         {
@@ -71,14 +79,25 @@ using (var scope = app.Services.CreateScope())
                 EmailConfirmed = true 
             };
             
-            var createGerenteResult = await userManager.CreateAsync(gerenteUser, "Tatiana132%&");
-            if (createGerenteResult.Succeeded)
+            var createGerenteResult = await userManager.CreateAsync(gerenteUser, gerentePassword);
+            if (!createGerenteResult.Succeeded)
             {
-                await userManager.AddToRoleAsync(gerenteUser, "GerenteGeneral");
+                throw new Exception($"Error al crear usuario gerente: {string.Join(", ", createGerenteResult.Errors)}");
             }
+            
+        }
+
+        if (!await userManager.IsInRoleAsync(gerenteUser, "GerenteGeneral"))
+        {
+            await userManager.AddToRoleAsync(gerenteUser, "GerenteGeneral");
         }
 
         await context.SaveChangesAsync();
+
+        if (adminUser != null)
+            await signInManager.RefreshSignInAsync(adminUser);
+        if (gerenteUser != null)
+            await signInManager.RefreshSignInAsync(gerenteUser);
     }
     catch (Exception ex)
     {
