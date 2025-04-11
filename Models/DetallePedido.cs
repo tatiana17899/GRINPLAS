@@ -26,6 +26,5 @@ namespace GRINPLAS.Models
         public decimal PrecioUnitario { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal PrecioTotal { get; set; }
-        public double Medida { get; set; }
     }
 }

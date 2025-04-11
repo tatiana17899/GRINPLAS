@@ -1,4 +1,8 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿const menutoggle = document.querySelector("#menu-toggle");
+const sidebar = document.querySelector("#sidebar");
+const maincontent = document.querySelector("#main-content");
 
-// Write your JavaScript code.
+menutoggle.addEventListener("click", () => {
+  sidebar.classList.toggle("collapsed");
+  maincontent.classList.toggle("expanded");
+});
