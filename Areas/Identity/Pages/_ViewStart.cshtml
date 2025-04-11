@@ -1,3 +1,21 @@
-﻿@{
-    Layout = "/Views/Shared/_Layout.cshtml";
+﻿@using System.Security.Claims
+@{
+    // Layout por defecto
+    Layout = "_Layout";
+    
+    // Verificar si el usuario está autenticado
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        // Buscar el claim de preferencia de layout
+        var layoutClaim = User.FindFirst("LayoutPreference");
+        
+        if (layoutClaim != null && layoutClaim.Value == "Gerente")
+        {
+            Layout = "~/Views/Shared/_LayoutGerente.cshtml";
+        }
+        if (layoutClaim != null && layoutClaim.Value == "Administrador")
+        {
+            Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+        }
+    }
 }
