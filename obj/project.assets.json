@@ -6640,11 +6640,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\REPO\\GRINPLAS\\GRINPLAS.csproj",
+      "projectUniqueName": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\GRINPLAS.csproj",
       "projectName": "GRINPLAS",
-      "projectPath": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\REPO\\GRINPLAS\\GRINPLAS.csproj",
+      "projectPath": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\GRINPLAS.csproj",
       "packagesPath": "C:\\Users\\tatia\\.nuget\\packages\\",
-      "outputPath": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\REPO\\GRINPLAS\\obj\\",
+      "outputPath": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\tatia\\AppData\\Roaming\\NuGet\\NuGet.Config"

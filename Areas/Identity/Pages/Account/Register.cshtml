@@ -16,7 +16,7 @@
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="mb-3">
-                    <label asp-for="Input.NombreEmpresa">Nombre de Empresa</label>
+                    <label asp-for="Input.NombreEmpresa">Nombre</label>
                     <input asp-for="Input.NombreEmpresa" class="form-control" aria-required="true" />
                     <span asp-validation-for="Input.NombreEmpresa" class="text-danger"></span>
                 </div>
@@ -37,8 +37,8 @@
                     <span asp-validation-for="Input.NumDoc" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <input asp-for="Input.Telefono" class="form-control" aria-required="true" />
                     <label asp-for="Input.Telefono">Teléfono</label>
+                    <input asp-for="Input.Telefono" class="form-control" aria-required="true" />
                     <span asp-validation-for="Input.Telefono" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
