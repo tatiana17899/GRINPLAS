@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
@@ -21,66 +22,42 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            ILogger<LoginModel> logger,
+            RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
+            _roleManager = roleManager;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
         }
@@ -105,17 +82,53 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                // Intento de inicio de sesión
+                var result = await _signInManager.PasswordSignInAsync(
+                    Input.Email, 
+                    Input.Password, 
+                    Input.RememberMe, 
+                    lockoutOnFailure: false);
+                
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("Usuario ha iniciado sesión.");
+                    
+                    // Obtener el usuario actual
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    
+                    if (user != null && await _userManager.IsInRoleAsync(user, "GerenteGeneral"))
+                    {
+                        var existingClaims = await _userManager.GetClaimsAsync(user);
+                        var layoutClaim = existingClaims.FirstOrDefault(c => c.Type == "LayoutPreference");
+
+                        if (layoutClaim != null)
+                        {
+                            await _userManager.RemoveClaimAsync(user, layoutClaim);
+                        }
+                        await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Gerente"));
+                        await _signInManager.RefreshSignInAsync(user);
+                        return RedirectToAction("GerenteGeneral", "Pedidos");
+                
+                    }
+                    if (user != null && await _userManager.IsInRoleAsync(user, "Administrador"))
+                    {
+                        var existingClaims = await _userManager.GetClaimsAsync(user);
+                        var layoutClaim = existingClaims.FirstOrDefault(c => c.Type == "LayoutPreference");
+
+                        if (layoutClaim != null)
+                        {
+                            await _userManager.RemoveClaimAsync(user, layoutClaim);
+                        }
+                        await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Administrador"));
+                        await _signInManager.RefreshSignInAsync(user);
+                        return RedirectToAction("Administrador", "Pedidos");
+                
+                    }
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -124,17 +137,17 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning("Cuenta de usuario bloqueada.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido.");
                     return Page();
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // Si llegamos aquí, algo falló, volver a mostrar el formulario
             return Page();
         }
     }

@@ -194,8 +194,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/CARPETA TATIANA/CURSOS UNIVERSIDAD/7MO CICLO/Ingeniería de Software 2/REPO/GRINPLAS/Views/Pedidos/Administrador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xBZG1pbmlzdHJhZG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CARPETA TATIANA/CURSOS UNIVERSIDAD/7MO CICLO/Ingeniería de Software 2/REPO/GRINPLAS/Views/Pedidos/GerenteGeneral.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xHZXJlbnRlR2VuZXJhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/CARPETA TATIANA/CURSOS UNIVERSIDAD/7MO CICLO/Ingeniería de Software 2/REPO/GRINPLAS/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CARPETA TATIANA/CURSOS UNIVERSIDAD/7MO CICLO/Ingeniería de Software 2/REPO/GRINPLAS/Views/Shared/_LayoutAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZG1pbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/CARPETA TATIANA/CURSOS UNIVERSIDAD/7MO CICLO/Ingeniería de Software 2/REPO/GRINPLAS/Views/Shared/_LayoutGerente.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRHZXJlbnRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/CARPETA TATIANA/CURSOS UNIVERSIDAD/7MO CICLO/Ingeniería de Software 2/REPO/GRINPLAS/Views/Shared/_LoginPartial.cshtml]

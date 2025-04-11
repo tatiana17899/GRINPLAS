@@ -1,0 +1,214 @@
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "GerenteGeneral";
+    Layout = "~/Views/Shared/_LayoutGerente.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<div class="d-flex flex-column">
+      <div class="container p-6 m-2">
+        <div class="d-flex align-items-center small">
+          <a href="#" class="text-muted" style="text-decoration: none">
+            Inicio
+          </a>
+          <span class="mx-2">/</span>
+          <span class="fw-bold" style="color: #09c33d">Pedidos en línea</span>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <h1 class="display-6 ps-5 fw-semibold fs-2">
+          Historial de Pedidos en Línea
+        </h1>
+        <div
+          class="bg-light p-3 d-flex align-items-center gap-4 me-5"
+          style="border: #096623 2px solid; border-radius: 20px"
+        >
+          <i class="fas fa-money-bill-wave text-success"></i>
+          <div class="d-flex align-items-center">
+            <div class="text-center me-4">
+              <p
+                class="mb-0 fw-semibold"
+                style="color: #096623; font-size: 15px"
+              >
+                Ganancia Total Bolsas
+              </p>
+              <p class="h4 fw-bold text-success mb-0">@ViewBag.TotalBolsas.ToString("C")</p>
+            </div>
+            <div
+              class="border-start border-success mx-3"
+              style="height: 50px"
+            ></div>
+            <div class="text-center ms-4">
+              <p
+                class="mb-0 0 fw-semibold"
+                style="color: #096623; font-size: 15px"
+              >
+                Ganancia Total Mangas
+              </p>
+              <p class="h4 fw-bold text-success mb-0">@ViewBag.TotalMangas.ToString("C")</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mt-4 d-flex justify-content-between align-items-center ms-5 me-5"
+      >
+        <div class="d-flex gap-3 text-muted">
+          <button class="btn text-success fw-bold p-0" id="filter-all">
+            Todos
+          </button>
+          <button class="btn text-muted p-0" id="filter-espera">
+            En espera
+          </button>
+          <button class="btn text-muted p-0" id="filter-entregado">
+            Entregado
+          </button>
+          <button class="btn text-muted p-0" id="filter-proceso">
+            Proceso
+          </button>
+          <button class="btn text-muted p-0" id="filter-cancelado">
+            Cancelado
+          </button>
+        </div>
+        <div class="d-flex gap-2 mb-3">
+          <div class="input-group border border-success rounded">
+              <input type="date" id="fechaInicio" class="form-control border-0" />
+          </div>
+          <span class="text-muted">a</span>
+          <div class="input-group border border-success rounded">
+              <input type="date" id="fechaFin" class="form-control border-0" />
+          </div>
+          <button id="btnFiltrar" class="btn btn-success ms-2">Filtrar</button>
+          <button id="btnResetear" class="btn btn-outline-secondary ms-2">Resetear</button>
+        </div>
+      </div>
+      <hr class="mt-2 ms-5 me-5" />
+      <div class="mt-4 table-responsive ms-5 me-5">
+        <form method="post" asp-action="ActualizarPedido" class="pedido-form">
+        <table id="ordersTable" class="table table-bordered">
+          <thead class="table-light">
+              <tr>
+                  <th>Id</th>
+                  <th>Cliente</th>
+                  <th>Dirección</th>
+                  <th>Boleta</th>
+                  <th>Fecha Emisión</th>
+                  <th>Fecha Entrega</th>
+                  <th>Estado</th>
+                  <th>Total</th>
+                  <th>Pago</th>
+                  <th>Compro<br>bante</th>
+                  <th>Acciones</th> <!-- Nueva columna para el botón -->
+              </tr>
+          </thead>
+          <tbody>
+              @foreach (var pedido in Model.Pedidos){
+                  <tr data-pedido-id="@pedido.PedidoId">
+                       
+                          <input type="hidden" name="pedidoId" value="@pedido.PedidoId" />
+                          
+                          <td>@pedido.PedidoId</td>
+                          <td>@pedido.Cliente.NombreEmpresa</td>
+                          <td>@pedido.Direccion</td>
+                          <td>
+                              <a href="@pedido.BoletaEmitida" target="_blank" class="btn btn-light border-0">
+                                  <i class="fas fa-external-link-alt text-success"></i>
+                              </a>
+                          </td>
+                          <td>
+                              @pedido.FechaEmision.ToString("dd/MM/yyyy")
+                          </td>
+                          <td>
+                              <input type="date" class="form-control fecha-entrega" name="fechaEntrega" value="@(pedido.FechaEntrega?.ToString("yyyy-MM-dd"))" />
+                          </td>
+                          <td>
+                              <select class="form-control status-select" name="status">
+                                  @if (pedido.Status == "espera")
+                                  {
+                                      <option value="espera" selected>Espera</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="espera">Espera</option>
+                                  }
+                                  
+                                  @if (pedido.Status == "entregado")
+                                  {
+                                      <option value="entregado" selected>Entregado</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="entregado">Entregado</option>
+                                  }
+                                  
+                                  @if (pedido.Status == "proceso")
+                                  {
+                                      <option value="proceso" selected>Proceso</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="proceso">Proceso</option>
+                                  }
+                                  @if (pedido.Status == "cancelado")
+                                  {
+                                      <option value="cancelado" selected>Cancelado</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="cancelado">Cancelado</option>
+                                  }
+                              </select>
+                          </td>
+                          <td>@pedido.Total</td>
+                          <td>
+                              <select class="form-control pago-select" name="pago">
+                                  @if (pedido.Pago == "Pendiente")
+                                  {
+                                      <option value="Pendiente" selected>Pendiente</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="Pendiente">Pendiente</option>
+                                  }
+                                  
+                                  @if (pedido.Pago == "aprobado")
+                                  {
+                                      <option value="aprobado" selected>aprobado</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="aprobado">aprobado</option>
+                                  }
+                                  
+                                  @if (pedido.Pago == "desaprobado")
+                                  {
+                                      <option value="desaprobado" selected>desaprobado</option>
+                                  }
+                                  else
+                                  {
+                                      <option value="desaprobado">desaprobado</option>
+                                  }
+                              </select>
+                          </td>
+                          <td>
+                              <a href="@pedido.BoletaEmitida" target="_blank" class="btn btn-light border-0">
+                                  <i class="fas fa-external-link-alt text-success"></i>
+                              </a>
+                          </td>
+                          <td>
+                              <button type="button" class="btn btn-success btn-sm btn-confirmar-guardar">
+                                  <i class="fas fa-save"></i> 
+                              </button>
+                          </td>
+                    
+                  </tr>
+              }
+          </tbody>
+      </table>
+      </form>
+      </div>
+    </div>
+@section Scripts{
+    <script src="~/js/gerente.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
