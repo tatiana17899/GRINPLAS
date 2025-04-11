@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "7Qf1/uILnNtTk98eLZKbUVVyEN2KvN2wVYuQCJzmhU0=",
+  "Hash": "IGY6wCImhzaop9x+aYNVeOtIJ9W7UEdgeCZZP9ibzyY=",
   "Source": "GRINPLAS",
   "BasePath": "_content/GRINPLAS",
   "Mode": "Default",
@@ -1193,6 +1193,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Proyecto releases\\GRINPLAS\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\GRINPLAS.bundle.scp.css"
+    },
+    {
+      "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Proyecto releases\\GRINPLAS\\wwwroot\\css\\login.css",
+      "SourceId": "GRINPLAS",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Proyecto releases\\GRINPLAS\\wwwroot\\",
+      "BasePath": "_content/GRINPLAS",
+      "RelativePath": "css/login.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\login.css"
     },
     {
       "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Proyecto releases\\GRINPLAS\\wwwroot\\css\\site.css",

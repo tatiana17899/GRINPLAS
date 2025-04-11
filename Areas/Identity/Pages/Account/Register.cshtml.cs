@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using GRINPLAS.Data;
 using GRINPLAS.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -30,13 +31,15 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -98,6 +102,25 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "El nombre de empresa es requerido")]
+            [StringLength(100, ErrorMessage = "El nombre de empresa no puede exceder los 100 caracteres")]
+            [Display(Name = "Nombre de Empresa")]
+            public string NombreEmpresa { get; set; }
+
+            [Required(ErrorMessage = "El tipo de documento es requerido")]
+            [Display(Name = "Tipo de Documento")]
+            public string TipDoc { get; set; }
+
+            [Required(ErrorMessage = "El número de documento es requerido")]
+            [StringLength(20, ErrorMessage = "El número de documento no puede exceder los 20 caracteres")]
+            [Display(Name = "Número de Documento")]
+            public string NumDoc { get; set; }
+
+            [Required(ErrorMessage = "El teléfono es requerido")]
+            [Phone(ErrorMessage = "El formato del teléfono no es válido")]
+            [Display(Name = "Teléfono")]
+            public string Telefono { get; set; }
         }
 
 
@@ -114,15 +137,45 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
+                
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                
+                // Establece el teléfono en el usuario de Identity
+                user.PhoneNumber = Input.Telefono;
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    // Crear el cliente asociado
+                    var cliente = new Cliente
+                    {
+                        ApplicationUserId = user.Id,
+                        NombreEmpresa = Input.NombreEmpresa,
+                        TipDoc = Input.TipDoc,
+                        NumDoc = Input.NumDoc,
+                        Telefono = Input.Telefono,
+                        // Puedes establecer otros valores por defecto aquí si es necesario
+                    };
+
+                    try
+                    {
+                        _context.Clientes.Add(cliente);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error al crear el cliente");
+                        // Opcional: eliminar el usuario si falla la creación del cliente
+                        await _userManager.DeleteAsync(user);
+                        ModelState.AddModelError(string.Empty, "Error al crear el cliente. Por favor, inténtelo de nuevo.");
+                        return Page();
+                    }
+
+                    // Resto del código para confirmación de email...
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -145,13 +198,13 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+                
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

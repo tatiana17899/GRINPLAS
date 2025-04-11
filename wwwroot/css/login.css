@@ -1,0 +1,64 @@
+:root {
+  --fondo: #ffffff;
+  --color-principal: #096623;
+  --color-secundario: #70a680;
+  --color-verde1: #2ea950;
+  --color-turqueza: #00baa7;
+  --color-verde2: #00b489;
+  --first-color: hsl(82, 60%, 28%);
+  --title-color: hsl(0, 0%, 15%);
+  --text-color: hsl(0, 0%, 35%);
+  --body-color: hsl(0, 0%, 95%);
+  --container-color: hsl(0, 0%, 100%);
+}
+.form-container {
+  position: relative;
+  z-index: 1;
+}
+.form-control {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  background-color: transparent;
+}
+.form-control:focus {
+  box-shadow: none;
+  border-color: #38b2ac;
+  background-color: transparent;
+}
+
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.login-card {
+  width: 600px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--fondo);
+}
+
+.card-title {
+  margin-bottom: 40px;
+  margin-top: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #0e8930;
+}
+
+.btn-primary {
+  background-color: var(--color-principal);
+  border: none;
+  margin-top: 30px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.btn-primary:hover {
+  background-color: var(--first-color);
+}
