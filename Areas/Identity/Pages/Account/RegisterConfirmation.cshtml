@@ -2,22 +2,74 @@
 @model RegisterConfirmationModel
 @{
     ViewData["Title"] = "Register confirmation";
+    Layout = null;
 }
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<body class="confirmation-container">
+    <div class="confirmation-card">
+        <h2 class="confirmation-title">Confirmación de Registro</h2>
+        
+        @{
+            if (@Model.DisplayConfirmAccountLink)
+            {
+                <p class="confirmation-message">
+                    Haz click para confirmar cuenta
+                </p>
+                <a href="@Model.EmailConfirmationUrl" class="confirmation-button">Confirmar</a>
+            }
+            else
+            {
+                <p class="confirmation-message">
+                    Por favor, revisa tu correo para confirmar tu cuenta.
+                </p>
+            }
+        }
+    </div>
+</body>
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
+<style>
+    .confirmation-container {
+        background-color: #7fb5b5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+
     }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
+    
+    .confirmation-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
     }
-}
+    
+    .confirmation-title {
+        color: #1a9651;
+        margin-bottom: 30px;
+    }
+    
+    .confirmation-message {
+        color: #337573;
+        margin-bottom: 30px;
+    }
+    
+    .confirmation-button {
+        background-color: #1a6665;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: bold;
+    }
+    
+    .confirmation-button:hover {
+        background-color: #155554;
+        color: white;
+    }
+</style>
 

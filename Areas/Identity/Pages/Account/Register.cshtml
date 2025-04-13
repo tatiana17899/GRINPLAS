@@ -11,7 +11,7 @@
     <div class="login-container">
         <div class="card login-card">
             <div class="card-body">
-            <form id="loginForm" style="color: #1b665e" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <form id="registerForm" style="color: #1b665e" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <h2>Create una nueva cuenta</h2>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -22,18 +22,21 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Input.TipDoc">Tipo de Documento</label>
-                    <select asp-for="Input.TipDoc" class="form-control" aria-required="true">
+                    <select asp-for="Input.TipDoc" class="form-control" aria-required="true" id="docType">
                         <option value="">Seleccione tipo</option>
                         <option value="DNI">DNI</option>
                         <option value="RUC">RUC</option>
-                        <option value="CE">Carné de Extranjería</option>
                     </select>
                     <span asp-validation-for="Input.TipDoc" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Input.NumDoc">Número de Documento</label>
-                    <input asp-for="Input.NumDoc" class="form-control" aria-required="true" />
+                    <input asp-for="Input.NumDoc" class="form-control" aria-required="true" 
+                           id="docNumber"/>
+                    <small class="form-text text-muted">
+                        Máximo <span id="maxLength">8</span> dígitos
+                    </small>
                     <span asp-validation-for="Input.NumDoc" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -43,17 +46,20 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Input.Email">Email</label>
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" 
+                           aria-required="true" placeholder="name@example.com" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="Input.Password">Password</label>
-                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Escribir contraeña" />
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" 
+                           aria-required="true" placeholder="Escribir contraseña" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Escribir contraeña" />
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" 
+                           aria-required="true" placeholder="Escribir contraseña" />
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                 </div>
                 <div>
@@ -72,5 +78,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/register.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 }

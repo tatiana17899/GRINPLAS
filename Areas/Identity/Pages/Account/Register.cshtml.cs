@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -50,54 +46,26 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             _context = context;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
@@ -113,16 +81,34 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             public string TipDoc { get; set; }
 
             [Required(ErrorMessage = "El número de documento es requerido")]
-            [StringLength(20, ErrorMessage = "El número de documento no puede exceder los 20 caracteres")]
             [Display(Name = "Número de Documento")]
+            [CustomValidation(typeof(InputModel), "ValidateDocumentNumber")]
             public string NumDoc { get; set; }
 
             [Required(ErrorMessage = "El teléfono es requerido")]
             [Phone(ErrorMessage = "El formato del teléfono no es válido")]
             [Display(Name = "Teléfono")]
             public string Telefono { get; set; }
-        }
 
+            public static ValidationResult ValidateDocumentNumber(string numDoc, ValidationContext context)
+            {
+                var instance = (InputModel)context.ObjectInstance;
+                
+                if (string.IsNullOrEmpty(numDoc))
+                    return new ValidationResult("El número de documento es requerido");
+
+                if (!numDoc.All(char.IsDigit))
+                    return new ValidationResult("El documento solo debe contener números");
+
+                if (instance.TipDoc == "DNI" && numDoc.Length != 8)
+                    return new ValidationResult("El DNI debe tener exactamente 8 dígitos");
+
+                if (instance.TipDoc == "RUC" && (numDoc.Length < 11 || numDoc.Length > 20))
+                    return new ValidationResult("El RUC debe tener entre 11 y 20 dígitos");
+
+                return ValidationResult.Success;
+            }
+        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -134,14 +120,23 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            // Validación adicional del documento
+            if (Input.TipDoc == "DNI" && (Input.NumDoc.Length != 8 || !Input.NumDoc.All(char.IsDigit)))
+            {
+                ModelState.AddModelError("Input.NumDoc", "El DNI debe tener exactamente 8 dígitos numéricos");
+            }
+            else if (Input.TipDoc == "RUC" && (Input.NumDoc.Length < 11 || Input.NumDoc.Length > 20 || !Input.NumDoc.All(char.IsDigit)))
+            {
+                ModelState.AddModelError("Input.NumDoc", "El RUC debe tener entre 11 y 20 dígitos numéricos");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
                 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                
-                // Establece el teléfono en el usuario de Identity
                 user.PhoneNumber = Input.Telefono;
                 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -150,7 +145,6 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Crear el cliente asociado
                     var cliente = new Cliente
                     {
                         ApplicationUserId = user.Id,
@@ -158,7 +152,6 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         TipDoc = Input.TipDoc,
                         NumDoc = Input.NumDoc,
                         Telefono = Input.Telefono,
-                        // Puedes establecer otros valores por defecto aquí si es necesario
                     };
 
                     try
@@ -169,13 +162,11 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Error al crear el cliente");
-                        // Opcional: eliminar el usuario si falla la creación del cliente
                         await _userManager.DeleteAsync(user);
                         ModelState.AddModelError(string.Empty, "Error al crear el cliente. Por favor, inténtelo de nuevo.");
                         return Page();
                     }
 
-                    // Resto del código para confirmación de email...
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
