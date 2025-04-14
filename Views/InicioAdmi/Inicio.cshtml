@@ -1,0 +1,122 @@
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+  ViewData["Title"] = "Inicio";
+  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+  var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<style>
+  .welcome-section {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .welcome-text h1 {
+    color: var(--main-green);
+    font-size: 28px;
+    margin-bottom: 0;
+  }
+
+  .welcome-text h2 {
+    color: var(--main-green);
+    font-size: 36px;
+    margin-top: 0;
+  }
+
+  .profile-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--main-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .profile-image img {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+  }
+
+  .form-control {
+    border-radius: 20px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+  }
+
+  .btn-logout-main {
+    background-color: #096623;
+    color: white; 
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-decoration: none; 
+    display: inline-block; 
+    text-align: center; 
+}
+
+.btn-logout-main:hover {
+    background-color: #096623;
+    color: white; 
+    text-decoration: none; 
+}
+</style>
+
+<div class="d-flex flex-column">
+  <div class="container p-6 m-2">
+    <div class="d-flex align-items-center small">
+      <a href="#" class="text-muted" style="color: #09c33d">
+        Inicio
+      </a>
+    </div>
+  </div>
+  <hr class="mt-2 ms-5 me-5" />
+
+  <div class="container px-4 py-3">
+    <div class="welcome-section">
+      <div class="welcome-text">
+        <h1>¡Bienvenido Administrador</h1>
+        <h2>Nicanor Guevara!</h2>
+      </div>
+      <div class="profile-image">
+        <img src="https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg"
+          alt="Perfil">
+      </div>
+    </div>
+
+    <div class="mt-3 mb-4">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" value="Nicanor Guevara Estremadoiro" readonly>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input type="email" class="form-control" value="nicanorguevara332@gmail.com" readonly>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <a href="~/Identity/Account/Logout" class="btn-logout-main">Cerrar Sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+  <script src="~/js/administrador.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
