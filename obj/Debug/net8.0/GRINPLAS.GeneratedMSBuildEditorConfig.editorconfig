@@ -198,6 +198,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvQWRtaS9JbmljaW8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/workspaces/GRINPLAS/Views/InicioGeren/InicioG.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvR2VyZW4vSW5pY2lvRy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/workspaces/GRINPLAS/Views/Pedidos/Administrador.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGVkaWRvcy9BZG1pbmlzdHJhZG9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
