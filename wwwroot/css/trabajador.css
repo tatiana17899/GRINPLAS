@@ -1,0 +1,39 @@
+.custom-date-input {
+  background-color: rgba(9, 102, 35, 0.83);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  position: relative;
+}
+.custom-date-input::placeholder {
+  color: white;
+}
+.custom-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+.form-label {
+  color: #096623;
+}
+.table tbody tr {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.table tbody {
+  display: block;
+}
+.table thead,
+.table tbody tr {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+.table {
+  background-color: transparent;
+}
+.btn-success {
+  background-color: #09c33d;
+  border-color: #09c33d;
+}

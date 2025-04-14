@@ -71,7 +71,7 @@ namespace GRINPLAS.Controllers
 
             return View(viewModel);
         }
-        [Authorize(Roles = "GerenteGeneral")]
+        [Authorize(Roles = "Vendedor")]
         public async Task<IActionResult> GerenteGeneral(DateTime? fechaInicio, DateTime? fechaFin)
         {
            if (_userManager == null)
@@ -106,7 +106,7 @@ namespace GRINPLAS.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        [Authorize(Roles = "GerenteGeneral")]
+        [Authorize(Roles = "Vendedor")]
         public async Task<IActionResult> ActualizarPedido([FromForm] int pedidoId, [FromForm] string status, [FromForm] string pago, [FromForm] DateTime? fechaEntrega)
         {
             try

@@ -1,0 +1,146 @@
+@model IEnumerable<GRINPLAS.Models.Trabajadores>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Lista de Trabajadores";
+    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+<link href="~/css/trabajador.css" rel="stylesheet" />
+
+<div class="d-flex flex-column">
+    <div class="container py-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" style="color: #7f7f7f; text-decoration: none">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Trabajadores</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fs-2 mb-0"><i class="fas fa-user-tie me-2"></i>Lista de Trabajadores</h1>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-user-plus me-2"></i>Crear Nuevo
+            </a>
+        </div>
+
+        <div class="table-responsive rounded-lg">
+            <table id="trabajadoresTable" class="table table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="fas fa-user me-2"></i>Nombre</th>
+                        <th><i class="fas fa-users me-2"></i>Apellidos</th>
+                        <th><i class="fas fa-phone me-2"></i>Teléfono</th>
+                        <th><i class="fas fa-id-card me-2"></i>DNI</th>
+                        <th><i class="fas fa-briefcase me-2"></i>Posición</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Apellidos)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+                            <td>@Html.DisplayFor(modelItem => item.DNI)</td>
+                            <td>
+                                @if(item.PosicionLaboral == "Vendedor")
+                                {
+                                    <i class="fas fa-shopping-bag me-2"></i>
+                                }
+                                else if(item.PosicionLaboral == "GerenteGeneral")
+                                {
+                                    <i class="fas fa-user-tie me-2"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user-tag me-2"></i>
+                                }
+                                @Html.DisplayFor(modelItem => item.PosicionLaboral)
+                            </td>
+                            <td class="action-buttons">
+                                <!-- Botón Editar con Modal -->
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" 
+                                        data-bs-target="#editModal" 
+                                        data-id="@item.IdTrabajador"
+                                        data-nombre="@item.Nombre"
+                                        data-apellidos="@item.Apellidos"
+                                        data-telefono="@item.Telefono"
+                                        data-dni="@item.DNI"
+                                        data-posicion="@item.PosicionLaboral">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                
+                                <!-- Botón Eliminar con SweetAlert -->
+                                <button class="btn btn-danger btn-sm delete-btn" 
+                                        data-id="@item.IdTrabajador">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal para Editar -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Trabajador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editForm" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="IdTrabajador" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="editNombre" name="Nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editApellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="editApellidos" name="Apellidos" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTelefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="editTelefono" name="Telefono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDNI" class="form-label">DNI</label>
+                        <input type="text" class="form-control" id="editDNI" name="DNI" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPosicion" class="form-label">Posición Laboral</label>
+                        <select class="form-select" id="editPosicion" name="PosicionLaboral" required>
+                            <option value="Vendedor">Vendedor</option>
+                            <option value="GerenteGeneral">Gerente General</option>
+                            <option value="Almacenero">Almacenero</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+         var urls = {
+            edit: '@Url.Action("Edit", "Trabajadores")',
+            delete: '@Url.Action("Delete", "Trabajadores")',
+            getTrabajadores: '@Url.Action("GetTrabajadores", "Trabajadores")'
+        };
+    </script>
+    <script src="~/js/trabajador.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}

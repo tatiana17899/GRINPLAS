@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\css\\trabajador.css",
+      "PackagePath": "staticwebassets\\css\\trabajador.css"
+    },
+    {
       "Id": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
@@ -21,8 +25,16 @@
       "PackagePath": "staticwebassets\\js\\gerente.js"
     },
     {
+      "Id": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\js\\register.js",
+      "PackagePath": "staticwebassets\\js\\register.js"
+    },
+    {
       "Id": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\js\\trabajador.js",
+      "PackagePath": "staticwebassets\\js\\trabajador.js"
     },
     {
       "Id": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\lib\\bootstrap\\LICENSE",

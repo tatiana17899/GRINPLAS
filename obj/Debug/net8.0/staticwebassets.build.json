@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "JNhIqMShAwoDueQIk24bm2SZ3xftaotFMH9GAWM23PU=",
+  "Hash": "wqAJFXzbIvfCk5t4Uhr/lOkMlSfoxf4+GiIFc1vNCgs=",
   "Source": "GRINPLAS",
   "BasePath": "_content/GRINPLAS",
   "Mode": "Default",
@@ -1233,6 +1233,25 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
+      "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\css\\trabajador.css",
+      "SourceId": "GRINPLAS",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\",
+      "BasePath": "_content/GRINPLAS",
+      "RelativePath": "css/trabajador.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\trabajador.css"
+    },
+    {
       "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\favicon.ico",
       "SourceId": "GRINPLAS",
       "SourceType": "Discovered",
@@ -1271,6 +1290,25 @@
       "OriginalItemSpec": "wwwroot\\js\\gerente.js"
     },
     {
+      "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\js\\register.js",
+      "SourceId": "GRINPLAS",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\",
+      "BasePath": "_content/GRINPLAS",
+      "RelativePath": "js/register.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\register.js"
+    },
+    {
       "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\js\\site.js",
       "SourceId": "GRINPLAS",
       "SourceType": "Discovered",
@@ -1288,6 +1326,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\js\\trabajador.js",
+      "SourceId": "GRINPLAS",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\",
+      "BasePath": "_content/GRINPLAS",
+      "RelativePath": "js/trabajador.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\trabajador.js"
     },
     {
       "Identity": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\Sprint 1 Finalizado\\GRINPLAS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",

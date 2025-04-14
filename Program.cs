@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using GRINPLAS.Data;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using GRINPLAS.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection") ?? throw new InvalidOperationException("Connection string not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
     
@@ -19,6 +16,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -28,76 +27,27 @@ using (var scope = app.Services.CreateScope())
     {
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var signInManager = services.GetRequiredService<SignInManager<ApplicationUser>>();
         var context = services.GetRequiredService<ApplicationDbContext>();
 
-        if (!await roleManager.RoleExistsAsync("GerenteGeneral"))
+        var roles = new[] { "GerenteGeneral", "Administrador", "Vendedor"};
+        
+        foreach (var role in roles)
         {
-            await roleManager.CreateAsync(new IdentityRole("GerenteGeneral"));
-        }
-
-        if (!await roleManager.RoleExistsAsync("Administrador"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Administrador"));
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
         }
 
         var adminEmail = "nicanorguevara332@gmail.com";
         var adminPassword = "Tatiana123%&"; 
+        await EnsureUserAsync(userManager, adminEmail, adminPassword, "Administrador");
+
         var gerenteEmail = "mayraguevara332@gmail.com";
         var gerentePassword = "Tatiana132%&"; 
-
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
-        if (adminUser == null)
-        {
-            adminUser = new ApplicationUser 
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                EmailConfirmed = true 
-            };
-            
-            var createAdminResult = await userManager.CreateAsync(adminUser, adminPassword);
-            if (!createAdminResult.Succeeded)
-            {
-                throw new Exception($"Error al crear usuario administrador: {string.Join(", ", createAdminResult.Errors)}");
-            }
-            
-        }
-
-        if (!await userManager.IsInRoleAsync(adminUser, "Administrador"))
-        {
-            await userManager.AddToRoleAsync(adminUser, "Administrador");
-        }
-
-        var gerenteUser = await userManager.FindByEmailAsync(gerenteEmail);
-        if (gerenteUser == null)
-        {
-            gerenteUser = new ApplicationUser 
-            {
-                UserName = gerenteEmail,
-                Email = gerenteEmail,
-                EmailConfirmed = true 
-            };
-            
-            var createGerenteResult = await userManager.CreateAsync(gerenteUser, gerentePassword);
-            if (!createGerenteResult.Succeeded)
-            {
-                throw new Exception($"Error al crear usuario gerente: {string.Join(", ", createGerenteResult.Errors)}");
-            }
-            
-        }
-
-        if (!await userManager.IsInRoleAsync(gerenteUser, "GerenteGeneral"))
-        {
-            await userManager.AddToRoleAsync(gerenteUser, "GerenteGeneral");
-        }
+        await EnsureUserAsync(userManager, gerenteEmail, gerentePassword, "GerenteGeneral");
 
         await context.SaveChangesAsync();
-
-        if (adminUser != null)
-            await signInManager.RefreshSignInAsync(adminUser);
-        if (gerenteUser != null)
-            await signInManager.RefreshSignInAsync(gerenteUser);
     }
     catch (Exception ex)
     {
@@ -106,7 +56,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -114,13 +63,11 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -131,3 +78,28 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+async Task EnsureUserAsync(UserManager<ApplicationUser> userManager, string email, string password, string role)
+{
+    var user = await userManager.FindByEmailAsync(email);
+    if (user == null)
+    {
+        user = new ApplicationUser 
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true 
+        };
+        
+        var result = await userManager.CreateAsync(user, password);
+        if (!result.Succeeded)
+        {
+            throw new Exception($"Error al crear usuario {email}: {string.Join(", ", result.Errors)}");
+        }
+    }
+
+    if (!await userManager.IsInRoleAsync(user, role))
+    {
+        await userManager.AddToRoleAsync(user, role);
+    }
+}
