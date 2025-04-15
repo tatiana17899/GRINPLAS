@@ -17,4 +17,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<GRINPLAS.Models.Producto> Productos { get; set; }
     public DbSet<GRINPLAS.Models.Carrito> Carrito { get; set; }
     public DbSet<GRINPLAS.Models.DetalleCarrito> DetalleCarrito { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(u => u.Trabajador)
+            .WithOne(t => t.User)
+            .HasForeignKey<Trabajadores>(t => t.ApplicationUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

@@ -8,6 +8,8 @@ namespace GRINPLAS.Models
 {
     public class ApplicationUser: IdentityUser
     {
-        public Cliente? Cliente { get; set; } 
+        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public Cliente? Cliente { get; set;}
+        public Trabajadores? Trabajador { get; set;}
     }
 }
