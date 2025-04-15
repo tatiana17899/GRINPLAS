@@ -89,7 +89,10 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             [Phone(ErrorMessage = "El formato del teléfono no es válido")]
             [Display(Name = "Teléfono")]
             public string Telefono { get; set; }
-
+            
+            [Required(ErrorMessage = "Debes aceptar los términos y condiciones")]
+            [Display(Name = "Acepto los términos y condiciones")]
+            public bool AcceptTerms { get; set; }
             public static ValidationResult ValidateDocumentNumber(string numDoc, ValidationContext context)
             {
                 var instance = (InputModel)context.ObjectInstance;
