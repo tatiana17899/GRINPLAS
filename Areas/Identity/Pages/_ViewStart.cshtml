@@ -17,5 +17,9 @@
         {
             Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
         }
+        if (layoutClaim != null && layoutClaim.Value == "Cliente")
+        {
+            Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+        }
     }
 }
