@@ -28,5 +28,7 @@ namespace GRINPLAS.Models
         public decimal Total { get; set; }
         public string? Pago { get; set; }
         public string? BoletaEmitida { get; set; }
+        public ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();
+
     }
 }
