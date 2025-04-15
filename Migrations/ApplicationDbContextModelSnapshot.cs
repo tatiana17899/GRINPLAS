@@ -41,6 +41,9 @@ namespace GRINPLAS.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -300,6 +303,46 @@ namespace GRINPLAS.Migrations
                     b.ToTable("Productos");
                 });
 
+            modelBuilder.Entity("GRINPLAS.Models.Trabajadores", b =>
+                {
+                    b.Property<int>("IdTrabajador")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTrabajador"));
+
+                    b.Property<string>("Apellidos")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DNI")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PosicionLaboral")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("IdTrabajador");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("Trabajadores");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -518,6 +561,17 @@ namespace GRINPLAS.Migrations
                     b.Navigation("Categoria");
                 });
 
+            modelBuilder.Entity("GRINPLAS.Models.Trabajadores", b =>
+                {
+                    b.HasOne("GRINPLAS.Models.ApplicationUser", "User")
+                        .WithOne("Trabajador")
+                        .HasForeignKey("GRINPLAS.Models.Trabajadores", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -572,6 +626,8 @@ namespace GRINPLAS.Migrations
             modelBuilder.Entity("GRINPLAS.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Cliente");
+
+                    b.Navigation("Trabajador");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Carrito", b =>
