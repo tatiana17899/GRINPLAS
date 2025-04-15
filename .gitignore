@@ -1,1 +1,23 @@
- obj/ bin/
+# .NET build/output
+bin/
+obj/
+
+# NuGet
+*.nupkg
+.nuget/
+nuget.exe
+packages/
+# holaa
+# VS/MD
+.vs/
+*.user
+*.suo
+*.userprefs
+*.cache
+*.vspscc
+*.vssscc
+
+# Otros
+*.swp
+*.log
+*.DS_Store
