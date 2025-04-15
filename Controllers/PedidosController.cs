@@ -71,7 +71,7 @@ namespace GRINPLAS.Controllers
 
             return View(viewModel);
         }
-        [Authorize(Roles = "GerenteGeneral")]
+        [Authorize(Roles = "Vendedor")]
         public async Task<IActionResult> GerenteGeneral(DateTime? fechaInicio, DateTime? fechaFin)
         {
            if (_userManager == null)
@@ -85,7 +85,7 @@ namespace GRINPLAS.Controllers
             }
             var userRoles= await _userManager.GetRolesAsync(user);
 
-            if(!userRoles.Contains("GerenteGeneral")){
+            if(!userRoles.Contains("Vendedor")){
                 return RedirectToPage("/Account/AccessDenied");
             }
             var viewModel = new PedidoViewModel{
@@ -106,7 +106,7 @@ namespace GRINPLAS.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        [Authorize(Roles = "GerenteGeneral")]
+        [Authorize(Roles = "Vendedor")]
         public async Task<IActionResult> ActualizarPedido([FromForm] int pedidoId, [FromForm] string status, [FromForm] string pago, [FromForm] DateTime? fechaEntrega)
         {
             try
