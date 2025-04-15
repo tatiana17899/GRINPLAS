@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "w2xzqdfgZYQ=",
+  "dgSpecHash": "mbyopuPc+3Y=",
   "success": true,
-  "projectFilePath": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\GRINPLAS-1\\GRINPLAS.csproj",
+  "projectFilePath": "D:\\CARPETA TATIANA\\CURSOS UNIVERSIDAD\\7MO CICLO\\Ingeniería de Software 2\\proy GYR\\GRINPLAS\\GRINPLAS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\tatia\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\tatia\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
