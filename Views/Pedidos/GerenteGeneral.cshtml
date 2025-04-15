@@ -2,7 +2,7 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "GerenteGeneral";
-    Layout = "~/Views/Shared/_LayoutGerente.cshtml";
+    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
     var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 <div class="d-flex flex-column">
