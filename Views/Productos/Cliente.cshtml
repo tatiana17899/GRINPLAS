@@ -1,0 +1,98 @@
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Cliente";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<div class="container mt-5">
+    <div class="text-center mb-5" style="margin-top: -150px;">
+      <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+          <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;"><span style="color: #7DAE8A;">NUESTROS</span> PRODUCTOS</h1>
+      </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var producto in Model.Productos)
+        {
+            <div class="col d-flex justify-content-center">
+                <div class="card" style="background-color: #F2F2F2; border: none; border-radius: 29px; width: 380px; height: 560px;">
+                    <div class="d-flex justify-content-center px-2 py-4">
+                        <img src="@producto.Imagen" class="rounded-4" alt="Imagen de @producto.Nombre" style="width: 90%; height: auto; object-fit: cover; border-radius: 29px;">
+                    </div>
+                    <div class="card-body text-center" style="padding: 8px;">
+                        <h3 class="card-title fw-semibold text-uppercase" style="font-size: 24px; letter-spacing: 0.2px; color: #3B3B3B;">@producto.Nombre</h3>
+                        <p class="card-text fw-medium" style="font-size: 16px; letter-spacing: 0.2px; color: #3B3B3B;">@producto.Descripcion</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center px-4" style="padding-bottom: 15px;">
+                        <p class="card-text fw-bold mb-0" style="font-size: 30px; letter-spacing: 0.2px; color: #000;">S/@producto.Precio.ToString("F2")</p>
+                        <button class="btn rounded-circle d-flex justify-content-center align-items-center btn-carrito" 
+                                style="width: 60px; height: 60px; background-color: #1B665E;" 
+                                data-nombre="@producto.Nombre" 
+                                data-descripcion="@producto.Descripcion" 
+                                data-precio="S/@producto.Precio.ToString("F2")">
+                            <i class="fas fa-shopping-cart text-white" style="font-size: 25px;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        <button class="btn d-flex align-items-center justify-content-center" style="background-color: #8FC1B5; color: white; border: none; border-radius: 30px; padding: 10px 30px; font-size: 24px;" data-bs-toggle="modal" data-bs-target="#detalleProductoModal">
+            Siguiente
+            <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="detalleProductoModal" tabindex="-1" aria-labelledby="detalleProductoModalLabel" aria-hidden="true" style="z-index: 1055;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalleProductoModalLabel">Detalle del Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="modalNombreProducto" class="fw-bold"></h3>
+                    <p id="modalDescripcionProducto"></p>
+                    <p id="modalPrecioProducto" class="fw-bold"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/administrador.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Seleccionar todos los botones de carrito
+            const botonesCarrito = document.querySelectorAll('.btn-carrito');
+
+            // Agregar evento de clic a cada botón
+            botonesCarrito.forEach(boton => {
+                boton.addEventListener('click', function () {
+                    // Obtener los datos del producto desde los atributos del botón
+                    const nombre = this.getAttribute('data-nombre');
+                    const descripcion = this.getAttribute('data-descripcion');
+                    const precio = this.getAttribute('data-precio');
+
+                    // Actualizar el contenido del modal
+                    document.getElementById('modalNombreProducto').textContent = nombre;
+                    document.getElementById('modalDescripcionProducto').textContent = descripcion;
+                    document.getElementById('modalPrecioProducto').textContent = precio;
+
+                    // Mostrar el modal
+                    const modal = new bootstrap.Modal(document.getElementById('detalleProductoModal'));
+                    modal.show();
+                });
+            });
+        });
+    </script>
+}

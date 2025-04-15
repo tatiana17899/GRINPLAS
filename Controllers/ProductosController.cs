@@ -112,5 +112,34 @@ namespace GRINPLAS.Controllers
 
             return View("Administrador", viewModel);
         }
+
+
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> Cliente()
+        {
+           if (_userManager == null)
+           {
+               return RedirectToPage("/Account/AccessDenied");
+           }
+           var user = await _userManager.GetUserAsync(User);
+
+            if(user == null){
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var userRoles= await _userManager.GetRolesAsync(user);
+
+            if(!userRoles.Contains("Cliente")){
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var viewModel = new ProductoViewModel{
+                nuevoProducto = new Producto(),
+                Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync(),
+                Categorias = await _context.Categorias.ToListAsync(),
+            };
+
+
+            return View(viewModel);
+        }
     }
 }

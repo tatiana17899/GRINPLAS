@@ -128,6 +128,20 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         return RedirectToAction("Administrador", "Pedidos");
                 
                     }
+                    if (user != null && await _userManager.IsInRoleAsync(user, "Cliente"))
+                    {
+                        var existingClaims = await _userManager.GetClaimsAsync(user);
+                        var layoutClaim = existingClaims.FirstOrDefault(c => c.Type == "LayoutPreference");
+
+                        if (layoutClaim != null)
+                        {
+                            await _userManager.RemoveClaimAsync(user, layoutClaim);
+                        }
+                        await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Cliente"));
+                        await _signInManager.RefreshSignInAsync(user);
+                        return RedirectToAction("Cliente", "Productos");
+                
+                    }
 
                     return LocalRedirect(returnUrl);
                 }

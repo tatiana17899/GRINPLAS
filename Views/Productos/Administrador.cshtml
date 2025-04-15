@@ -36,10 +36,10 @@
               </div>
               <div class="input-group border border-success rounded">
                     <select id="categoriaFiltro" name="categoriaFiltro" class="form-select border-0">
-                      <option value="0" @(ViewData["categoriaFiltro"] != null && Convert.ToString(ViewData["categoriaFiltro"]) == "0" ? "selected" : "")>Todas las categorías</option>
+                      <option value="0" >Todas las categorías</option>
                       @foreach (var categoria in Model.Categorias)
                       {
-                        <option value="@categoria.CategoriaId" @(ViewData["categoriaFiltro"] != null && Convert.ToString(ViewData["categoriaFiltro"]) == categoria.CategoriaId.ToString() ? "selected" : "")>
+                        <option value="@categoria.CategoriaId" >
                           @categoria.Nombre
                         </option>
                       }

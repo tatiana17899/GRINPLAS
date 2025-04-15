@@ -41,10 +41,17 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole("Administrador"));
         }
 
+        if (!await roleManager.RoleExistsAsync("Cliente"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Cliente"));
+        }
+
         var adminEmail = "nicanorguevara332@gmail.com";
         var adminPassword = "Tatiana123%&"; 
         var gerenteEmail = "mayraguevara332@gmail.com";
-        var gerentePassword = "Tatiana132%&"; 
+        var gerentePassword = "Tatiana132%&";
+        var clienteEmail = "cliente123@gmail.com";
+        var clientePassword = "Tatiana321%&";
 
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
@@ -92,12 +99,37 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(gerenteUser, "GerenteGeneral");
         }
 
+        var clienteUser = await userManager.FindByEmailAsync(clienteEmail);
+        if (clienteUser == null)
+        {
+            clienteUser = new ApplicationUser 
+            {
+                UserName = clienteEmail,
+                Email = clienteEmail,
+                EmailConfirmed = true 
+            };
+            
+            var createClienteResult = await userManager.CreateAsync(clienteUser, clientePassword);
+            if (!createClienteResult.Succeeded)
+            {
+                throw new Exception($"Error al crear usuario cliente: {string.Join(", ", createClienteResult.Errors)}");
+            }
+            
+        }
+
+        if (!await userManager.IsInRoleAsync(clienteUser, "Cliente"))
+        {
+            await userManager.AddToRoleAsync(clienteUser, "Cliente");
+        }
+
         await context.SaveChangesAsync();
 
         if (adminUser != null)
             await signInManager.RefreshSignInAsync(adminUser);
         if (gerenteUser != null)
             await signInManager.RefreshSignInAsync(gerenteUser);
+        if (clienteUser != null)
+            await signInManager.RefreshSignInAsync(clienteUser);
     }
     catch (Exception ex)
     {
