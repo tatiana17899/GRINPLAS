@@ -2,7 +2,7 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Lista de Trabajadores";
-    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+    Layout = "~/Views/Shared/_LayoutGerente.cshtml";
     var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -11,19 +11,19 @@
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 <link href="~/css/trabajador.css" rel="stylesheet" />
 
-<div class="d-flex flex-column">
+<div class="d-flex flex-column p-5 m-1">
     <div class="container py-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#" style="color: #7f7f7f; text-decoration: none">Inicio</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Trabajadores</li>
+                <li class="breadcrumb-item" style="color: #09c33d" aria-current="page">Trabajadores</li>
             </ol>
         </nav>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fs-2 mb-0"><i class="fas fa-user-tie me-2"></i>Lista de Trabajadores</h1>
+        <div class="flex-column align-items-center mb-4">
+            <h1 class="display-6  fw-semibold fs-2">Historial de Trabajadores</h1>
             <a asp-action="Create" class="btn btn-success">
-                <i class="fas fa-user-plus me-2"></i>Crear Nuevo
+                Crear Nuevo
             </a>
         </div>
 
@@ -31,11 +31,11 @@
             <table id="trabajadoresTable" class="table table-striped">
                 <thead class="table-light">
                     <tr>
-                        <th><i class="fas fa-user me-2"></i>Nombre</th>
-                        <th><i class="fas fa-users me-2"></i>Apellidos</th>
-                        <th><i class="fas fa-phone me-2"></i>Teléfono</th>
-                        <th><i class="fas fa-id-card me-2"></i>DNI</th>
-                        <th><i class="fas fa-briefcase me-2"></i>Posición</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Teléfono</th>
+                        <th>DNI</th>
+                        <th>Posición</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -64,7 +64,7 @@
                             </td>
                             <td class="action-buttons">
                                 <!-- Botón Editar con Modal -->
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" 
+                                <button class="btn btn-sm" data-bs-toggle="modal" style="background-color: #096623; color: white"
                                         data-bs-target="#editModal" 
                                         data-id="@item.IdTrabajador"
                                         data-nombre="@item.Nombre"
@@ -72,13 +72,13 @@
                                         data-telefono="@item.Telefono"
                                         data-dni="@item.DNI"
                                         data-posicion="@item.PosicionLaboral">
-                                    <i class="fas fa-edit"></i> Editar
+                                    <i class="fas fa-edit"></i> 
                                 </button>
                                 
                                 <!-- Botón Eliminar con SweetAlert -->
-                                <button class="btn btn-danger btn-sm delete-btn" 
+                                <button class="btn  btn-sm delete-btn" style="background-color: #096623; color: white"
                                         data-id="@item.IdTrabajador">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                    <i class="fas fa-trash-alt"></i> 
                                 </button>
                             </td>
                         </tr>
@@ -120,7 +120,7 @@
                         <label for="editPosicion" class="form-label">Posición Laboral</label>
                         <select class="form-select" id="editPosicion" name="PosicionLaboral" required>
                             <option value="Vendedor">Vendedor</option>
-                            <option value="GerenteGeneral">Gerente General</option>
+                            <option value="Supervisión de chongos">Supervisión de chongos</option>
                             <option value="Almacenero">Almacenero</option>
                         </select>
                     </div>

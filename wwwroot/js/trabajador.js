@@ -3,7 +3,16 @@ $(document).ready(function () {
   var table = $("#trabajadoresTable").DataTable({
     language: {
       url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json",
+      paginate: {
+        previous: "Anterior",
+        next: "Siguiente",
+      },
     },
+    paging: true,
+    lengthChange: false,
+    searching: false,
+    info: false,
+
     processing: true,
     serverSide: false,
     ajax: {
@@ -21,7 +30,7 @@ $(document).ready(function () {
         data: "idTrabajador",
         render: function (data, type, row) {
           return `
-                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" 
+                        <button class="btn btn-sm edit-btn" data-id="${data}" style="background-color: #096623; color: white"
                                 data-nombre="${row.nombre}" 
                                 data-apellidos="${row.apellidos}" 
                                 data-telefono="${row.telefono}" 
@@ -29,10 +38,10 @@ $(document).ready(function () {
                                 data-posicion="${row.posicionLaboral}" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#editModal">
-                            <i class="fas fa-edit"></i> Editar
+                            <i class="fas fa-edit"></i> 
                         </button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">
-                            <i class="fas fa-trash"></i> Eliminar
+                        <button class="btn btn-sm  delete-btn" data-id="${data}" style="background-color: #096623; color: white">
+                            <i class="fas fa-trash"></i> 
                         </button>
                     `;
         },

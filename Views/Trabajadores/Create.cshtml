@@ -2,13 +2,13 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Lista de Trabajadores";
-    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+    Layout = "~/Views/Shared/_LayoutGerente.cshtml";
     var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
-<h1>@ViewData["Title"]</h1>
+ <h1 class="display-6  fw-semibold fs-2 ps-5 pt-4">@ViewData["Title"]</h1>
 
 <hr />
-<div class="row">
+<div class="row pt-4 ps-5 pb-4" >
     <div class="col-md-6">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -48,8 +48,8 @@
                 <span asp-validation-for="PosicionLaboral" class="text-danger"></span>
             </div>
             
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Crear</button>
+            <div class="form-group pt-4">
+                <button type="submit" class="btn" style="background-color: #096623; color: white">Crear</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>

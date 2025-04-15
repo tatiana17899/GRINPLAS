@@ -85,7 +85,7 @@ namespace GRINPLAS.Controllers
             }
             var userRoles= await _userManager.GetRolesAsync(user);
 
-            if(!userRoles.Contains("GerenteGeneral")){
+            if(!userRoles.Contains("Vendedor")){
                 return RedirectToPage("/Account/AccessDenied");
             }
             var viewModel = new PedidoViewModel{
