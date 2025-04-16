@@ -19,6 +19,11 @@ namespace GRINPLAS.Controllers
             _context = context;
         }
 
+         public IActionResult PerfilCliente()
+        {
+            return View();
+        }
+
         public IActionResult HistorialCliente()
         {
             var clientes = _context.Clientes.Include(c => c.User).ToList();
