@@ -21,7 +21,7 @@ namespace GRINPLAS.Models
         public string? NumDoc { get; set; }
         public string? Telefono { get; set; }
         public string? Imagen {get;set;}
-        public DateTime FecCre {get;set;}
+        public DateTime FecCre {get;set;}= DateTime.UtcNow;
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
         public Carrito? Carrito { get; set; }
     }
