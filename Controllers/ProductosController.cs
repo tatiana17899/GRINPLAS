@@ -87,7 +87,6 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
 
-            // Filtrar productos por nombre y categoría
             var productosQuery = _context.Productos.Include(p => p.Categoria).AsQueryable();
 
             if (!string.IsNullOrEmpty(nombreFiltro))
@@ -95,7 +94,7 @@ namespace GRINPLAS.Controllers
                 productosQuery = productosQuery.Where(p => p.Nombre.ToLower().Contains(nombreFiltro.ToLower()));
             }
 
-            if (categoriaFiltro.HasValue && categoriaFiltro.Value != 0) // 0 representa "Todas las categorías"
+            if (categoriaFiltro.HasValue && categoriaFiltro.Value != 0)
             {
                 productosQuery = productosQuery.Where(p => p.CategoriaId == categoriaFiltro.Value);
             }
@@ -107,15 +106,20 @@ namespace GRINPLAS.Controllers
                 Categorias = await _context.Categorias.ToListAsync(),
             };
 
-            ViewData["nombreFiltro"] = nombreFiltro; // Para mantener el valor en el input
-            ViewData["categoriaFiltro"] = categoriaFiltro; // Para mantener el valor en el select
+            ViewData["nombreFiltro"] = nombreFiltro;
+            ViewData["categoriaFiltro"] = categoriaFiltro;
 
             return View("Administrador", viewModel);
         }
 
+        private IQueryable<Producto> ObtenerProductos()
+        {
+            return _context.Productos.Include(p => p.Categoria).AsQueryable();
+        }
+
 
         [Authorize(Roles = "Cliente")]
-        public async Task<IActionResult> Cliente()
+        public async Task<IActionResult> Cliente(int pagina = 1)
         {
            if (_userManager == null)
            {
@@ -132,14 +136,19 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
 
-            var viewModel = new ProductoViewModel{
-                nuevoProducto = new Producto(),
-                Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync(),
-                Categorias = await _context.Categorias.ToListAsync(),
-            };
+            int productosPorPagina = 6;
+            var productos = ObtenerProductos();
 
+            var productosPaginados = await productos
+                .OrderBy(p => p.ProductoId)
+                .Skip((pagina - 1) * productosPorPagina)
+                .Take(productosPorPagina)
+                .ToListAsync();
 
-            return View(viewModel);
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TotalPaginas = (int)Math.Ceiling((double)productos.Count() / productosPorPagina);
+
+            return View(productosPaginados);
         }
     }
 }

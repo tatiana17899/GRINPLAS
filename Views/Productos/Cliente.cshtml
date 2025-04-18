@@ -1,4 +1,6 @@
 @using GRINPLAS.ViewModel
+@using System.Linq
+@model IEnumerable<Producto>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Cliente";
@@ -12,13 +14,13 @@
       </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var producto in Model.Productos)
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-container">
+        @foreach (var producto in Model)
         {
             <div class="col d-flex justify-content-center">
                 <div class="card" style="background-color: #F2F2F2; border: none; border-radius: 29px; width: 380px; height: 560px;">
                     <div class="d-flex justify-content-center px-2 py-4">
-                        <img src="@producto.Imagen" class="rounded-4" alt="Imagen de @producto.Nombre" style="width: 90%; height: auto; object-fit: cover; border-radius: 29px;">
+                        <img src="@producto.Imagen" class="rounded-4" alt="Imagen de @producto.Nombre" style="width: 90%; height: 300px; object-fit: cover; border-radius: 29px;">
                     </div>
                     <div class="card-body text-center" style="padding: 8px;">
                         <h3 class="card-title fw-semibold text-uppercase" style="font-size: 24px; letter-spacing: 0.2px; color: #3B3B3B;">@producto.Nombre</h3>
@@ -40,10 +42,23 @@
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-        <button class="btn d-flex align-items-center justify-content-center" style="background-color: #8FC1B5; color: white; border: none; border-radius: 30px; padding: 10px 30px; font-size: 24px;" data-bs-toggle="modal" data-bs-target="#detalleProductoModal">
-            Siguiente
-            <i class="fas fa-arrow-right ms-2"></i>
-        </button>
+        @if (ViewBag.PaginaActual > 1)
+        {
+            <a href="@Url.Action("Cliente", new { pagina = ViewBag.PaginaActual - 1 })" 
+            class="btn d-flex align-items-center justify-content-center" 
+            style="background-color: white; color: #8FC1B5; border: 1px solid #8FC1B5; border-radius: 30px; padding: 10px 30px; font-size: 24px; margin-right: 10px;">
+                <i class="fas fa-arrow-left" style="font-size: 20px; margin-right: 10px;"></i>
+                <span style="line-height: 1;">Anterior</span>
+            </a>
+        }
+
+        @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+        {
+            <a href="@Url.Action("Cliente", new { pagina = ViewBag.PaginaActual + 1 })" class="btn d-flex align-items-center justify-content-center" style="background-color: #8FC1B5; color: white; border: none; border-radius: 30px; padding: 10px 30px; font-size: 24px;">
+                <span style="line-height: 1; margin-right: 10px;">Siguiente</span>
+                <i class="fas fa-arrow-right" style="font-size: 20px;"></i>
+            </a>
+        }
     </div>
 
     <!-- Modal -->
