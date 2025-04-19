@@ -1,0 +1,85 @@
+@using Microsoft.AspNetCore.Identity
+@using GRINPLAS.Models
+@model GRINPLAS.Models.Cliente
+@inject UserManager<ApplicationUser> UserManager
+    
+<div class="profile-image-container" id="profileTrigger">
+    <img src="@(Model?.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
+         alt="Usuario" 
+         class="rounded-circle" 
+         style="width: 40px; height: 40px; cursor: pointer;">
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="profile-slideout" id="profilePanel">
+    <button class="close-btn" id="closeProfile">&times;</button>
+    <div class="profile-content">
+        <div class="w-100 max-w-sm mx-auto">
+            <div class="d-flex align-items-center justify-content-between p-2">
+                <h5 class="text-gray-500 font-semibold profile-title">PERFIL</h5>
+            </div>
+            <div class="d-flex flex-column align-items-center mt-3">
+                <div class="avatar-container">
+                    <img id="profileImage" 
+                         src="@(Model?.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
+                         alt="Profile" 
+                         class="profile-img">
+                    <input type="file" 
+                           id="imageUpload" 
+                           accept="image/*" 
+                           style="display: none" 
+                           onchange="loadFile(event)">
+                    <label class="camera-btn" onclick="document.getElementById('imageUpload').click();">
+                        <i class="bi bi-camera"></i>
+                    </label>
+                </div>
+                <div class="mt-3 w-100 px-2">
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control text-center" 
+                               value="@User.Identity?.Name" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <div class="input-wrapper">
+                        <input type="email" class="form-control text-center" 
+                               value="@UserManager.GetUserName(User)" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control text-center" 
+                               value="@(Model?.NombreEmpresa ?? "No especificado")" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control text-center" 
+                               value="@(Model?.TipDoc ?? "No especificado")" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control text-center" 
+                               value="@(Model?.NumDoc ?? "No especificado")" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control text-center" 
+                               value="@(Model?.Telefono ?? "No especificado")" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <div class="input-wrapper mb-3">
+                        <input type="password" class="form-control text-center" 
+                               placeholder="Contraseña" readonly />
+                        <i class="bi bi-pencil edit-icon"></i>
+                    </div>
+                    
+                    <a href="#" class="btn btn-outline-success w-100 mb-2">Ver Historial de Pedidos</a>
+                    <a href="~/Identity/Account/Logout" class="btn btn-success w-100">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

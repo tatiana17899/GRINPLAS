@@ -1,5 +1,5 @@
 #sidebar {
-  width: 30vw;
+  width: 50vw;
   transition: width 0.3s ease;
   overflow: hidden;
 }
@@ -30,4 +30,20 @@
 
 .modal {
   z-index: 1055 !important; /* Asegúrate de que el modal esté por encima del backdrop */
+}
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.nav-elements {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.login-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 20px;
 }
