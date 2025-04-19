@@ -47,3 +47,36 @@
   gap: 10px;
   margin-left: 20px;
 }
+.telefono {
+  background-color: #fff;
+  height: 70px;
+  width: 300px;
+  margin-left: 10px;
+  transform: translateX(79vw);
+  padding: 2rem 2rem;
+  border-bottom-left-radius: 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.telefono .container {
+  gap: 0.5rem;
+}
+
+.telefono i {
+  color: #096623;
+  font-size: 1.2rem;
+}
+
+.telefono .numero {
+  color: #096623;
+  font-weight: 500;
+  margin: 0;
+}

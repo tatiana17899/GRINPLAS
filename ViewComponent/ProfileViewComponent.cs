@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GRINPLAS.Data;
-using GRINPLAS.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using GRINPLAS.Models;
+using GRINPLAS.Data;
+using GRINPLAS.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GRINPLAS.ViewComponents
 {
@@ -17,7 +13,7 @@ namespace GRINPLAS.ViewComponents
         private readonly ApplicationDbContext _context;
 
         public ProfileViewComponent(UserManager<ApplicationUser> userManager, 
-                                ApplicationDbContext context)
+                                  ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -31,12 +27,17 @@ namespace GRINPLAS.ViewComponents
             var cliente = await _context.Clientes
                 .FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
                 
-            return View(cliente ?? new Cliente {
-                NombreEmpresa = "No especificado",
-                TipDoc = "No especificado",
-                NumDoc = "No especificado",
-                Telefono = "No especificado"
-            });
+            var model = new ProfileEditViewModel
+            {
+                Email = user.Email,
+                NombreEmpresa = cliente?.NombreEmpresa,
+                TipDoc = cliente?.TipDoc,
+                NumDoc = cliente?.NumDoc,
+                Telefono = cliente?.Telefono,
+                Imagen = cliente?.Imagen
+            };
+            
+            return View(model);
         }
     }
 }
