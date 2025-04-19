@@ -1,0 +1,183 @@
+@model GRINPLAS.ViewModel.AnalisisViewModel
+@{
+    ViewData["Title"] = "Análisis de Ventas";
+    Layout = "~/Views/Shared/_LayoutGerente.cshtml";
+}
+<link rel="stylesheet" href="~/css/analisisventas.css" />
+<div class="d-flex flex-column">
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <div class="container-fluid p-3">
+            <div class="container py-4">
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/Home" class="text-decoration-none text-dark">Inicio</a>
+                    <span class="me-2 ms-2">/</span>
+                    <span class="text-dashboard" style="color: #09c33d; font-weight: bold">Análisis de Ventas</span>
+                </div>
+                <div class="d-flex">
+                    <h1 class="display-4 mb-3" style="font-weight: 400; font-size: 40px">
+                        Análisis de Ventas
+                    </h1>
+                    <div class="d-flex justify-content-end ms-auto">
+                        <div class="d-flex align-items-center me-5">
+                            <div class="icon-container me-3">
+                                <i class="fas fa-shopping-bag icon"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1">Ventas de bolsas</p>
+                                <p class="h3 fw-bold mb-0">
+                                    @Model.VentasBolsas
+                                    <span class="fs-6" style="color: #86a792">ventas</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="icon-container me-3">
+                                <i class="fas fa-shopping-basket icon"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1">Ventas de mangas</p>
+                                <p class="h3 fw-bold mb-0">
+                                    @Model.VentasMangas
+                                    <span class="fs-6" style="color: #86a792">ventas</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container py-4">
+            <div class="d-flex mb-4">
+                <button class="btn btn-outline-secondary rounded-pill me-2" data-period="semana" id="btn-semana">
+                    Semana
+                </button>
+                <button class="btn btn-outline-success rounded-pill me-2" data-period="mes" id="btn-mes">
+                    Mes
+                </button>
+                <button class="btn btn-outline-secondary rounded-pill me-2" data-period="año" id="btn-año">
+                    Año
+                </button>
+                <input type="date" class="btn btn-outline-secondary rounded-pill" id="date-picker" />
+            </div>
+            <div class="d-flex">
+                <div class="d-flex flex-column p-3" style="
+                    background-color: rgba(114, 220, 0, 0.29);
+                    border-bottom-left-radius: 50px;
+                ">
+                    <div class="p-2 rounded mb-4 text-center" style="
+                        background-color: rgba(9, 102, 35, 0.83);
+                        width: 150px;
+                        height: 50px;
+                        z-index: 1;
+                        transform: translate(-10px, -10px);
+                    ">
+                        <i class="fas fa-chart-bar text-white" style="font-size: 30px"></i>
+                    </div>
+                    <div class="d-flex flex-column align-items-center text-center" style="
+                        background-color: #e7ffe3;
+                        border-radius: 30px;
+                        padding: 10px;
+                    ">
+                        <div class="text-center mb-4">
+                            <span style="color: rgba(9, 102, 35, 0.6)">Selecciona</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-center mb-4" id="bolsas-selector">
+                            <i class="fas fa-shopping-bag text-dark-green fa-2x mb-2"></i>
+                            <span class="text-dark-green">Bolsas</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-center mb-4" id="mangas-selector">
+                            <i class="fas fa-shopping-basket text-dark-green fa-2x mb-2"></i>
+                            <span class="text-dark-green">Mangas</span>
+                        </div>
+                        <button class="btn btn-success rounded-pill" style="margin-bottom: 20px" id="todos-selector">
+                            Todos
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-grow-1 p-3" style="background-color: rgba(114, 220, 0, 0.29); overflow-x: auto; height: 500px;">
+                    <div class="bg-white p-5 h-100" style="border-radius: 20px; min-width: 800px; height: 100%; position: relative;">
+                        <canvas id="mainChart" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+               <div class="d-flex flex-column bg-light p-3 align-items-center" style="border-radius: 20px">
+                  <button class="btn bg-dark-green text-white mb-2 rounded-circle p-3" data-type="bar" id="btn-bar-chart">
+                      <i class="fas fa-chart-bar"></i>
+                  </button>
+                  <button class="btn bg-custom-gray text-white mb-2 rounded-circle p-3" data-type="line" id="btn-line-chart">
+                      <i class="fas fa-chart-line"></i>
+                  </button>
+                  <button class="btn bg-custom-gray text-white rounded-circle p-3" data-type="pie" id="btn-pie-chart">
+                      <i class="fas fa-chart-pie"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="container">
+            <h3 class="mb-4"># Ventas Tipos de Bolsas</h3>
+            <div class="row g-4" style="margin-left: 20px; margin-bottom: 20px">
+                <div class="p-3 bg-white" style="width: 33rem; border: rgba(9, 102, 35, 0.37) solid 2px; border-radius: 20px;">
+                    <div class="bg-success bg-opacity-10 rounded-lg p-3" style="border-radius: 20px">
+                        <input type="date" class="btn btn-outline-secondary rounded-pill mb-3" id="pie-date-picker" />
+                        
+                        <!-- Contenedor del gráfico -->
+                        <div class="d-flex justify-content-center" style="height: 300px; position: relative;">
+                            <canvas id="pieChart" height="300"></canvas>
+                        </div>
+                        
+                        <!-- Mensaje de error debajo del gráfico -->
+                        <div id="pie-chart-message" class="text-center mt-2" style="min-height: 24px;"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="bg-success text-white p-3 rounded flex-fill d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users fa-2x"></i>
+                                <span class="ms-2">Cantidad de clientes suscritos: </span>
+                            </div>
+                            <br />
+                            <span class="h4 mb-0">@Model.TotalClientes</span>
+                        </div>
+                        <div class="text-white p-3 rounded flex-fill d-flex align-items-center justify-content-between" style="background-color: rgba(9, 102, 35, 0.53)
+;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-hand-holding-usd fa-2x"></i>
+                                <span class="ms-2">Ganancia Actual :</span>
+                            </div>
+                            <br />
+                            <span class="h4 mb-0">S/@Model.GananciaTotal.ToString("N0")</span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white" style="width: 33rem; border: rgba(9, 102, 35, 0.37) solid 2px; border-radius: 20px; margin-top: 20px;">
+                      <div class="bg-success bg-opacity-10 rounded-lg p-3" style="border-radius: 20px">
+                          <!-- Cambiado a ID único -->
+                          <input type="date" class="btn btn-outline-secondary rounded-pill mb-3" id="bar-date-picker" />
+                          <div class="d-flex align-items-center mb-3">
+                              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="producto-selector">
+                                  Producto
+                              </button>
+                              <ul class="dropdown-menu" id="productos-dropdown">
+                                  <!-- Se llenará con JavaScript -->
+                              </ul>
+                          </div>
+                          <!-- Gráfico -->
+                          <div class="d-flex justify-content-center" style="height: 300px; position: relative;">
+                              <canvas id="barChart"></canvas>
+                          </div>
+                          <!-- Mensaje de error -->
+                          <div id="bar-chart-message" class="text-center mt-2" style="min-height: 24px;"></div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/analisisventas.js"></script>
+    <script src="~/js/graficocircular.js"></script>
+    <script src="~/js/graficobolsas.js"></script>
+}

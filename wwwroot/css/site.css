@@ -23,11 +23,3 @@
 #submenu {
   overflow: hidden !important;
 }
-
-.modal-backdrop {
-  z-index: 1040 !important; /* Asegúrate de que este valor no sea mayor que el del modal */
-}
-
-.modal {
-  z-index: 1055 !important; /* Asegúrate de que el modal esté por encima del backdrop */
-}

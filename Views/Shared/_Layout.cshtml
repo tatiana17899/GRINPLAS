@@ -5,46 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GRINPLAS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site2.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GRINPLAS.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GRINPLAS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+    <div class="d-flex flex-column" style="position: relative; z-index: 0;">
+        <header class="position-relative d-flex justify-content-center p-3 m-3" style="height: 300px; background-color: #70A67F; border-radius: 30px;">
+            <!-- Menú superior izquierdo -->
+            <nav class="position-absolute top-0 start-0 m-3 bg-white rounded-pill d-flex align-items-center px-3 py-2 shadow" style="width: auto;">
+                <div class="nav-container">
+                    <span class="fw-bold text-success ms-3">G&R</span>
+                    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="navbar-collapse collapse d-sm-inline-flex">
+                        <div class="nav-elements">
+                            <a href="~/Productos/Cliente" class="text-dark text-decoration-none">Productos</a>
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                <i class="fas fa-shopping-cart text-white" style="font-size: 12px;"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="login-section">
+                            <partial name="_LoginPartial"/>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - GRINPLAS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </nav>
+            <section class="telefono">
+                <div class="container d-flex align-items-center">
+                    <i class="fa-solid fa-phone"></i>
+                    <p class="numero mb-0">(+51) 935 789 352</p>
+                </div>
+          </section>
+        </header>
+        
+        <div class="d-flex flex-column mx-3 my-3" id="main-content">
+            <main role="main" style="background-color: #ffffff">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+        
+        <footer class="mt-5 text-white py-4" style="background-color: #70A67F;">
+          <div class="container">
+              <div class="row gx-5">
+                  <div class="col-md-4 text-start">
+                      <p class="fw-bold fs-1">G&R INDUSTRIAS PLASTICAS S.A.</p>
+                      <p class="fw-semibold fs-5 text-white">
+                          Nos esforzamos en crear los mejores plásticos, como bolsas y mangas, ofreciendo siempre un servicio de excelencia para PYMEs.
+                      </p>
+                  </div>
+                  <div class="col-md-4 mt-4">
+                      <p class="fw-medium fs-4">Nos Encontramos:</p>
+                      <p class="fw-medium" style="color: #1B665E; font-size: 15px;">
+                        MZA. E-1 LOTE. 9 ASOC ALAMEDA DEL NORTE (ALT OVALO DE PUENTE PIEDRA) LIMA - LIMA - PUENTE PIEDRA
+                      </p>
+                      <p class="fw-medium fs-4">Email:</p>
+                      <p class="fw-medium" style="color: #1B665E; font-size: 15px;">grplasticsac@gmail.com</p>
+                  </div>
+                  <div class="col-md-4 mt-4">
+                      <p class="fw-medium fs-4">Llámenos:</p>
+                      <p class="fw-medium" style="color: #1B665E; font-size: 15px;">+51 991383639</p>
+                  </div>
+              </div>
+              <hr style="color: #185952" />
+              <p class="opacity-53 fw-semibold fs-6" style="color: #096623;">© 2025 G&R Industrias Plásticas S.A. Todos los derechos reservados.</p>
+          </div>
+        </footer>
+    </div>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
