@@ -8,10 +8,12 @@
     var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 <div class="container mt-5">
-    <div class="text-center mb-5" style="margin-top: -150px;">
-      <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
-          <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;"><span style="color: #7DAE8A;">NUESTROS</span> PRODUCTOS</h1>
-      </div>
+    <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
+        <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+            <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+                <span style="color: #7DAE8A;">NUESTROS</span> PRODUCTOS
+            </h1>
+        </div>
     </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-container">
@@ -32,7 +34,8 @@
                                 style="width: 60px; height: 60px; background-color: #1B665E;" 
                                 data-nombre="@producto.Nombre" 
                                 data-descripcion="@producto.Descripcion" 
-                                data-precio="S/@producto.Precio.ToString("F2")">
+                                data-precio="S/@producto.Precio.ToString("F2")"
+                                data-imagen="@producto.Imagen">
                             <i class="fas fa-shopping-cart text-white" style="font-size: 25px;"></i>
                         </button>
                     </div>
@@ -60,53 +63,88 @@
             </a>
         }
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="detalleProductoModal" tabindex="-1" aria-labelledby="detalleProductoModalLabel" aria-hidden="true" style="z-index: 1055;">
-        <div class="modal-dialog modal-dialog-centered">
+</div>
+<div class="modal fade" id="detalleProductoModal" tabindex="-1" aria-labelledby="detalleProductoModalLabel" aria-hidden="true" style="z-index: 2050;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered custom-modal-size">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detalleProductoModalLabel">Detalle del Producto</h5>
+                <div class="modal-header" style="border-bottom: none !important;">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h3 id="modalNombreProducto" class="fw-bold"></h3>
-                    <p id="modalDescripcionProducto"></p>
-                    <p id="modalPrecioProducto" class="fw-bold"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <div class="row">
+                        <div class="col-md-5 text-center">
+                            <img id="modalImagenProducto" src="" alt="Imagen del producto" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-7">
+                            <h5 id="modalNombreProducto" class="fw-bold mb-3"></h5>
+                            <p id="modalDescripcionProducto" class="text-muted mb-4"></p>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h4 id="modalPrecioProducto" class="fw-bold mb-0"></h4>
+                                <div class="d-flex align-items-center">
+                                    <button id="decrementarCantidad" class="btn" style="background-color: #B2DCB9">-</button>
+                                    <input id="cantidadProducto" type="text" value="1" class="form-control text-center mx-2" style="width: 50px;" readonly>
+                                    <button id="incrementarCantidad" class="btn" style="background-color: #B2DCB9">+</button>
+                                </div>
+                            </div>
+                            <button id="comprarProducto" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
+                                <i class="fas fa-shopping-cart me-2"></i> Comprar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts{
-    <script src="~/js/administrador.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Seleccionar todos los botones de carrito
             const botonesCarrito = document.querySelectorAll('.btn-carrito');
 
-            // Agregar evento de clic a cada botón
             botonesCarrito.forEach(boton => {
                 boton.addEventListener('click', function () {
-                    // Obtener los datos del producto desde los atributos del botón
+
                     const nombre = this.getAttribute('data-nombre');
                     const descripcion = this.getAttribute('data-descripcion');
                     const precio = this.getAttribute('data-precio');
+                    const imagen = this.getAttribute('data-imagen');
 
-                    // Actualizar el contenido del modal
                     document.getElementById('modalNombreProducto').textContent = nombre;
                     document.getElementById('modalDescripcionProducto').textContent = descripcion;
                     document.getElementById('modalPrecioProducto').textContent = precio;
+                    document.getElementById('modalImagenProducto').src = imagen;
 
-                    // Mostrar el modal
-                    const modal = new bootstrap.Modal(document.getElementById('detalleProductoModal'));
+                    document.getElementById('cantidadProducto').value = 1;
+
+                    const modal = new bootstrap.Modal(document.getElementById('detalleProductoModal'), {
+                        backdrop: true,
+                        keyboard: true,
+                        focus: true
+                    });
+
+                    document.getElementById('detalleProductoModal').parentElement.classList.add('custom-modal-container');
+
                     modal.show();
                 });
+            });
+
+            document.getElementById('incrementarCantidad').addEventListener('click', function () {
+                const cantidadInput = document.getElementById('cantidadProducto');
+                cantidadInput.value = parseInt(cantidadInput.value) + 1;
+            });
+
+            document.getElementById('decrementarCantidad').addEventListener('click', function () {
+                const cantidadInput = document.getElementById('cantidadProducto');
+                if (parseInt(cantidadInput.value) > 1) {
+                    cantidadInput.value = parseInt(cantidadInput.value) - 1;
+                }
+            });
+
+            document.getElementById('comprarProducto').addEventListener('click', function () {
+                const cantidad = document.getElementById('cantidadProducto').value;
+                alert(`Has agregado ${cantidad} unidades al carrito.`);
             });
         });
     </script>

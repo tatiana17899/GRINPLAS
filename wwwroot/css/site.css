@@ -25,9 +25,30 @@
 }
 
 .modal-backdrop {
-  z-index: 1040 !important; /* Asegúrate de que este valor no sea mayor que el del modal */
+  z-index: 1040 !important;
 }
 
 .modal {
-  z-index: 1055 !important; /* Asegúrate de que el modal esté por encima del backdrop */
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1055 !important;
+}
+
+.modal-custom-zindex {
+  z-index: 1055;
+}
+.modal-backdrop-custom {
+  z-index: 1045;
+}
+
+
+.custom-modal-size {
+  max-width: 150% !important;
+  max-height: 60vh !important;
+}
+
+.modal-content {
+  height: 100%;
 }
