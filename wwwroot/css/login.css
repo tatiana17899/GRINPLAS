@@ -11,19 +11,16 @@
   --body-color: hsl(0, 0%, 95%);
   --container-color: hsl(0, 0%, 100%);
 }
-
 .form-container {
   position: relative;
   z-index: 1;
 }
-
 .form-control {
   border: none;
   border-bottom: 2px solid #ccc;
   border-radius: 0;
   background-color: transparent;
 }
-
 .form-control:focus {
   box-shadow: none;
   border-color: #38b2ac;
@@ -32,28 +29,26 @@
 
 .login-container {
   position: absolute;
-  top: 10%; /* Aleja el formulario del borde superior */
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%); /* Solo traslada horizontalmente */
+  transform: translate(-50%, -50%);
   z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Alinea al principio de la ventana */
-  height: 100vh; /* Asegura que ocupe el alto completo de la ventana */
 }
 
 .login-card {
+  max-height: 100vh;
   width: 600px;
-  padding: 10px;
+  height: auto;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: var(--fondo);
-  margin-top: 50px; /* Asegura que haya suficiente espacio arriba */
+  overflow-y: auto;
 }
 
 .card-title {
   margin-bottom: 40px;
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 24px;
   font-weight: bold;
   color: #0e8930;
