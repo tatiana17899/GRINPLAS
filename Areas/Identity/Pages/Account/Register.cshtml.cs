@@ -124,6 +124,13 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
+            var existingUser = await _userManager.FindByEmailAsync(Input.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Input.Email", "Este correo electrónico ya está registrado.");
+            }
+
+
             // Validación adicional del documento
             if (Input.TipDoc == "DNI" && (Input.NumDoc.Length != 8 || !Input.NumDoc.All(char.IsDigit)))
             {
