@@ -69,6 +69,15 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/Identity/Account/Login");
+        return;
+    }
+    await next();
+});
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
