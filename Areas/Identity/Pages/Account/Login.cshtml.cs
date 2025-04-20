@@ -86,6 +86,16 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+// Verificar primero si el usuario existe
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                
+                if (user == null)
+                {
+                    // Usuario no existe
+                    ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
+                    return Page();
+                }
+
                 // Intento de inicio de sesión
                 var result = await _signInManager.PasswordSignInAsync(
                     Input.Email, 
@@ -98,8 +108,6 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                     _logger.LogInformation("Usuario ha iniciado sesión.");
                     
                     // Obtener el usuario actual
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    
                     if (user != null && await _userManager.IsInRoleAsync(user, "GerenteGeneral"))
                     {
                         var existingClaims = await _userManager.GetClaimsAsync(user);
@@ -112,7 +120,6 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Gerente"));
                         await _signInManager.RefreshSignInAsync(user);
                         return RedirectToAction("Index", "Trabajadores");
-                
                     }
                     if (user != null && await _userManager.IsInRoleAsync(user, "Administrador"))
                     {
@@ -126,7 +133,6 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Administrador"));
                         await _signInManager.RefreshSignInAsync(user);
                         return RedirectToAction("Administrador", "Pedidos");
-                
                     }
                     if (user != null && await _userManager.IsInRoleAsync(user, "Vendedor"))
                     {
@@ -140,7 +146,6 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Administrador"));
                         await _signInManager.RefreshSignInAsync(user);
                         return RedirectToAction("GerenteGeneral", "Pedidos");
-                
                     }
 
                     return LocalRedirect(returnUrl);
@@ -156,7 +161,8 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido.");
+                    // Contraseña incorrecta
+                    ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
                     return Page();
                 }
             }
