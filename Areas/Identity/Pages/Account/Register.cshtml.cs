@@ -55,24 +55,25 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El campo Email es obligatorio.")]
+            [EmailAddress(ErrorMessage = "Ingresa un correo electrónico válido.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
+            [Required(ErrorMessage = "La confirmación de la contraseña es obligatoria.")]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Required(ErrorMessage = "El nombre de empresa es requerido")]
-            [StringLength(100, ErrorMessage = "El nombre de empresa no puede exceder los 100 caracteres")]
+            [Required(ErrorMessage = "El nombre de empresa o persona es requerido")]
+            [StringLength(100, ErrorMessage = "El nombre de empresa o persona no puede exceder los 100 caracteres")]
             [Display(Name = "Nombre de Empresa")]
             public string NombreEmpresa { get; set; }
 
@@ -122,7 +123,13 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (!ModelState.IsValid)
+                {
+                    
+                    return Page();
+                }    
+
 
             var existingUser = await _userManager.FindByEmailAsync(Input.Email);
             if (existingUser != null)
