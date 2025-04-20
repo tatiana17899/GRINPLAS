@@ -41,7 +41,7 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Input.Telefono">Teléfono</label>
-                    <input asp-for="Input.Telefono" class="form-control" aria-required="true" />
+                    <input asp-for="Input.Telefono" class="form-control" aria-required="true">
                     <span asp-validation-for="Input.Telefono" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -63,11 +63,11 @@
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                 </div>
                 <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" asp-for="Input.AcceptTerms" id="acceptTerms" />
+                    <input type="checkbox" class="form-check-input" asp-for="Input.TerminosCondiciones" id="acceptTerms" />
                     <label class="form-check-label" for="acceptTerms">
-                        Acepto los <a href="~/InicioAdmi/TyC" target="_blank" class="text-success">Términos y Condiciones</a>
+                        Acepto los <a href="~/InicioAdmi/TyC"  class="text-success">Términos y Condiciones</a>
                     </label>
-                    <span asp-validation-for="Input.AcceptTerms" class="text-danger"></span>
+                    <span asp-validation-for="Input.TerminosCondiciones" class="text-danger"></span>
                 </div>
                 <div>
                     <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-success">Registrarse</button>

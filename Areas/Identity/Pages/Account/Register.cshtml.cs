@@ -86,13 +86,13 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             public string NumDoc { get; set; }
 
             [Required(ErrorMessage = "El teléfono es requerido")]
-            [Phone(ErrorMessage = "El formato del teléfono no es válido")]
+            [RegularExpression(@"^\d{9}$", ErrorMessage = "El teléfono debe tener exactamente 9 dígitos")]
             [Display(Name = "Teléfono")]
             public string Telefono { get; set; }
             
             [Required(ErrorMessage = "Debes aceptar los términos y condiciones")]
             [Display(Name = "Acepto los términos y condiciones")]
-            public bool AcceptTerms { get; set; }
+            public bool TerminosCondiciones { get; set; }
             public static ValidationResult ValidateDocumentNumber(string numDoc, ValidationContext context)
             {
                 var instance = (InputModel)context.ObjectInstance;
@@ -132,6 +132,10 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             else if (Input.TipDoc == "RUC" && (Input.NumDoc.Length < 11 || Input.NumDoc.Length > 20 || !Input.NumDoc.All(char.IsDigit)))
             {
                 ModelState.AddModelError("Input.NumDoc", "El RUC debe tener entre 11 y 20 dígitos numéricos");
+            }
+            if (!Input.TerminosCondiciones)
+            {
+                ModelState.AddModelError("Input.TerminosCondiciones", "Debes aceptar los términos y condiciones.");
             }
 
             if (ModelState.IsValid)
