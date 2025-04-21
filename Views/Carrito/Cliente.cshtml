@@ -1,0 +1,207 @@
+@using GRINPLAS.ViewModel
+@using System.Linq
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Cliente";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<div class="container mt-5">
+    <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
+        <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+            <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+                Mi <span style="color: #7DAE8A;">carrito de compras</span>
+            </h1>
+        </div>
+    </div>
+
+
+    <div class="container"></div>
+    <!-- Tabla del carrito -->
+    <table class="table text-center align-middle" style="border-radius: 12px; overflow: hidden;">
+      <thead style="background-color: white; border-bottom: 2px solid #D3D3D3;">
+        <tr>
+          <th style="width: 10%;">Imagen</th>
+          <th style="width: 20%;">Nombre del Producto</th>
+          <th style="width: 30%;">Descripción</th>
+          <th style="width: 5%;">Cantidad</th>
+          <th style="width: 10%;">Categoría</th>
+          <th style="width: 15%;">Precio Unitario</th>
+          <th style="width: 20%;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var detalle in Model.Carrito)
+        {
+          <tr style="background-color: #F0F0F0; border-radius: 12px; overflow: hidden;">
+            <td>
+                <img src="@detalle.Producto.Imagen" alt="Producto 1" style="width: 50px; height: 50px; border-radius: 8px;">
+            </td>
+            <td>@detalle.Producto.Nombre</td>
+            <td>@detalle.Producto.Descripcion</td>
+            <td>@detalle.Cantidad</td>
+            <td>@detalle.Producto.Categoria.Nombre</td>
+            <td>S/@detalle.PrecioUnitario.ToString("F2")</td>
+            <td>S/@detalle.Subtotal.ToString("F2")</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <hr style="border: 1px solid #000000; margin: 20px 0;"> 
+    <div class="d-flex justify-content-end p-4" style="background-color: #E4EEE7; border-radius: 12px;">
+      <div class="text-end">
+        <p class="fw-bold mb-1" style="font-size: 18px; color: #1B665E;">
+            Subtotal: <span style="margin-left: 10px; color: black;">S/@Model.Subtotal.ToString("F2")</span>
+        </p>
+        <p class="fw-bold mb-3" style="font-size: 18px; color: #1B665E;">
+            Total: <span style="margin-left: 10px; color: black;">S/@Model.Subtotal.ToString("F2")</span>
+        </p>
+        <button class="btn" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-toggle="modal" data-bs-target="#modalGenerarPedido">
+            Generar pedido
+        </button>
+      </div>
+    </div>
+</div>
+
+
+@* Modal de generación de pedido *@
+<div class="modal fade" id="modalGenerarPedido" tabindex="-1" aria-labelledby="modalGenerarPedidoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: none;">
+                <h5 class="modal-title fw-bold text-center w-100" id="modalGenerarPedidoLabel" style="color: #0E8930;">¡Ya casi está listo tu pedido!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <label class="fw-bold mb-2" style="color: #3B3B3B;">Indica punto de recojo del pedido:</label>
+                    <div class="d-flex align-items-center" style="padding: 10px; border-bottom: 1px solid #D3D3D3;">
+                        <i class="fas fa-map-marker-alt me-3" style="font-size: 24px; color: #3B3B3B;"></i>
+                        <input type="text" class="form-control border-0 shadow-none" placeholder="Ingresa tu Dirección de entrega" required style="padding-left: 0;">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <p class="fw-bold mb-2" style="color: #3B3B3B;">Deposita a esta cuenta bancaria: 1999 222 3390 222</p>
+                </div>
+                <div class="mb-4">
+                    <div class="d-flex align-items-center">
+                        <label for="comprobantePago" class="btn d-flex justify-content-center align-items-center" 
+                            style="width: 45%; border: 1px solid #D3D3D3; border-radius: 8px; padding: 10px; font-size: 12px; color: #3B3B3B; cursor: pointer;">
+                            Adjuntar comprobante de pago <span style="color: red;">*</span>
+                        </label>
+                        <input type="file" id="comprobantePago" class="form-control d-none" required>
+                        <div id="fileInfo" class="ms-3 d-none" style="flex-grow: 1;">
+                            <span id="fileName" style="font-size: 14px; color: #3B3B3B;"></span>
+                            <a id="viewFile" href="#" target="_blank" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button id="deleteFile" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <form id="formGenerarPedido" method="post" action="/Carrito/GenerarPedido">
+                    <input type="hidden" name="direccion" id="direccionInput">
+                    <input type="hidden" name="comprobantePago" id="comprobantePagoInput">
+                    <button type="button" id="btnGenerarPedido" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 0; font-size: 16px;">
+                        Confirmar pedido
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal de confirmación de pedido *@
+<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
+                <h5 class="fw-bold mt-3" style="color: #3B3B3B;">Tu pedido se ha registrado con éxito!</h5>
+                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnGenerarPedido').addEventListener('click', async function () {
+            const direccion = document.querySelector('#modalGenerarPedido input[type="text"]').value;
+            const archivo = document.querySelector('#modalGenerarPedido input[type="file"]').files[0];
+
+            if (!direccion) {
+                alert('Por favor, ingresa la dirección de entrega.');
+                return;
+            }
+
+            if (!archivo) {
+                alert('Por favor, adjunta el comprobante de pago.');
+                return;
+            }
+
+            document.getElementById('direccionInput').value = direccion;
+            document.getElementById('comprobantePagoInput').value = archivo.name;
+
+            const formData = new FormData();
+            formData.append('direccion', direccion);
+            formData.append('comprobantePago', archivo.name);
+
+            try {
+                const response = await fetch('/Carrito/GenerarPedido', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const modalGenerarPedido = bootstrap.Modal.getInstance(document.getElementById('modalGenerarPedido'));
+                    modalGenerarPedido.hide();
+
+                    const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+                    modalConfirmacion.show();
+                } else {
+                    alert('Hubo un error al generar el pedido.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al generar el pedido.');
+            }
+        });
+
+        document.getElementById('modalConfirmacion').addEventListener('hidden.bs.modal', function () {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputFile = document.getElementById('comprobantePago');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const viewFileButton = document.getElementById('viewFile');
+            const deleteFileButton = document.getElementById('deleteFile');
+
+            inputFile.addEventListener('change', function () {
+                if (inputFile.files.length > 0) {
+                    fileName.textContent = inputFile.files[0].name;
+                    fileInfo.classList.remove('d-none');
+
+                    const fileURL = URL.createObjectURL(inputFile.files[0]);
+                    viewFileButton.href = fileURL;
+                }
+            });
+
+            deleteFileButton.addEventListener('click', function () {
+                inputFile.value = '';
+                fileName.textContent = '';
+                fileInfo.classList.add('d-none');
+            });
+        });
+    </script>
+}

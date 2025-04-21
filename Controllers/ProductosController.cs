@@ -87,7 +87,6 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
 
-            // Filtrar productos por nombre y categoría
             var productosQuery = _context.Productos.Include(p => p.Categoria).AsQueryable();
 
             if (!string.IsNullOrEmpty(nombreFiltro))
@@ -95,7 +94,7 @@ namespace GRINPLAS.Controllers
                 productosQuery = productosQuery.Where(p => p.Nombre.ToLower().Contains(nombreFiltro.ToLower()));
             }
 
-            if (categoriaFiltro.HasValue && categoriaFiltro.Value != 0) // 0 representa "Todas las categorías"
+            if (categoriaFiltro.HasValue && categoriaFiltro.Value != 0)
             {
                 productosQuery = productosQuery.Where(p => p.CategoriaId == categoriaFiltro.Value);
             }
@@ -107,15 +106,20 @@ namespace GRINPLAS.Controllers
                 Categorias = await _context.Categorias.ToListAsync(),
             };
 
-            ViewData["nombreFiltro"] = nombreFiltro; // Para mantener el valor en el input
-            ViewData["categoriaFiltro"] = categoriaFiltro; // Para mantener el valor en el select
+            ViewData["nombreFiltro"] = nombreFiltro;
+            ViewData["categoriaFiltro"] = categoriaFiltro;
 
             return View("Administrador", viewModel);
         }
 
+        private IQueryable<Producto> ObtenerProductos()
+        {
+            return _context.Productos.Include(p => p.Categoria).AsQueryable();
+        }
+
 
         [Authorize(Roles = "Cliente")]
-        public async Task<IActionResult> Cliente()
+        public async Task<IActionResult> Cliente(int pagina = 1)
         {
            if (_userManager == null)
            {
@@ -132,14 +136,104 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
 
-            var viewModel = new ProductoViewModel{
-                nuevoProducto = new Producto(),
-                Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync(),
-                Categorias = await _context.Categorias.ToListAsync(),
-            };
+            int productosPorPagina = 6;
+            var productos = ObtenerProductos();
+
+            var productosPaginados = await productos
+                .OrderBy(p => p.ProductoId)
+                .Skip((pagina - 1) * productosPorPagina)
+                .Take(productosPorPagina)
+                .ToListAsync();
+
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TotalPaginas = (int)Math.Ceiling((double)productos.Count() / productosPorPagina);
+
+            return View(productosPaginados);
+        }
 
 
-            return View(viewModel);
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> AgregarAlCarrito(int productoId, int cantidad)
+        {
+            if (_userManager == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (!userRoles.Contains("Cliente"))
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
+            if (cliente == null)
+            {
+                TempData["ErrorMessage"] = "No se pudo agregar el producto al carrito.";
+                TempData["ProductoId"] = productoId;
+                return RedirectToAction("Cliente", "Productos");
+            }
+
+            var userId = cliente.ClienteId;
+            var carrito = await _context.Carrito
+                .Include(c => c.detalleCarrito)
+                .FirstOrDefaultAsync(c => c.ClienteId == userId);
+        
+            if (carrito == null)
+            {
+                carrito = new Carrito
+                {
+                    ClienteId = userId,
+                    Cliente = cliente,
+                    detalleCarrito = new List<DetalleCarrito>(),
+                    FechaCreacion = DateTime.Now
+                };
+                _context.Carrito.Add(carrito);
+                await _context.SaveChangesAsync();
+            }
+
+            var producto = await _context.Productos.FindAsync(productoId);
+            if (producto == null || producto.Stock < cantidad)
+            {
+                // AQUI DEBE MOSTRARSE UN MODAL DE ERROR
+                TempData["ErrorMessage"] = "No se pudo agregar el producto al carrito.";
+                TempData["ProductoId"] = productoId;
+                return RedirectToAction("Cliente", "Productos");
+            }
+
+            var detalleExistente = carrito.detalleCarrito.FirstOrDefault(dc => dc.ProductoId == productoId);
+            if (detalleExistente != null)
+            {
+                detalleExistente.Cantidad += cantidad;
+                _context.DetalleCarrito.Update(detalleExistente);
+            }
+            else
+            {
+                var detalleCarrito = new DetalleCarrito
+                {
+                    CarritoId = carrito.CarritoId,
+                    ProductoId = productoId,
+                    Cantidad = cantidad,
+                    PrecioUnitario = (decimal)producto.Precio,
+                    Carrito = carrito,
+                    Producto = producto
+                };
+
+                _context.DetalleCarrito.Add(detalleCarrito);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Cliente", "Productos");
         }
     }
 }
