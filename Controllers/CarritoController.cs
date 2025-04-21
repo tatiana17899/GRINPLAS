@@ -89,6 +89,8 @@ namespace GRINPLAS.Controllers
             return View(viewModel);
         }
 
+        // Generar la boleta con DETALLEPEDIDO
+
         [HttpPost]
         [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> GenerarPedido(string direccion, string comprobantePago)
