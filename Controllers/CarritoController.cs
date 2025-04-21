@@ -89,8 +89,6 @@ namespace GRINPLAS.Controllers
             return View(viewModel);
         }
 
-        // Generar la boleta con DETALLEPEDIDO
-
         [HttpPost]
         [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> GenerarPedido(string direccion, string comprobantePago)
@@ -150,13 +148,23 @@ namespace GRINPLAS.Controllers
                 {
                     producto.Stock -= detalle.Cantidad;
                     _context.Productos.Update(producto);
+
+                    var detallePedido = new DetallePedido
+                    {
+                        PedidoId = pedido.PedidoId,
+                        ProductoId = producto.ProductoId,
+                        Cantidad = detalle.Cantidad,
+                        PrecioUnitario = (decimal) producto.Precio,
+                        PrecioTotal = detalle.Subtotal
+                    };
+                    _context.DetallePedidos.Add(detallePedido);
+                    await _context.SaveChangesAsync();
                 }
             }
 
             _context.DetalleCarrito.RemoveRange(carrito.detalleCarrito);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Pedido generado exitosamente.";
             return RedirectToAction("Cliente", "Carrito");
         }
 

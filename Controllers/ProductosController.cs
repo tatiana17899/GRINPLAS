@@ -202,11 +202,16 @@ namespace GRINPLAS.Controllers
             }
 
             var producto = await _context.Productos.FindAsync(productoId);
-            if (producto == null || producto.Stock < cantidad)
+            if (producto == null)
             {
-                // AQUI DEBE MOSTRARSE UN MODAL DE ERROR
-                TempData["ErrorMessage"] = "No se pudo agregar el producto al carrito.";
-                TempData["ProductoId"] = productoId;
+                TempData["ErrorMessage"] = "El producto no existe.";
+                return RedirectToAction("Cliente", "Productos");
+
+            }
+
+            if (producto.Stock < cantidad)
+            {
+                TempData["ErrorMessage"] = "No hay stock disponible.";
                 return RedirectToAction("Cliente", "Productos");
             }
 
@@ -232,6 +237,8 @@ namespace GRINPLAS.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Producto agregado al carrito correctamente.";
 
             return RedirectToAction("Cliente", "Productos");
         }

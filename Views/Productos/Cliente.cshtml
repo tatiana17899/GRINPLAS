@@ -88,16 +88,45 @@
                                     <button id="incrementarCantidad" class="btn" style="background-color: #B2DCB9">+</button>
                                 </div>
                             </div>
-                            <form method="post" action="~/Productos/AgregarAlCarrito">
+                            <form id="formAgregarAlCarrito" method="post" action="~/Productos/AgregarAlCarrito">
                                 <input type="hidden" id="productoId" name="productoId" value="">
                                 <input type="hidden" id="cantidadHidden" name="cantidad" value="1">
-                                <button type="submit" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
+                                <button type="submit" id="btnComprar" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
                                     <i class="fas fa-shopping-cart me-2"></i> Comprar
                                 </button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalSuccess" tabindex="-1" aria-labelledby="modalSuccessLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
+                <h5 id="modalSuccessMessage" class="fw-bold mt-3" style="color: #3B3B3B;"></h5>
+                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-times-circle" style="font-size: 80px; color: #E74C3C;"></i>
+                <h5 id="modalErrorMessage" class="fw-bold mt-3" style="color: #3B3B3B;"></h5>
+                <button type="button" class="btn mt-4" style="background-color: #E74C3C; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
             </div>
         </div>
     </div>
@@ -156,6 +185,23 @@
                     cantidadHidden.value = cantidad;
                 }
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const errorMessage = '@TempData["ErrorMessage"]';
+            const successMessage = '@TempData["SuccessMessage"]';
+
+            if (errorMessage) {
+                const modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                document.getElementById('modalErrorMessage').textContent = errorMessage;
+                modalError.show();
+            }
+
+            if (successMessage) {
+                const modalSuccess = new bootstrap.Modal(document.getElementById('modalSuccess'));
+                document.getElementById('modalSuccessMessage').textContent = successMessage;
+                modalSuccess.show();
+            }
         });
     </script>
 }
