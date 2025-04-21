@@ -184,7 +184,10 @@ namespace GRINPLAS.Controllers
             }
 
             var userId = cliente.ClienteId;
-            var carrito = await _context.Carrito.FirstOrDefaultAsync(c => c.ClienteId == userId);
+            var carrito = await _context.Carrito
+                .Include(c => c.detalleCarrito)
+                .FirstOrDefaultAsync(c => c.ClienteId == userId);
+        
             if (carrito == null)
             {
                 carrito = new Carrito
@@ -207,17 +210,27 @@ namespace GRINPLAS.Controllers
                 return RedirectToAction("Cliente", "Productos");
             }
 
-            var detalleCarrito = new DetalleCarrito
+            var detalleExistente = carrito.detalleCarrito.FirstOrDefault(dc => dc.ProductoId == productoId);
+            if (detalleExistente != null)
             {
-                CarritoId = carrito.CarritoId,
-                ProductoId = productoId,
-                Cantidad = cantidad,
-                PrecioUnitario = (decimal) producto.Precio,
-                Carrito = carrito,
-                Producto = producto
-            };
+                detalleExistente.Cantidad += cantidad;
+                _context.DetalleCarrito.Update(detalleExistente);
+            }
+            else
+            {
+                var detalleCarrito = new DetalleCarrito
+                {
+                    CarritoId = carrito.CarritoId,
+                    ProductoId = productoId,
+                    Cantidad = cantidad,
+                    PrecioUnitario = (decimal)producto.Precio,
+                    Carrito = carrito,
+                    Producto = producto
+                };
 
-            _context.DetalleCarrito.Add(detalleCarrito);
+                _context.DetalleCarrito.Add(detalleCarrito);
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Cliente", "Productos");
