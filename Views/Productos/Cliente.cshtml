@@ -35,7 +35,8 @@
                                 data-nombre="@producto.Nombre" 
                                 data-descripcion="@producto.Descripcion" 
                                 data-precio="S/@producto.Precio.ToString("F2")"
-                                data-imagen="@producto.Imagen">
+                                data-imagen="@producto.Imagen"
+                                data-producto-id="@producto.ProductoId">
                             <i class="fas fa-shopping-cart text-white" style="font-size: 25px;"></i>
                         </button>
                     </div>
@@ -87,9 +88,13 @@
                                     <button id="incrementarCantidad" class="btn" style="background-color: #B2DCB9">+</button>
                                 </div>
                             </div>
-                            <button id="comprarProducto" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
-                                <i class="fas fa-shopping-cart me-2"></i> Comprar
-                            </button>
+                            <form method="post" action="~/Productos/AgregarAlCarrito">
+                                <input type="hidden" id="productoId" name="productoId" value="">
+                                <input type="hidden" id="cantidadHidden" name="cantidad" value="1">
+                                <button type="submit" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
+                                    <i class="fas fa-shopping-cart me-2"></i> Comprar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -105,16 +110,17 @@
 
             botonesCarrito.forEach(boton => {
                 boton.addEventListener('click', function () {
-
                     const nombre = this.getAttribute('data-nombre');
                     const descripcion = this.getAttribute('data-descripcion');
                     const precio = this.getAttribute('data-precio');
                     const imagen = this.getAttribute('data-imagen');
+                    const productoId = this.getAttribute('data-producto-id');
 
                     document.getElementById('modalNombreProducto').textContent = nombre;
                     document.getElementById('modalDescripcionProducto').textContent = descripcion;
                     document.getElementById('modalPrecioProducto').textContent = precio;
                     document.getElementById('modalImagenProducto').src = imagen;
+                    document.getElementById('productoId').value = productoId;
 
                     document.getElementById('cantidadProducto').value = 1;
 
@@ -124,27 +130,31 @@
                         focus: true
                     });
 
-                    document.getElementById('detalleProductoModal').parentElement.classList.add('custom-modal-container');
-
                     modal.show();
                 });
             });
+        });
 
-            document.getElementById('incrementarCantidad').addEventListener('click', function () {
-                const cantidadInput = document.getElementById('cantidadProducto');
-                cantidadInput.value = parseInt(cantidadInput.value) + 1;
+        document.addEventListener('DOMContentLoaded', function () {
+            const cantidadInput = document.getElementById('cantidadProducto');
+            const cantidadHidden = document.getElementById('cantidadHidden');
+            const incrementarBtn = document.getElementById('incrementarCantidad');
+            const decrementarBtn = document.getElementById('decrementarCantidad');
+
+            incrementarBtn.addEventListener('click', function () {
+                let cantidad = parseInt(cantidadInput.value);
+                cantidad++;
+                cantidadInput.value = cantidad;
+                cantidadHidden.value = cantidad;
             });
 
-            document.getElementById('decrementarCantidad').addEventListener('click', function () {
-                const cantidadInput = document.getElementById('cantidadProducto');
-                if (parseInt(cantidadInput.value) > 1) {
-                    cantidadInput.value = parseInt(cantidadInput.value) - 1;
+            decrementarBtn.addEventListener('click', function () {
+                let cantidad = parseInt(cantidadInput.value);
+                if (cantidad > 1) {
+                    cantidad--;
+                    cantidadInput.value = cantidad;
+                    cantidadHidden.value = cantidad;
                 }
-            });
-
-            document.getElementById('comprarProducto').addEventListener('click', function () {
-                const cantidad = document.getElementById('cantidadProducto').value;
-                alert(`Has agregado ${cantidad} unidades al carrito.`);
             });
         });
     </script>

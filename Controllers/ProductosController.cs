@@ -150,5 +150,77 @@ namespace GRINPLAS.Controllers
 
             return View(productosPaginados);
         }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> AgregarAlCarrito(int productoId, int cantidad)
+        {
+            if (_userManager == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (!userRoles.Contains("Cliente"))
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
+            if (cliente == null)
+            {
+                TempData["ErrorMessage"] = "No se pudo agregar el producto al carrito.";
+                TempData["ProductoId"] = productoId;
+                return RedirectToAction("Cliente", "Productos");
+            }
+
+            var userId = cliente.ClienteId;
+            var carrito = await _context.Carrito.FirstOrDefaultAsync(c => c.ClienteId == userId);
+            if (carrito == null)
+            {
+                carrito = new Carrito
+                {
+                    ClienteId = userId,
+                    Cliente = cliente,
+                    detalleCarrito = new List<DetalleCarrito>(),
+                    FechaCreacion = DateTime.Now
+                };
+                _context.Carrito.Add(carrito);
+                await _context.SaveChangesAsync();
+            }
+
+            var producto = await _context.Productos.FindAsync(productoId);
+            if (producto == null || producto.Stock < cantidad)
+            {
+                // AQUI DEBE MOSTRARSE UN MODAL DE ERROR
+                TempData["ErrorMessage"] = "No se pudo agregar el producto al carrito.";
+                TempData["ProductoId"] = productoId;
+                return RedirectToAction("Cliente", "Productos");
+            }
+
+            var detalleCarrito = new DetalleCarrito
+            {
+                CarritoId = carrito.CarritoId,
+                ProductoId = productoId,
+                Cantidad = cantidad,
+                PrecioUnitario = (decimal) producto.Precio,
+                Carrito = carrito,
+                Producto = producto
+            };
+
+            _context.DetalleCarrito.Add(detalleCarrito);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Cliente", "Productos");
+        }
     }
 }
