@@ -104,20 +104,21 @@
 </div>
 
 
-@* Modal de producto agregado al carrito *@
-<div class="modal fade" id="modalProductoAgregado" tabindex="-1" aria-labelledby="modalProductoAgregadoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center">
-            <div class="modal-body">
-                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
-                <h5 class="fw-bold mt-3" style="color: #3B3B3B;">¡Producto agregado al carrito!</h5>
-                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
-                    OK
-                </button>
-            </div>
-        </div>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 @section Scripts {
     <script>
@@ -175,19 +176,20 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-            const btnComprar = document.getElementById('btnComprar');
-            const formAgregarAlCarrito = document.getElementById('formAgregarAlCarrito');
-            const modalProductoAgregado = new bootstrap.Modal(document.getElementById('modalProductoAgregado'));
+            const errorMessage = '@TempData["ErrorMessage"]';
+            const successMessage = '@TempData["SuccessMessage"]';
 
-            const modal = bootstrap.Modal.getInstance(document.getElementById('detalleProductoModal'));
+            if (errorMessage) {
+                const modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                document.getElementById('modalErrorMessage').textContent = errorMessage;
+                modalError.show();
+            }
 
-            btnComprar.addEventListener('click', function () {
-                modalProductoAgregado.show();
-                setTimeout(() => {
-                    formAgregarAlCarrito.submit();
-                    modal.hide();
-                }, 2000);
-            });
+            if (successMessage) {
+                const modalSuccess = new bootstrap.Modal(document.getElementById('modalSuccess'));
+                document.getElementById('modalSuccessMessage').textContent = successMessage;
+                modalSuccess.show();
+            }
         });
     </script>
 }
