@@ -36,16 +36,19 @@
 }
 
 .login-card {
+  max-height: 100vh;
   width: 600px;
-  padding: 10px;
+  height: auto;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: var(--fondo);
+  overflow-y: auto;
 }
 
 .card-title {
   margin-bottom: 40px;
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 24px;
   font-weight: bold;
   color: #0e8930;

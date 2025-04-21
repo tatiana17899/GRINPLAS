@@ -55,24 +55,25 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El campo Email es obligatorio.")]
+            [EmailAddress(ErrorMessage = "Ingresa un correo electrónico válido.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
+            [Required(ErrorMessage = "La confirmación de la contraseña es obligatoria.")]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Required(ErrorMessage = "El nombre de empresa es requerido")]
-            [StringLength(100, ErrorMessage = "El nombre de empresa no puede exceder los 100 caracteres")]
+            [Required(ErrorMessage = "El nombre de empresa o persona es requerido")]
+            [StringLength(100, ErrorMessage = "El nombre de empresa o persona no puede exceder los 100 caracteres")]
             [Display(Name = "Nombre de Empresa")]
             public string NombreEmpresa { get; set; }
 
@@ -86,13 +87,13 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             public string NumDoc { get; set; }
 
             [Required(ErrorMessage = "El teléfono es requerido")]
-            [Phone(ErrorMessage = "El formato del teléfono no es válido")]
+            [RegularExpression(@"^\d{9}$", ErrorMessage = "El teléfono debe tener exactamente 9 dígitos")]
             [Display(Name = "Teléfono")]
             public string Telefono { get; set; }
             
             [Required(ErrorMessage = "Debes aceptar los términos y condiciones")]
             [Display(Name = "Acepto los términos y condiciones")]
-            public bool AcceptTerms { get; set; }
+            public bool TerminosCondiciones { get; set; }
             public static ValidationResult ValidateDocumentNumber(string numDoc, ValidationContext context)
             {
                 var instance = (InputModel)context.ObjectInstance;
@@ -122,7 +123,20 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (!ModelState.IsValid)
+                {
+                    
+                    return Page();
+                }    
+
+
+            var existingUser = await _userManager.FindByEmailAsync(Input.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Input.Email", "Este correo electrónico ya está registrado.");
+            }
+
 
             // Validación adicional del documento
             if (Input.TipDoc == "DNI" && (Input.NumDoc.Length != 8 || !Input.NumDoc.All(char.IsDigit)))
@@ -132,6 +146,10 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             else if (Input.TipDoc == "RUC" && (Input.NumDoc.Length < 11 || Input.NumDoc.Length > 20 || !Input.NumDoc.All(char.IsDigit)))
             {
                 ModelState.AddModelError("Input.NumDoc", "El RUC debe tener entre 11 y 20 dígitos numéricos");
+            }
+            if (!Input.TerminosCondiciones)
+            {
+                ModelState.AddModelError("Input.TerminosCondiciones", "Debes aceptar los términos y condiciones.");
             }
 
             if (ModelState.IsValid)

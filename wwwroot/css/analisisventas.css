@@ -1,0 +1,156 @@
+body {
+  min-height: 100vh;
+  font-family: "Roboto", sans-serif;
+  overflow-x: hidden;
+}
+
+.icon-container {
+  width: 64px;
+  height: 80px;
+  border: 2px solid #006400;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon {
+  color: #006400;
+  font-size: 32px;
+}
+.bg-light-green {
+  background-color: #d4edda;
+}
+.bg-dark-green {
+  background-color: #155724;
+}
+.text-dark-green {
+  color: #155724;
+}
+.bg-custom-gray {
+  background-color: #6c757d;
+}
+.rounded-box {
+  background-color: #e7ffe3;
+  border-radius: 15px;
+  padding: 15px;
+  border: 2px solid #c4e1c5;
+}
+.icon-box {
+  background-color: #2e7d32;
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+.date-picker-container {
+  position: relative;
+  width: 300px;
+  margin: 10px;
+}
+
+.calendar-popup {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 300px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day-name {
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.day {
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.day:hover {
+  background-color: #f0f0f0;
+}
+
+.day.active {
+  background-color: #198754;
+  color: white;
+}
+
+.day.other-month {
+  color: #aaa;
+}
+
+.month-year {
+  font-weight: bold;
+}
+/* Agregar esto a tu CSS */
+#bolsas-selector,
+#mangas-selector {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+#bolsas-selector.selected,
+#mangas-selector.selected {
+  background-color: rgba(9, 195, 61, 0.1);
+  border: 1px solid #09c33d;
+}
+
+#bolsas-selector.selected i,
+#mangas-selector.selected i,
+#bolsas-selector.selected span,
+#mangas-selector.selected span {
+  color: #09c33d !important;
+}
+/* Estilos para el contenedor del gráfico */
+.chart-container-wrapper {
+  position: relative;
+  width: 100%;
+  height: 500px; /* Altura fija */
+  overflow: hidden;
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  position: relative;
+}
+
+/* Asegurar que el canvas ocupe todo el espacio */
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+#pieChart {
+  max-width: 100%;
+  max-height: 100%;
+}

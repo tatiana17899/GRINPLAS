@@ -22,6 +22,7 @@ namespace GRINPLAS.Controllers
         {
             return View();
         }
+        [HttpGet]
          public IActionResult TyC()
         {
             return View();

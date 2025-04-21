@@ -22,11 +22,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<ApplicationUser>()
             .HasOne(u => u.Trabajador)
             .WithOne(t => t.User)
             .HasForeignKey<Trabajadores>(t => t.ApplicationUserId)
             .OnDelete(DeleteBehavior.Cascade);
+        base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<Cliente>()
+            .Property(c => c.FecCre)
+            .HasColumnType("timestamp without time zone");
     }
 }
