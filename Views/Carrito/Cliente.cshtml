@@ -100,9 +100,9 @@
                         <input type="file" id="comprobantePago" class="form-control d-none" required>
                         <div id="fileInfo" class="ms-3 d-none" style="flex-grow: 1;">
                             <span id="fileName" style="font-size: 14px; color: #3B3B3B;"></span>
-                            <button id="editFile" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
-                                <i class="fas fa-edit"></i>
-                            </button>
+                            <a id="viewFile" href="#" target="_blank" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                <i class="fas fa-eye"></i>
+                            </a>
                             <button id="deleteFile" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -191,18 +191,17 @@
             const inputFile = document.getElementById('comprobantePago');
             const fileInfo = document.getElementById('fileInfo');
             const fileName = document.getElementById('fileName');
-            const editFileButton = document.getElementById('editFile');
+            const viewFileButton = document.getElementById('viewFile');
             const deleteFileButton = document.getElementById('deleteFile');
 
             inputFile.addEventListener('change', function () {
                 if (inputFile.files.length > 0) {
                     fileName.textContent = inputFile.files[0].name;
                     fileInfo.classList.remove('d-none');
-                }
-            });
 
-            editFileButton.addEventListener('click', function () {
-                inputFile.click();
+                    const fileURL = URL.createObjectURL(inputFile.files[0]);
+                    viewFileButton.href = fileURL;
+                }
             });
 
             deleteFileButton.addEventListener('click', function () {
