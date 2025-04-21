@@ -165,7 +165,6 @@ namespace GRINPLAS.Controllers
             _context.DetalleCarrito.RemoveRange(carrito.detalleCarrito);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Pedido generado exitosamente.";
             return RedirectToAction("Cliente", "Carrito");
         }
 

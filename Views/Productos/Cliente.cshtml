@@ -104,21 +104,33 @@
 </div>
 
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="modal fade" id="modalSuccess" tabindex="-1" aria-labelledby="modalSuccessLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
+                <h5 id="modalSuccessMessage" class="fw-bold mt-3" style="color: #3B3B3B;"></h5>
+                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
     </div>
-}
+</div>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-times-circle" style="font-size: 80px; color: #E74C3C;"></i>
+                <h5 id="modalErrorMessage" class="fw-bold mt-3" style="color: #3B3B3B;"></h5>
+                <button type="button" class="btn mt-4" style="background-color: #E74C3C; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
     </div>
-}
+</div>
 
 @section Scripts {
     <script>

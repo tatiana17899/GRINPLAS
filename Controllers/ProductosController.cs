@@ -205,12 +205,14 @@ namespace GRINPLAS.Controllers
             if (producto == null)
             {
                 TempData["ErrorMessage"] = "El producto no existe.";
+                return RedirectToAction("Cliente", "Productos");
 
             }
 
             if (producto.Stock < cantidad)
             {
-                TempData["ErrorMessage"] = "No hay suficiente stock disponible.";
+                TempData["ErrorMessage"] = "No hay stock disponible.";
+                return RedirectToAction("Cliente", "Productos");
             }
 
             var detalleExistente = carrito.detalleCarrito.FirstOrDefault(dc => dc.ProductoId == productoId);
