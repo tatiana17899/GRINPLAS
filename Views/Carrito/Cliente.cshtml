@@ -112,6 +112,13 @@
                 <button id="confirmarPedido" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 0; font-size: 16px;">
                     Confirmar pedido
                 </button>
+                <form id="formGenerarPedido" method="post" action="/Carrito/GenerarPedido">
+                    <input type="hidden" name="direccion" id="direccionInput">
+                    <input type="hidden" name="comprobantePago" id="comprobantePagoInput">
+                    <button type="button" id="btnGenerarPedido" class="btn" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;">
+                        Confirmar pedido *
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -134,7 +141,7 @@
 
 @section Scripts {
     <script>
-        document.getElementById('confirmarPedido').addEventListener('click', function () {
+        document.getElementById('btnGenerarPedido').addEventListener('click', async function () {
             const direccion = document.querySelector('#modalGenerarPedido input[type="text"]').value;
             const archivo = document.querySelector('#modalGenerarPedido input[type="file"]').files[0];
 
@@ -148,11 +155,32 @@
                 return;
             }
 
-            const modalGenerarPedido = bootstrap.Modal.getInstance(document.getElementById('modalGenerarPedido'));
-            modalGenerarPedido.hide();
+            document.getElementById('direccionInput').value = direccion;
+            document.getElementById('comprobantePagoInput').value = archivo.name;
 
-            const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
-            modalConfirmacion.show();
+            const formData = new FormData();
+            formData.append('direccion', direccion);
+            formData.append('comprobantePago', archivo.name);
+
+            try {
+                const response = await fetch('/Carrito/GenerarPedido', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const modalGenerarPedido = bootstrap.Modal.getInstance(document.getElementById('modalGenerarPedido'));
+                    modalGenerarPedido.hide();
+
+                    const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+                    modalConfirmacion.show();
+                } else {
+                    alert('Hubo un error al generar el pedido.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al generar el pedido.');
+            }
         });
 
         document.getElementById('modalConfirmacion').addEventListener('hidden.bs.modal', function () {

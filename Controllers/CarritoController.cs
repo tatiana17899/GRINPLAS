@@ -89,5 +89,74 @@ namespace GRINPLAS.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> GenerarPedido(string direccion, string comprobantePago)
+        {
+            if (_userManager == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (!userRoles.Contains("Cliente"))
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
+            if (cliente == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+
+            var carrito = await _context.Carrito
+                .Include(c => c.detalleCarrito)
+                .ThenInclude(dc => dc.Producto)
+                .FirstOrDefaultAsync(c => c.ClienteId == cliente.ClienteId);
+
+            if (carrito == null || carrito.detalleCarrito.Count == 0)
+            {
+                TempData["ErrorMessage"] = "No hay productos en el carrito.";
+                return RedirectToAction("Cliente", "Carrito");
+            }
+
+            var pedido = new Pedido
+            {
+                ClienteId = cliente.ClienteId,
+                Direccion = direccion,
+                FechaEmision = DateTime.Now,
+                Status = "Pendiente",
+                Total = carrito.detalleCarrito.Sum(dc => dc.Subtotal),
+                Pago = comprobantePago,
+                BoletaEmitida = $"Boleta_{DateTime.Now:yyyyMMddHHmmss}.pdf"
+            };
+
+            _context.Pedidos.Add(pedido);
+            await _context.SaveChangesAsync();
+
+            foreach (var detalle in carrito.detalleCarrito)
+            {
+                var producto = detalle.Producto;
+                if (producto != null)
+                {
+                    producto.Stock -= detalle.Cantidad;
+                    _context.Productos.Update(producto);
+                }
+            }
+
+            _context.DetalleCarrito.RemoveRange(carrito.detalleCarrito);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Pedido generado exitosamente.";
+            return RedirectToAction("Cliente", "Carrito");
+        }
+
     }
 }
