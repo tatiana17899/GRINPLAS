@@ -140,5 +140,60 @@ namespace GRINPLAS.Controllers
                 return Json(new { success = false, error = "Error interno del servidor" });
             }
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> ActualizarDireccion([FromForm] int pedidoId, [FromForm] string nuevaDireccion)
+        {
+            try
+            {
+                // Busca el pedido en la base de datos
+                var pedido = await _context.Pedidos.FindAsync(pedidoId);
+                if (pedido == null)
+                {
+                    return Json(new { success = false, error = $"Pedido no encontrado (ID: {pedidoId})" });
+                }
+
+                // Actualiza la dirección
+                pedido.Direccion = nuevaDireccion;
+                _context.Update(pedido);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar la dirección del pedido");
+                return Json(new { success = false, error = "Error interno del servidor" });
+            }
+        }
+
+        //cancelar pedido
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> CancelarPedido([FromForm] int pedidoId)
+        {
+            try
+            {
+                // Busca el pedido en la base de datos
+                var pedido = await _context.Pedidos.FindAsync(pedidoId);
+                if (pedido == null)
+                {
+                    return Json(new { success = false, error = $"Pedido no encontrado (ID: {pedidoId})" });
+                }
+
+                // Cambia el estado del pedido a "Cancelado"
+                pedido.Status = "Cancelado";
+                _context.Update(pedido);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al cancelar el pedido");
+                return Json(new { success = false, error = "Error interno del servidor" });
+            }
+        }
     }
 }
