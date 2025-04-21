@@ -88,16 +88,32 @@
                                     <button id="incrementarCantidad" class="btn" style="background-color: #B2DCB9">+</button>
                                 </div>
                             </div>
-                            <form method="post" action="~/Productos/AgregarAlCarrito">
+                            <form id="formAgregarAlCarrito" method="post" action="~/Productos/AgregarAlCarrito">
                                 <input type="hidden" id="productoId" name="productoId" value="">
                                 <input type="hidden" id="cantidadHidden" name="cantidad" value="1">
-                                <button type="submit" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
+                                <button type="submit" id="btnComprar" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
                                     <i class="fas fa-shopping-cart me-2"></i> Comprar
                                 </button>
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* Modal de producto agregado al carrito *@
+<div class="modal fade" id="modalProductoAgregado" tabindex="-1" aria-labelledby="modalProductoAgregadoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
+                <h5 class="fw-bold mt-3" style="color: #3B3B3B;">¡Producto agregado al carrito!</h5>
+                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
             </div>
         </div>
     </div>
@@ -155,6 +171,22 @@
                     cantidadInput.value = cantidad;
                     cantidadHidden.value = cantidad;
                 }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnComprar = document.getElementById('btnComprar');
+            const formAgregarAlCarrito = document.getElementById('formAgregarAlCarrito');
+            const modalProductoAgregado = new bootstrap.Modal(document.getElementById('modalProductoAgregado'));
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('detalleProductoModal'));
+
+            btnComprar.addEventListener('click', function () {
+                modalProductoAgregado.show();
+                setTimeout(() => {
+                    formAgregarAlCarrito.submit();
+                    modal.hide();
+                }, 2000);
             });
         });
     </script>
