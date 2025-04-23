@@ -36,7 +36,8 @@
                                 data-descripcion="@producto.Descripcion" 
                                 data-precio="S/@producto.Precio.ToString("F2")"
                                 data-imagen="@producto.Imagen"
-                                data-producto-id="@producto.ProductoId">
+                                data-producto-id="@producto.ProductoId"
+                                data-stock="@producto.Stock">
                             <i class="fas fa-shopping-cart text-white" style="font-size: 25px;"></i>
                         </button>
                     </div>
@@ -80,7 +81,7 @@
                         <div class="col-md-7">
                             <h5 id="modalNombreProducto" class="fw-bold mb-3"></h5>
                             <p id="modalDescripcionProducto" class="text-muted mb-4"></p>
-                            <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
                                 <h4 id="modalPrecioProducto" class="fw-bold mb-0"></h4>
                                 <div class="d-flex align-items-center">
                                     <button id="decrementarCantidad" class="btn" style="background-color: #B2DCB9">-</button>
@@ -88,6 +89,7 @@
                                     <button id="incrementarCantidad" class="btn" style="background-color: #B2DCB9">+</button>
                                 </div>
                             </div>
+                            <p class="text-muted mb-3">Stock disponible: <span id="stockDisponible" class="fw-bold"></span> unidades</p>
                             <form id="formAgregarAlCarrito" method="post" action="~/Productos/AgregarAlCarrito">
                                 <input type="hidden" id="productoId" name="productoId" value="">
                                 <input type="hidden" id="cantidadHidden" name="cantidad" value="1">
@@ -144,14 +146,20 @@
                     const precio = this.getAttribute('data-precio');
                     const imagen = this.getAttribute('data-imagen');
                     const productoId = this.getAttribute('data-producto-id');
+                    const stock = parseInt(this.getAttribute('data-stock'));
 
                     document.getElementById('modalNombreProducto').textContent = nombre;
                     document.getElementById('modalDescripcionProducto').textContent = descripcion;
                     document.getElementById('modalPrecioProducto').textContent = precio;
                     document.getElementById('modalImagenProducto').src = imagen;
                     document.getElementById('productoId').value = productoId;
+                    document.getElementById('stockDisponible').textContent = stock;
 
                     document.getElementById('cantidadProducto').value = 1;
+                    document.getElementById('cantidadHidden').value = 1;
+                    
+                    // Establecer máximo de cantidad según el stock
+                    document.getElementById('incrementarCantidad').dataset.maxStock = stock;
 
                     const modal = new bootstrap.Modal(document.getElementById('detalleProductoModal'), {
                         backdrop: true,
@@ -172,9 +180,13 @@
 
             incrementarBtn.addEventListener('click', function () {
                 let cantidad = parseInt(cantidadInput.value);
-                cantidad++;
-                cantidadInput.value = cantidad;
-                cantidadHidden.value = cantidad;
+                const maxStock = parseInt(this.dataset.maxStock);
+                
+                if (cantidad < maxStock) {
+                    cantidad++;
+                    cantidadInput.value = cantidad;
+                    cantidadHidden.value = cantidad;
+                }
             });
 
             decrementarBtn.addEventListener('click', function () {
@@ -191,13 +203,13 @@
             const errorMessage = '@TempData["ErrorMessage"]';
             const successMessage = '@TempData["SuccessMessage"]';
 
-            if (errorMessage) {
+            if (errorMessage && errorMessage !== '') {
                 const modalError = new bootstrap.Modal(document.getElementById('modalError'));
                 document.getElementById('modalErrorMessage').textContent = errorMessage;
                 modalError.show();
             }
 
-            if (successMessage) {
+            if (successMessage && successMessage !== '') {
                 const modalSuccess = new bootstrap.Modal(document.getElementById('modalSuccess'));
                 document.getElementById('modalSuccessMessage').textContent = successMessage;
                 modalSuccess.show();

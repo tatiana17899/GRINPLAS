@@ -50,8 +50,6 @@ namespace GRINPLAS.Controllers
             }
             var userRoles= await _userManager.GetRolesAsync(user);
 
-
-
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)
             {
@@ -68,13 +66,19 @@ namespace GRINPLAS.Controllers
             {
                 carrito = new Carrito
                 {
-                  ClienteId = cliente.ClienteId,
-                  Cliente = cliente,
-                  FechaCreacion = DateTime.Now,
-                  detalleCarrito = new List<DetalleCarrito>()
+                ClienteId = cliente.ClienteId,
+                Cliente = cliente,
+                FechaCreacion = DateTime.Now,
+                detalleCarrito = new List<DetalleCarrito>()
                 };
                 _context.Carrito.Add(carrito);
                 await _context.SaveChangesAsync();
+            }
+
+            // Verificar si el carrito está vacío
+            if (carrito.detalleCarrito == null || carrito.detalleCarrito.Count == 0)
+            {
+                TempData["CarritoVacioError"] = "No hay productos seleccionados en el carrito";
             }
 
             var viewModel = new CarritoViewModel

@@ -142,7 +142,6 @@ namespace GRINPLAS.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> ActualizarDireccion([FromForm] int pedidoId, [FromForm] string nuevaDireccion)
         {
             try
@@ -170,7 +169,6 @@ namespace GRINPLAS.Controllers
 
         //cancelar pedido
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> CancelarPedido([FromForm] int pedidoId)
         {
             try
