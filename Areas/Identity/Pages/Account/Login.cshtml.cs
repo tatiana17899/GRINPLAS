@@ -148,7 +148,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         return RedirectToAction("GerenteGeneral", "Pedidos");
                     }
 
-                    return LocalRedirect(returnUrl);
+                    return RedirectToAction("Cliente", "Productos");
                 }
                 if (result.RequiresTwoFactor)
                 {
