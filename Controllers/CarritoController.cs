@@ -37,7 +37,6 @@ namespace GRINPLAS.Controllers
         {
         }
 
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> Cliente()
         {
             if (_userManager == null)
@@ -51,9 +50,7 @@ namespace GRINPLAS.Controllers
             }
             var userRoles= await _userManager.GetRolesAsync(user);
 
-            if(!userRoles.Contains("Cliente")){
-                return RedirectToPage("/Account/AccessDenied");
-            }
+
 
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)
@@ -90,7 +87,6 @@ namespace GRINPLAS.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> GenerarPedido(string direccion, string comprobantePago)
         {
             if (_userManager == null)
@@ -105,10 +101,7 @@ namespace GRINPLAS.Controllers
             }
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            if (!userRoles.Contains("Cliente"))
-            {
-                return RedirectToPage("/Account/AccessDenied");
-            }
+         
 
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)

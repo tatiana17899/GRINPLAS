@@ -117,8 +117,6 @@ namespace GRINPLAS.Controllers
             return _context.Productos.Include(p => p.Categoria).AsQueryable();
         }
 
-
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> Cliente(int pagina = 1)
         {
            if (_userManager == null)
@@ -131,10 +129,6 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
             var userRoles= await _userManager.GetRolesAsync(user);
-
-            if(!userRoles.Contains("Cliente")){
-                return RedirectToPage("/Account/AccessDenied");
-            }
 
             int productosPorPagina = 6;
             var productos = ObtenerProductos();
@@ -153,7 +147,6 @@ namespace GRINPLAS.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> AgregarAlCarrito(int productoId, int cantidad)
         {
             if (_userManager == null)
@@ -169,11 +162,6 @@ namespace GRINPLAS.Controllers
             }
 
             var userRoles = await _userManager.GetRolesAsync(user);
-
-            if (!userRoles.Contains("Cliente"))
-            {
-                return RedirectToPage("/Account/AccessDenied");
-            }
 
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)
