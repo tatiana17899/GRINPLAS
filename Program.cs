@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using GRINPLAS.Data;
 using GRINPLAS.Models;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +73,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+RotativaConfiguration.Setup(app.Environment.WebRootPath);
+// Luego usa Rotativa
+app.UseRotativa();
+
 app.Use(async (context, next) =>
 {
     if (!context.User.Identity.IsAuthenticated && context.Request.Path == "/")

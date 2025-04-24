@@ -361,7 +361,7 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(pedido.Pago))
                                     {
-                                        <button class="btn-ver" onclick="mostrarImagen('@pedido.Pago')" title="Ver Comprobante">
+                                        <button class="btn-ver" onclick="mostrarComprobante('@pedido.Pago')" title="Ver Comprobante">
                                             <i class="fas fa-file-invoice-dollar"></i>
                                         </button>
                                     }
@@ -424,17 +424,44 @@
             <div id="modalImagen" class="modal" onclick="cerrarModal('modalImagen')">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Documento del Pedido</h3>
+                        <h3 class="modal-title">Detalle del pedido</h3>
                         <button class="btn-close" onclick="cerrarModal('modalImagen')">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <img id="imgModal" src="" alt="Documento" class="img-documento">
+                    <span style="font-size: 1.2rem;">
+                        La boleta del pedido ha sido generada con éxito. Haz clic para descargarla.
+                    </span>
+                    <BR>
+                    <BR></BR></BR>
+                    <div style="text-align: center;">
+                        <i class="fas fa-check-circle" style="font-size: 5rem; color: green;"></i>
                     </div>
+                </div>
+
                     <div class="modal-footer">
                         <button class="btn btn-secondary" onclick="cerrarModal('modalImagen')">
                             <i class="fas fa-times"></i> Cerrar
                         </button>
                         <button class="btn btn-primary" onclick="descargarImagen()">
+                            <i class="fas fa-download"></i> Descargar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="modalComprobante" class="modal" onclick="cerrarModal1('modalComprobante')">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Comprobante de Pago</h3>
+                        <button class="btn-close" onclick="cerrarModal1('modalComprobante')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="imgComprobante" src="" alt="Documento" class="img-documento">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="cerrarModal1('modalComprobante')">
+                            <i class="fas fa-times"></i> Cerrar
+                        </button>
+                        <button class="btn btn-primary" onclick="descargarImagen1()">
                             <i class="fas fa-download"></i> Descargar
                         </button>
                     </div>
@@ -496,10 +523,30 @@
 
     <script>
         let pedidoIdSeleccionado = 0;
+        let rutaActual = '';
+
+        function mostrarComprobante(ruta) {
+            const imgComprobante = document.getElementById('imgComprobante');
+            imgComprobante.src = ruta; 
+
+            document.getElementById('modalComprobante').style.display = 'flex';
+        }
+         function cerrarModal1(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function descargarImagen1() {
+            const imageUrl = document.getElementById('imgComprobante').src;
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = 'imagen_pedido_' + new Date().toISOString().slice(0, 10);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         function mostrarImagen(ruta) {
-            const imgModal = document.getElementById('imgModal');
-            imgModal.src = ruta; 
+            rutaActual = ruta;
 
             document.getElementById('modalImagen').style.display = 'flex';
         }
@@ -521,14 +568,16 @@
         }
 
         function descargarImagen() {
-            const imageUrl = document.getElementById('imgModal').src;
+            if (!rutaActual) return;
+
             const link = document.createElement('a');
-            link.href = imageUrl;
-            link.download = 'documento-pedido-' + new Date().toISOString().slice(0, 10);
+            link.href = rutaActual;
+            link.download = 'documento-pedido-' + new Date().toISOString().slice(0, 10); // nombre personalizado
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
+
 
         function confirmarDireccion() {
         const nuevaDireccion = document.getElementById('nuevaDireccion').value;

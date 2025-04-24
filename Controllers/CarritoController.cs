@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using GRINPLAS.ViewModel;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Build.Framework;
+using Rotativa.AspNetCore;
 
 namespace GRINPLAS.Controllers
 {
@@ -124,6 +125,19 @@ namespace GRINPLAS.Controllers
                 return RedirectToAction("Cliente", "Carrito");
             }
 
+            string boletaFileName = $"Boleta_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            string rutaArchivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "documentos", "boletas");
+            
+            // Asegurarse de que exista el directorio
+            if (!Directory.Exists(rutaArchivo))
+            {
+                Directory.CreateDirectory(rutaArchivo);
+            }
+            
+            string rutaCompleta = Path.Combine(rutaArchivo, boletaFileName);
+            string rutaRelativa = $"/documentos/boletas/{boletaFileName}";
+
+
             var pedido = new Pedido
             {
                 ClienteId = cliente.ClienteId,
@@ -132,7 +146,7 @@ namespace GRINPLAS.Controllers
                 Status = "Pendiente",
                 Total = carrito.detalleCarrito.Sum(dc => dc.Subtotal),
                 Pago = comprobantePago,
-                BoletaEmitida = $"Boleta_{DateTime.Now:yyyyMMddHHmmss}.pdf"
+                BoletaEmitida = rutaRelativa
             };
 
             _context.Pedidos.Add(pedido);
@@ -159,11 +173,72 @@ namespace GRINPLAS.Controllers
                 }
             }
 
+            var detallesPedido = await _context.DetallePedidos
+            .Where(dp => dp.PedidoId == pedido.PedidoId)
+            .Include(dp => dp.Producto)
+            .ThenInclude(p => p.Categoria)
+            .ToListAsync();
+
+        // Crear modelo para la vista de boleta
+        var modelBoleta = new BoletaViewModel
+        {
+            Pedido = pedido,
+            Cliente = cliente,
+            DetallesPedido = detallesPedido
+        };
+
+        try
+        {
+            // Generar PDF con Rotativa
+            var pdf = new ViewAsPdf("Boleta", modelBoleta)
+            {
+                FileName = boletaFileName,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                CustomSwitches = "--disable-smart-shrinking"
+            };
+
+            // Guardar físicamente el PDF
+            var pdfData = await pdf.BuildFile(ControllerContext);
+            await System.IO.File.WriteAllBytesAsync(rutaCompleta, pdfData);
+
             _context.DetalleCarrito.RemoveRange(carrito.detalleCarrito);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Pedido generado correctamente.";
+            TempData.Remove("SuccessMessage"); 
             return RedirectToAction("Cliente", "Carrito");
         }
+        catch (Exception ex)
+        {
+            // En caso de error al generar el PDF
+            TempData["ErrorMessage"] = $"Error al generar la boleta: {ex.Message}";
+            // Podrías eliminar el pedido o marcarlo como fallido
+            return RedirectToAction("Cliente", "Carrito");
+         }
+        }
+        public IActionResult VerBoleta(int id)
+        {
+            var pedido = _context.Pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallePedidos)
+                .ThenInclude(dp => dp.Producto)
+                .ThenInclude(p => p.Categoria)
+                .FirstOrDefault(p => p.PedidoId == id);
 
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            var modelBoleta = new BoletaViewModel
+            {
+                Pedido = pedido,
+                Cliente = pedido.Cliente,
+                DetallesPedido = pedido.DetallePedidos.ToList()
+            };
+
+            return new ViewAsPdf("Boleta", modelBoleta);
+        }
     }
 }
