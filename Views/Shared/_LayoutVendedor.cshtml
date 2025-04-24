@@ -59,12 +59,14 @@
                 </nav>
                 <div class="d-flex flex-column align-items-center p-4 mt-2 ms-2 me-2" style="background-color: #dbebe0; border-radius: 50px" id="navbar-footer">
                     <div class="p-5">
-                        <form asp-area="Identity" asp-page="/Account/Logout" method="post">
-                            <button type="submit" class="nav-link btn btn-link" style="margin-left: 30px; margin-right: 30px; color: #096623">
-                                <i class="fas fa-sign-out-alt me-2" style="color: #096623"></i>
-                                Cerrar Sesión
-                            </button>
-                        </form>
+                        <a
+                            class="nav-link"
+                            asp-area="Identity" asp-page="/Account/Logout" method="post"
+                            style="margin-left: 30px; margin-right: 30px; color: #096623"
+                        >
+                            <i class="fas fa-sign-out-alt me-2" style="color: #096623"></i>
+                            Cerrar Sesión
+                        </a>
                         <p class="text-success small mt-4" style="margin-left: 30px; margin-right: 30px">
                             © 2025 G&R Industrias Plasticas S.A. Todos los derechos reservados.
                         </p>

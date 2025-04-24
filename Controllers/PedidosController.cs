@@ -181,7 +181,7 @@ namespace GRINPLAS.Controllers
                 }
 
                 // Cambia el estado del pedido a "Cancelado"
-                pedido.Status = "Cancelado";
+                pedido.Status = "cancelado";
                 _context.Update(pedido);
                 await _context.SaveChangesAsync();
 

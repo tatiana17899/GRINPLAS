@@ -183,20 +183,18 @@
 
                     const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
                     modalConfirmacion.show();
-                } else {
-                    alert('Hubo un error al generar el pedido.');
-                }
+                } 
             } catch (error) {
-                console.error('Error:', error);
-                alert('Hubo un error al generar el pedido.');
             }
         });
+
 
         document.getElementById('modalConfirmacion').addEventListener('hidden.bs.modal', function () {
             const backdrop = document.querySelector('.modal-backdrop');
             if (backdrop) {
                 backdrop.remove();
             }
+            window.location.href = '/Carrito/Cliente';
         });
 
         document.addEventListener('DOMContentLoaded', function () {
