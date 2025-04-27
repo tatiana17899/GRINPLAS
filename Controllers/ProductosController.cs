@@ -117,27 +117,21 @@ namespace GRINPLAS.Controllers
             return _context.Productos.Include(p => p.Categoria).AsQueryable();
         }
 
-
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> Cliente(int pagina = 1)
         {
-           if (_userManager == null)
-           {
-               return RedirectToPage("/Account/AccessDenied");
-           }
-           var user = await _userManager.GetUserAsync(User);
+            if (_userManager == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var user = await _userManager.GetUserAsync(User);
 
             if(user == null){
                 return RedirectToPage("/Account/AccessDenied");
             }
             var userRoles= await _userManager.GetRolesAsync(user);
 
-            if(!userRoles.Contains("Cliente")){
-                return RedirectToPage("/Account/AccessDenied");
-            }
-
             int productosPorPagina = 6;
-            var productos = ObtenerProductos();
+            var productos = ObtenerProductos().Where(p => p.Stock > 0); // Filtrar productos con stock > 0
 
             var productosPaginados = await productos
                 .OrderBy(p => p.ProductoId)
@@ -153,7 +147,6 @@ namespace GRINPLAS.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> AgregarAlCarrito(int productoId, int cantidad)
         {
             if (_userManager == null)
@@ -170,11 +163,6 @@ namespace GRINPLAS.Controllers
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            if (!userRoles.Contains("Cliente"))
-            {
-                return RedirectToPage("/Account/AccessDenied");
-            }
-
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)
             {
@@ -187,7 +175,7 @@ namespace GRINPLAS.Controllers
             var carrito = await _context.Carrito
                 .Include(c => c.detalleCarrito)
                 .FirstOrDefaultAsync(c => c.ClienteId == userId);
-        
+
             if (carrito == null)
             {
                 carrito = new Carrito
@@ -206,16 +194,26 @@ namespace GRINPLAS.Controllers
             {
                 TempData["ErrorMessage"] = "El producto no existe.";
                 return RedirectToAction("Cliente", "Productos");
-
             }
 
-            if (producto.Stock < cantidad)
+            // Verificar si ya hay unidades en el carrito
+            var detalleExistente = carrito.detalleCarrito.FirstOrDefault(dc => dc.ProductoId == productoId);
+            int cantidadEnCarrito = detalleExistente?.Cantidad ?? 0;
+            
+            // Verificar si hay suficiente stock
+            if (producto.Stock < cantidad + cantidadEnCarrito)
             {
-                TempData["ErrorMessage"] = "No hay stock disponible.";
+                if (cantidadEnCarrito > 0)
+                {
+                    TempData["ErrorMessage"] = $"No hay suficiente stock. Ya tienes {cantidadEnCarrito} unidades en el carrito y solo quedan {producto.Stock} unidades disponibles.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"No hay suficiente stock. Solo hay {producto.Stock} unidades disponibles.";
+                }
                 return RedirectToAction("Cliente", "Productos");
             }
 
-            var detalleExistente = carrito.detalleCarrito.FirstOrDefault(dc => dc.ProductoId == productoId);
             if (detalleExistente != null)
             {
                 detalleExistente.Cantidad += cantidad;

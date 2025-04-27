@@ -87,8 +87,7 @@
         }
 
         .status-pendiente {
-            background-color: #fff3cd;
-            color: #856404;
+            color: #000000;
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 0.85rem;
@@ -313,186 +312,241 @@
         .text-white {
             color: white !important;
         }
+        
     </style>
 </head>
 <body>
 
-    <div class="container mt-5"></div>
-    <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
-        <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
-            <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
-                <span style="color: #7DAE8A;">MI HISTORIAL</span>  DE PEDIDOS
-            </h1>
-        </div>
-    </div>
+    
+            <div class="container mt-5"></div>
+            <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
+                <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+                    <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+                        <span style="color: #7DAE8A;">MI HISTORIAL</span>  DE PEDIDOS
+                    </h1>
+                </div>
+            </div>
 
-
-        <div style="margin: 0 auto; max-width: 1200px;">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Dirección</th>
-                         @* <th>Boleta</th> *@ <!-- Boleta -->
-                        <th>Comprobante</th>
-                        <th>Fecha de Emisión</th>
-                        <th>Fecha de Entrega</th>
-                        <th>Estado</th>
-                        <th>Cancelar</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var pedido in Model)
-                    {
+            <div style="margin: 0 auto; max-width: 1200px;">
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <td>@pedido.Cliente?.NombreEmpresa</td>
-                            <td>@pedido.Direccion</td>
-                            @* 
-                            <td>
-                                @if (!string.IsNullOrEmpty(pedido.BoletaEmitida))
-                                {
-                                    <button class="btn-ver" onclick="mostrarImagen('@pedido.BoletaEmitida')" title="Ver Boleta">
-                                        <i class="fas fa-file-invoice"></i>
-                                    </button>
-                                }
-                                else { <span>--</span> }
-                            </td>
-                            *@ <!--  Boleta -->
-                            
-                            
-                            <td>
-                                @if (!string.IsNullOrEmpty(pedido.Pago))
-                                {
-                                    <button class="btn-ver" onclick="mostrarImagen('@pedido.Pago')" title="Ver Comprobante">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </button>
-                                }
-                                else
-                                {
-                                    <span>--</span>
-                                }
-                            </td>
-
-
-                            <td>@pedido.FechaEmision.ToString("dd/MM/yyyy")</td>
-                            <td>@pedido.FechaEntrega?.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                @if (pedido.Status == "Pendiente")
-                                {
-                                    <span class="status-pendiente">@pedido.Status</span>
-                                    <button class="btn-editar" onclick="abrirEditarDireccion(@pedido.PedidoId)" title="Editar Dirección">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                }
-                                else
-                                {
-                                    <span>@pedido.Status</span>
-                                }
-                            </td>
-                            <td>
-                                @if (pedido.Status == "Pendiente")
-                                {
-                                    <button class="btn-cancelar" onclick="abrirCancelarPedido(@pedido.PedidoId)" title="Cancelar Pedido">
-                                        <i class="fas fa-times-circle"></i>
-                                    </button>
-                                }
-                                else { <span>--</span> }
-                            </td>
-                            <td>S/ @pedido.Total.ToString("0.00")</td>
+                            <th>Cliente</th>
+                            <th>Dirección</th>
+                            <th>Boleta</th>
+                            <th>Comprobante</th>
+                            <th>Fecha de Emisión</th>
+                            <th>Fecha de Entrega</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Editar Dirección</th>
+                            <th>Cancelar</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model.OrderByDescending(p => p.FechaEmision))
+                        {
+                            <tr>
+                                <td>@pedido.Cliente?.NombreEmpresa</td>
+                                <td>@pedido.Direccion</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(pedido.BoletaEmitida))
+                                    {
+                                        <button class="btn-ver" onclick="mostrarImagen('@pedido.BoletaEmitida')" title="Ver Boleta">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </button>
+                                    }
+                                    else { <span>--</span> }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(pedido.Pago))
+                                    {
+                                        <button class="btn-ver" onclick="mostrarComprobante('@pedido.Pago')" title="Ver Comprobante">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span>--</span>
+                                    }
+                                </td>
+                                <td>@pedido.FechaEmision.ToString("dd/MM/yyyy")</td>
+                                <td>@pedido.FechaEntrega?.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="@(pedido.Status == "Pendiente" ? "status-pendiente" : "")">@pedido.Status</span>
+                                </td>
+                                <td>S/ @pedido.Total.ToString("0.00")</td>
+                                <td>
+                                    @if (pedido.Status == "Pendiente")
+                                    {
+                                        <button class="btn btn-primary" onclick="abrirEditarDireccion(@pedido.PedidoId)" title="Editar Dirección">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    }
+                                    else if (pedido.Status == "proceso"){
+                                        <button class="btn btn-primary" onclick="abrirEditarDireccion(@pedido.PedidoId)" title="Editar Dirección">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    }else {
+                                        <span>--</span> 
+                                    }
+                                </td>
+                                <td>
+                                    @if (pedido.Status == "Pendiente")
+                                    {
+                                        <button class="btn btn-success text-white" onclick="abrirCancelarPedido(@pedido.PedidoId)" style="border-radius: 4px; padding: 5px 10px; display: block;">
+                                            Cancelar
+                                        </button>
+                                    }
+                                    else if (pedido.Status == "proceso"){
+                                        <button class="btn btn-success text-white" onclick="abrirCancelarPedido(@pedido.PedidoId)" style="border-radius: 4px; padding: 5px 10px; display: block;">
+                                            Cancelar
+                                        </button>
+                                    }else{
+                                         <span>--</span> 
+                                         }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (Model == null || !Model.Any())
+                    {
+                        <div class="alert alert-warning text-center mt-3">
+                            <i class="fas fa-exclamation-circle"></i> No tienes pedidos registrados.
+                        </div>
                     }
-                </tbody>
-            </table>
-            @if (Model == null || !Model.Any())
-                {
-                    <div class="alert alert-warning text-center mt-3">
-                        <i class="fas fa-exclamation-circle"></i> No tienes pedidos registrados.
+            </div>
+
+            
+
+            <!-- Modales  -->
+            <div id="modalImagen" class="modal" onclick="cerrarModal('modalImagen')">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Detalle del pedido</h3>
+                        <button class="btn-close" onclick="cerrarModal('modalImagen')">&times;</button>
                     </div>
-                }
-        </div>
-    </div>
-
-    <!-- Modales  -->
-    <div id="modalImagen" class="modal" onclick="cerrarModal('modalImagen')">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Documento del Pedido</h3>
-                <button class="btn-close" onclick="cerrarModal('modalImagen')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <img id="imgModal" src="" alt="Documento" class="img-documento">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="cerrarModal('modalImagen')">
-                    <i class="fas fa-times"></i> Cerrar
-                </button>
-                <button class="btn btn-primary" onclick="descargarImagen()">
-                    <i class="fas fa-download"></i> Descargar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalEditar" class="modal" onclick="cerrarModal('modalEditar')">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 class="modal-title">Actualizar Dirección de Entrega</h3>
-                <button class="btn-close" onclick="cerrarModal('modalEditar')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="nuevaDireccion" class="form-label">Nueva dirección de recojo:</label>
-                    <input type="text" id="nuevaDireccion" class="form-control" placeholder="Ej: Av. Los Jardines 123, Surco">
-                    <div class="form-text">
-                        <i class="fas fa-info-circle"></i> Si modificas la dirección el mismo día de entrega, podría aplicarse una penalización.
+                    <div class="modal-body">
+                    <span style="font-size: 1.2rem;">
+                        La boleta del pedido ha sido generada con éxito. Haz clic para descargarla.
+                    </span>
+                    <BR>
+                    <BR></BR></BR>
+                    <div style="text-align: center;">
+                        <i class="fas fa-check-circle" style="font-size: 5rem; color: green;"></i>
                     </div>
                 </div>
-                <div class="alert alert-warning mt-3">
-                    <i class="fas fa-exclamation-triangle"></i> Por favor verifica que la dirección sea correcta y accesible para nuestros repartidores.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" onclick="cerrarModal('modalEditar')">
-                    <i class="fas fa-arrow-left"></i> Cancelar
-                </button>
-                <button class="btn btn-primary" onclick="confirmarDireccion()">
-                    <i class="fas fa-check"></i> Confirmar Cambios
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <div id="modalCancelar" class="modal" onclick="cerrarModal('modalCancelar')">
-        <div class="modal-content modal-sm" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirmar Cancelación</h3>
-                <button class="btn-close" onclick="cerrarModal('modalCancelar')">&times;</button>
-            </div>
-            <div class="modal-body text-center">
-                <div class="cancel-icon">
-                    <i class="fas fa-times-circle"></i>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="cerrarModal('modalImagen')">
+                            <i class="fas fa-times"></i> Cerrar
+                        </button>
+                        <button class="btn btn-primary" onclick="descargarImagen()">
+                            <i class="fas fa-download"></i> Descargar
+                        </button>
+                    </div>
                 </div>
-                <h4>¿Estás seguro de cancelar este pedido?</h4>
-                <p>Esta acción no puede revertirse. Si tienes dudas, puedes contactar a nuestro soporte.</p>
             </div>
-            <div class="modal-footer justify-content-center">
-                <button class="btn btn-outline-secondary" onclick="cerrarModal('modalCancelar')">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </button>
-                <button class="btn btn-danger" onclick="confirmarCancelacion()">
-                    <i class="fas fa-trash-alt"></i> Confirmar Cancelación
-                </button>
+            <div id="modalComprobante" class="modal" onclick="cerrarModal1('modalComprobante')">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Comprobante de Pago</h3>
+                        <button class="btn-close" onclick="cerrarModal1('modalComprobante')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="imgComprobante" src="" alt="Documento" class="img-documento">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="cerrarModal1('modalComprobante')">
+                            <i class="fas fa-times"></i> Cerrar
+                        </button>
+                        <button class="btn btn-primary" onclick="descargarImagen1()">
+                            <i class="fas fa-download"></i> Descargar
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+
+            <div id="modalEditar" class="modal" onclick="cerrarModal('modalEditar')">
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Actualizar Dirección de Entrega</h3>
+                        <button class="btn-close" onclick="cerrarModal('modalEditar')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="nuevaDireccion" class="form-label">Nueva dirección de recojo:</label>
+                            <input type="text" id="nuevaDireccion" class="form-control" placeholder="Ej: Av. Los Jardines 123, Surco">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle"></i> Si modificas la dirección el mismo día de entrega, podría aplicarse una penalización.
+                            </div>
+                        </div>
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle"></i> Por favor verifica que la dirección sea correcta y accesible para nuestros repartidores.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" style="display: inline-block !important; visibility: visible !important;" onclick="cerrarModal('modalEditar')">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </button>
+                        <button class="btn btn-primary" onclick="confirmarDireccion()">
+                            <i class="fas fa-check"></i> Confirmar Cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modalCancelar" class="modal" onclick="cerrarModal('modalCancelar')">
+                <div class="modal-content modal-sm" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Confirmar Cancelación</h3>
+                        <button class="btn-close" onclick="cerrarModal('modalCancelar')">&times;</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="cancel-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h4>¿Estás seguro de cancelar este pedido?</h4>
+                        <p>Esta acción no puede revertirse. Si tienes dudas, puedes contactar a nuestro soporte.</p>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button class="btn btn-outline-secondary" onclick="cerrarModal('modalCancelar')">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                        <button class="btn btn-danger" onclick="confirmarCancelacion()">
+                            <i class="fas fa-trash-alt"></i> Confirmar Cancelación
+                        </button>
+                    </div>
+                </div>
+            </div>
 
     <script>
         let pedidoIdSeleccionado = 0;
+        let rutaActual = '';
+
+        function mostrarComprobante(ruta) {
+            const imgComprobante = document.getElementById('imgComprobante');
+            imgComprobante.src = ruta; 
+
+            document.getElementById('modalComprobante').style.display = 'flex';
+        }
+         function cerrarModal1(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function descargarImagen1() {
+            const imageUrl = document.getElementById('imgComprobante').src;
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = 'imagen_pedido_' + new Date().toISOString().slice(0, 10);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         function mostrarImagen(ruta) {
-            const imgModal = document.getElementById('imgModal');
-            imgModal.src = ruta; 
+            rutaActual = ruta;
 
             document.getElementById('modalImagen').style.display = 'flex';
         }
@@ -514,14 +568,16 @@
         }
 
         function descargarImagen() {
-            const imageUrl = document.getElementById('imgModal').src;
+            if (!rutaActual) return;
+
             const link = document.createElement('a');
-            link.href = imageUrl;
-            link.download = 'documento-pedido-' + new Date().toISOString().slice(0, 10);
+            link.href = rutaActual;
+            link.download = 'documento-pedido-' + new Date().toISOString().slice(0, 10); // nombre personalizado
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
+
 
         function confirmarDireccion() {
         const nuevaDireccion = document.getElementById('nuevaDireccion').value;
