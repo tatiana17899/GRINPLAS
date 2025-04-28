@@ -104,7 +104,7 @@
                               @pedido.FechaEmision.ToString("dd/MM/yyyy")
                           </td>
                           <td>
-                            @pedido.FechaEntrega.ToString("dd/MM/yyyy")
+                            @pedido.FechaEntrega?.ToString("dd/MM/yyyy")
                           </td>
                           <td>
                             @pedido.Status
@@ -113,6 +113,7 @@
                     
                   </tr>
               }
+              
           </tbody>
       </table>
       </form>
@@ -121,4 +122,24 @@
 @section Scripts{
     <script src="~/js/administrador.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+      $(document).ready(function () {
+          $('#ordersTable').DataTable({
+              "pageLength": 4,           
+              "lengthChange": false,     
+              "language": {
+                  "paginate": {
+                      "previous": "Anterior",
+                      "next": "Siguiente"
+                  },
+                  "info": "Página _PAGE_ de _PAGES_",
+                  "infoEmpty": "No hay datos disponibles",
+                  "emptyTable": "No hay clientes registrados",
+                  "search": "Buscar:"
+              }
+          });
+      });
+    </script>
 }
