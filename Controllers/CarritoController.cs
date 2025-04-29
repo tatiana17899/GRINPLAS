@@ -171,7 +171,7 @@ namespace GRINPLAS.Controllers
                 FechaEmision = DateTime.Now,
                 Status = "Pendiente",
                 Total = carrito.detalleCarrito.Sum(dc => dc.Subtotal),
-                Pago = "Transferencia bancaria",
+                Pago = "Pediente",
                 ComprobantePago = comprobanteFileName.Length > 0 ? $"/uploads/{comprobanteFileName}" : null,
                 BoletaEmitida = rutaRelativa
             };

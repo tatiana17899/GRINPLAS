@@ -97,8 +97,8 @@
                   <th>Estado</th>
                   <th>Total</th>
                   <th>Pago</th>
-                  <th>Compro<br>bante</th>
-                  <th>Acciones</th> <!-- Nueva columna para el botón -->
+                  <th>Comprobante</th>
+                  <th>Acciones</th>
               </tr>
           </thead>
           <tbody>
@@ -191,9 +191,16 @@
                               </select>
                           </td>
                           <td>
-                              <a href="@pedido.BoletaEmitida" target="_blank" class="btn btn-light border-0">
-                                  <i class="fas fa-external-link-alt text-success"></i>
-                              </a>
+                              @if (!string.IsNullOrEmpty(pedido.ComprobantePago))
+                              {
+                                  <a href="@pedido.ComprobantePago" target="_blank" class="btn btn-light border-0">
+                                      <i class="fas fa-receipt text-success"></i>
+                                  </a>
+                              }
+                              else
+                              {
+                                  <span class="text-muted">Sin comprobante</span>
+                              }
                           </td>
                           <td>
                               <button type="button" class="btn btn-success btn-sm btn-confirmar-guardar">
@@ -212,3 +219,4 @@
     <script src="~/js/gerente.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }
+```
