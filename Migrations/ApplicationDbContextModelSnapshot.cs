@@ -241,9 +241,6 @@ namespace GRINPLAS.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ComprobantePago")
-                        .HasColumnType("text");
-
                     b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("text");
