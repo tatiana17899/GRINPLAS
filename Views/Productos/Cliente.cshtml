@@ -4,7 +4,7 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "Cliente";
-    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+    Layout = "~/Views/Shared/_LayoutProducto.cshtml";
     var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 
