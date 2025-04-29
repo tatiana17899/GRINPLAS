@@ -168,7 +168,15 @@ document.addEventListener("DOMContentLoaded", function () {
           formData.append("pago", selectPago.value);
           formData.append("fechaEntrega", inputFechaEntrega.value || "");
 
-          fetch("/Pedidos/ActualizarPedido", {
+          // Obtener el token CSRF
+          const token = document.querySelector(
+            'input[name="__RequestVerificationToken"]'
+          )?.value;
+          if (token) {
+            formData.append("__RequestVerificationToken", token);
+          }
+
+          fetch("/HistorialPedidos/ActualizarPedido", {
             method: "POST",
             body: formData,
           })
@@ -180,8 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
                   "Los cambios han sido guardados correctamente.",
                   "success"
                 );
-                // Resetear filtros después de guardar
-                resetearFiltro();
               } else {
                 Swal.fire(
                   "Error",
@@ -203,27 +209,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Inicialización de jQuery (si es necesaria)
-  $(function () {
-    if ($(".fecha-entrega").length) {
-      $(".fecha-entrega").each(function () {
-        $(this).data("original-value", $(this).val());
+  // Inicialización de jQuery DataTable
+  try {
+    if ($.fn.DataTable && $("#ordersTable").length) {
+      $("#ordersTable").DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: false,
+        info: false,
+        language: {
+          paginate: {
+            previous: "Anterior",
+            next: "Siguiente",
+          },
+        },
       });
     }
-  });
-});
-
-$(document).ready(function () {
-  $("#ordersTable").DataTable({
-    paging: true,
-    lengthChange: false,
-    searching: false,
-    info: false,
-    language: {
-      paginate: {
-        previous: "Anterior",
-        next: "Siguiente",
-      },
-    },
-  });
+  } catch (error) {
+    console.error("Error al inicializar DataTable:", error);
+  }
 });
