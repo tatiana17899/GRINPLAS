@@ -17,6 +17,7 @@ namespace GRINPLAS.Models
         public Cliente? Cliente { get; set; }
         [Required]
         public string? Direccion { get; set; }
+        public string? BoletaEmitida { get; set; } /*Almacenamiento de las evidencias del cliente*/
         [Required]
         public DateTime FechaEmision { get; set; }
         public DateTime? FechaEntrega { get; set; }
@@ -27,7 +28,7 @@ namespace GRINPLAS.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
         public string? Pago { get; set; }
-        public string? BoletaEmitida { get; set; }
+        public string? ComprobantePago { get; set; }
         public ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();
 
     }

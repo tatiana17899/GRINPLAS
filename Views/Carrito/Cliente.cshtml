@@ -91,38 +91,37 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-4">
-                    <label class="fw-bold mb-2" style="color: #3B3B3B;">Indica punto de recojo del pedido:</label>
-                    <div class="d-flex align-items-center" style="padding: 10px; border-bottom: 1px solid #D3D3D3;">
-                        <i class="fas fa-map-marker-alt me-3" style="font-size: 24px; color: #3B3B3B;"></i>
-                        <input type="text" class="form-control border-0 shadow-none" placeholder="Ingresa tu Dirección de entrega" required style="padding-left: 0;">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <p class="fw-bold mb-2" style="color: #3B3B3B;">Deposita a esta cuenta bancaria: 1999 222 3390 222</p>
-                </div>
-                <div class="mb-4">
-                    <div class="d-flex align-items-center">
-                        <label for="comprobantePago" class="btn d-flex justify-content-center align-items-center" 
-                            style="width: 45%; border: 1px solid #D3D3D3; border-radius: 8px; padding: 10px; font-size: 12px; color: #3B3B3B; cursor: pointer;">
-                            Adjuntar comprobante de pago <span style="color: red;">*</span>
-                        </label>
-                        <input type="file" id="comprobantePago" class="form-control d-none" required>
-                        <div id="fileInfo" class="ms-3 d-none" style="flex-grow: 1;">
-                            <span id="fileName" style="font-size: 14px; color: #3B3B3B;"></span>
-                            <a id="viewFile" href="#" target="_blank" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <button id="deleteFile" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                <form id="formGenerarPedido" method="post" action="/Carrito/GenerarPedido" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-4">
+                        <label class="fw-bold mb-2" style="color: #3B3B3B;">Indica punto de recojo del pedido:</label>
+                        <div class="d-flex align-items-center" style="padding: 10px; border-bottom: 1px solid #D3D3D3;">
+                            <i class="fas fa-map-marker-alt me-3" style="font-size: 24px; color: #3B3B3B;"></i>
+                            <input type="text" name="direccion" id="direccionInput" class="form-control border-0 shadow-none" placeholder="Ingresa tu Dirección de entrega" required style="padding-left: 0;">
                         </div>
                     </div>
-                </div>
-                <form id="formGenerarPedido" method="post" action="/Carrito/GenerarPedido">
-                    <input type="hidden" name="direccion" id="direccionInput">
-                    <input type="hidden" name="comprobantePago" id="comprobantePagoInput">
-                    <button type="button" id="btnGenerarPedido" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 0; font-size: 16px;">
+                    <div class="mb-4">
+                        <p class="fw-bold mb-2" style="color: #3B3B3B;">Deposita a esta cuenta bancaria: 1999 222 3390 222</p>
+                    </div>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center">
+                            <label for="comprobantePago" class="btn d-flex justify-content-center align-items-center" 
+                                style="width: 45%; border: 1px solid #D3D3D3; border-radius: 8px; padding: 10px; font-size: 12px; color: #3B3B3B; cursor: pointer;">
+                                Adjuntar comprobante de pago <span style="color: red;">*</span>
+                            </label>
+                            <input type="file" name="comprobantePago" id="comprobantePago" class="form-control d-none" required>
+                            <div id="fileInfo" class="ms-3 d-none" style="flex-grow: 1;">
+                                <span id="fileName" style="font-size: 14px; color: #3B3B3B;"></span>
+                                <a id="viewFile" href="#" target="_blank" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button id="deleteFile" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="btnGenerarPedido" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 0; font-size: 16px;">
                         Confirmar pedido
                     </button>
                 </form>
@@ -148,60 +147,15 @@
 
 @section Scripts {
     <script>
-        document.getElementById('btnGenerarPedido').addEventListener('click', async function () {
-            const direccion = document.querySelector('#modalGenerarPedido input[type="text"]').value;
-            const archivo = document.querySelector('#modalGenerarPedido input[type="file"]').files[0];
-
-            if (!direccion) {
-                alert('Por favor, ingresa la dirección de entrega.');
-                return;
-            }
-
-            if (!archivo) {
-                alert('Por favor, adjunta el comprobante de pago.');
-                return;
-            }
-
-            document.getElementById('direccionInput').value = direccion;
-            document.getElementById('comprobantePagoInput').value = archivo.name;
-
-            const formData = new FormData();
-            formData.append('direccion', direccion);
-            formData.append('comprobantePago', archivo.name);
-
-            try {
-                const response = await fetch('/Carrito/GenerarPedido', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const modalGenerarPedido = bootstrap.Modal.getInstance(document.getElementById('modalGenerarPedido'));
-                    modalGenerarPedido.hide();
-
-                    const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
-                    modalConfirmacion.show();
-                } 
-            } catch (error) {
-            }
-        });
-
-
-        document.getElementById('modalConfirmacion').addEventListener('hidden.bs.modal', function () {
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) {
-                backdrop.remove();
-            }
-            window.location.href = '/Carrito/Cliente';
-        });
-
         document.addEventListener('DOMContentLoaded', function () {
             const inputFile = document.getElementById('comprobantePago');
             const fileInfo = document.getElementById('fileInfo');
             const fileName = document.getElementById('fileName');
             const viewFileButton = document.getElementById('viewFile');
             const deleteFileButton = document.getElementById('deleteFile');
+            const formGenerarPedido = document.getElementById('formGenerarPedido');
 
+            // Mostrar nombre del archivo seleccionado
             inputFile.addEventListener('change', function () {
                 if (inputFile.files.length > 0) {
                     fileName.textContent = inputFile.files[0].name;
@@ -212,11 +166,65 @@
                 }
             });
 
-            deleteFileButton.addEventListener('click', function () {
+            // Eliminar archivo seleccionado
+            deleteFileButton.addEventListener('click', function (e) {
+                e.preventDefault();
                 inputFile.value = '';
                 fileName.textContent = '';
                 fileInfo.classList.add('d-none');
             });
+
+            // Manejar envío del formulario
+            formGenerarPedido.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                // Validar campos
+                const direccion = document.querySelector('#direccionInput').value;
+                const archivo = document.querySelector('#comprobantePago').files[0];
+
+                if (!direccion) {
+                    alert('Por favor, ingresa la dirección de entrega.');
+                    return;
+                }
+
+                if (!archivo) {
+                    alert('Por favor, adjunta el comprobante de pago.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/Carrito/GenerarPedido', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'RequestVerificationToken': '@token'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const modalGenerarPedido = bootstrap.Modal.getInstance(document.getElementById('modalGenerarPedido'));
+                        modalGenerarPedido.hide();
+
+                        const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+                        modalConfirmacion.show();
+                    } else {
+                        const data = await response.json();
+                        alert('Error al generar el pedido: ' + (data.message || 'Error desconocido'));
+                    }
+                } catch (error) {
+                    alert('Error al procesar la solicitud: ' + error.message);
+                }
+            });
+        });
+
+        document.getElementById('modalConfirmacion').addEventListener('hidden.bs.modal', function () {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            window.location.href = '/Carrito/Cliente';
         });
     </script>
 }

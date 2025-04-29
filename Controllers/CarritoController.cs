@@ -11,6 +11,8 @@ using GRINPLAS.ViewModel;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Build.Framework;
 using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace GRINPLAS.Controllers
 {
@@ -19,22 +21,25 @@ namespace GRINPLAS.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser>? _userManager;
         private readonly ILogger<CarritoController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         
         [ActivatorUtilitiesConstructor]
         public CarritoController(
         ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager,
-        ILogger<CarritoController> logger)
+        ILogger<CarritoController> logger,
+        IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public CarritoController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager)
-        : this(context, userManager, NullLogger<CarritoController>.Instance)
+        : this(context, userManager, NullLogger<CarritoController>.Instance, null!)
         {
         }
 
@@ -92,7 +97,7 @@ namespace GRINPLAS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerarPedido(string direccion, string comprobantePago)
+        public async Task<IActionResult> GenerarPedido(string direccion, IFormFile comprobantePago)
         {
             if (_userManager == null)
             {
@@ -105,8 +110,6 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
             var userRoles = await _userManager.GetRolesAsync(user);
-
-         
 
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)
@@ -123,6 +126,29 @@ namespace GRINPLAS.Controllers
             {
                 TempData["ErrorMessage"] = "No hay productos en el carrito.";
                 return RedirectToAction("Cliente", "Carrito");
+            }
+
+            // Guardar el comprobante de pago
+            string comprobanteFileName = string.Empty;
+            
+            if (comprobantePago != null && comprobantePago.Length > 0)
+            {
+                // Crear directorio de uploads si no existe
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                
+                // Generar nombre único para el archivo
+                comprobanteFileName = $"comprobante_{DateTime.Now:yyyyMMddHHmmss}_{Path.GetExtension(comprobantePago.FileName)}";
+                string filePath = Path.Combine(uploadsFolder, comprobanteFileName);
+                
+                // Guardar el archivo
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await comprobantePago.CopyToAsync(fileStream);
+                }
             }
 
             string boletaFileName = $"Boleta_{DateTime.Now:yyyyMMddHHmmss}.pdf";
@@ -145,7 +171,8 @@ namespace GRINPLAS.Controllers
                 FechaEmision = DateTime.Now,
                 Status = "Pendiente",
                 Total = carrito.detalleCarrito.Sum(dc => dc.Subtotal),
-                Pago = comprobantePago,
+                Pago = "Pediente",
+                ComprobantePago = comprobanteFileName.Length > 0 ? $"/uploads/{comprobanteFileName}" : null,
                 BoletaEmitida = rutaRelativa
             };
 
@@ -206,7 +233,6 @@ namespace GRINPLAS.Controllers
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Pedido generado correctamente.";
-            TempData.Remove("SuccessMessage"); 
             return RedirectToAction("Cliente", "Carrito");
         }
         catch (Exception ex)
@@ -217,6 +243,7 @@ namespace GRINPLAS.Controllers
             return RedirectToAction("Cliente", "Carrito");
          }
         }
+        
         public IActionResult VerBoleta(int id)
         {
             var pedido = _context.Pedidos
