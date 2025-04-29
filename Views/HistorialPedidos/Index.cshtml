@@ -359,9 +359,9 @@
                                     else { <span>--</span> }
                                 </td>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(pedido.Pago))
+                                    @if (!string.IsNullOrEmpty(pedido.ComprobantePago))
                                     {
-                                        <button class="btn-ver" onclick="mostrarComprobante('@pedido.Pago')" title="Ver Comprobante">
+                                        <button class="btn-ver" onclick="mostrarComprobante('@pedido.ComprobantePago')" title="Ver Comprobante">
                                             <i class="fas fa-file-invoice-dollar"></i>
                                         </button>
                                     }
