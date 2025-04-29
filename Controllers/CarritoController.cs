@@ -233,6 +233,7 @@ namespace GRINPLAS.Controllers
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Pedido generado correctamente.";
+            TempData.Remove("SuccessMessage");
             return RedirectToAction("Cliente", "Carrito");
         }
         catch (Exception ex)
