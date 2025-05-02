@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using GRINPLAS.Data;
 using GRINPLAS.Models;
 using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,17 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// Configuración del servicio de correo
+var emailConfig = builder.Configuration.GetSection("EmailSettings");
+builder.Services.AddTransient<IEmailSender>(provider => 
+    new EmailSender(
+        emailConfig["SmtpServer"],
+        int.Parse(emailConfig["SmtpPort"]),
+        emailConfig["FromEmail"],
+        emailConfig["SmtpUsername"],
+        emailConfig["SmtpPassword"]
+    ));
+    
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var app = builder.Build();
