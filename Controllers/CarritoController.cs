@@ -97,6 +97,55 @@ namespace GRINPLAS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarProducto([FromBody] DeleteProductRequest request)
+        {
+            if (_userManager == null)
+            {
+                return Json(new { success = false, message = "Acceso denegado." });
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
+            if (cliente == null)
+            {
+                return Json(new { success = false, message = "Cliente no encontrado." });
+            }
+
+            var carrito = await _context.Carrito
+                .Include(c => c.detalleCarrito)
+                .FirstOrDefaultAsync(c => c.ClienteId == cliente.ClienteId);
+
+            if (carrito == null)
+            {
+                return Json(new { success = false, message = "Carrito no encontrado." });
+            }
+
+            var detalleCarrito = carrito.detalleCarrito
+                .FirstOrDefault(dc => dc.ProductoId == request.ProductoId);
+
+            if (detalleCarrito == null)
+            {
+                return Json(new { success = false, message = "Producto no encontrado en el carrito." });
+            }
+
+            _context.DetalleCarrito.Remove(detalleCarrito);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+        public class DeleteProductRequest
+        {
+            public int ProductoId { get; set; }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GenerarPedido(string direccion, IFormFile comprobantePago)
         {
             if (_userManager == null)
