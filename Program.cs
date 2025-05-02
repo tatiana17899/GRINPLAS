@@ -93,7 +93,7 @@ app.Use(async (context, next) =>
 {
     if (!context.User.Identity.IsAuthenticated && context.Request.Path == "/")
     {
-        context.Response.Redirect("/Identity/Account/Login");
+        context.Response.Redirect("/Productos/Cliente");
         return;
     }
     await next();
