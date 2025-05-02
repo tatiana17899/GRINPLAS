@@ -101,7 +101,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                             <h3>Restablecimiento de contraseña</h3>
                             <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
                             <p>Por favor, haz clic en el siguiente botón para continuar con el proceso:</p>
-                            <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}' class='button'>Restablecer contraseña</a></p>
+                            <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}' class='button' style={{color: white}}>Restablecer contraseña</a></p>
                             <p>Si no solicitaste este cambio, por favor ignora este mensaje.</p>
                         </div>
                         <div class='footer'>

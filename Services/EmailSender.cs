@@ -24,15 +24,15 @@ public class EmailSender : IEmailSender
     {
         try
         {
-            var client = new SmtpClient("smtp.gmail.com", 587)
+            var client = new SmtpClient(_smtpServer, _smtpPort)
             {
-                Credentials = new NetworkCredential("tucorreo@gmail.com", "tucontraseña"),
+                Credentials = new NetworkCredential(_smtpUsername, _smtpPassword),
                 EnableSsl = true
             };
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("tucorreo@gmail.com"),
+                From = new MailAddress(_fromEmail),
                 Subject = subject,
                 Body = htmlMessage,
                 IsBodyHtml = true
@@ -40,12 +40,12 @@ public class EmailSender : IEmailSender
             mailMessage.To.Add(email);
 
             await client.SendMailAsync(mailMessage);
-            Console.WriteLine("✅ Correo enviado a: " + email); // Verifica en la consola
+            Console.WriteLine("✅ Correo enviado a: " + email);
         }
         catch (Exception ex)
         {
             Console.WriteLine("❌ Error al enviar correo: " + ex.Message);
-            throw; // Esto mostrará el error en la página
+            throw;
         }
     }
 }
