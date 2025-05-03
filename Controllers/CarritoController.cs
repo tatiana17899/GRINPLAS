@@ -47,19 +47,19 @@ namespace GRINPLAS.Controllers
         {
             if (_userManager == null)
             {
-                return RedirectToPage("/Account/AccessDenied");
+                return View("NoAutorizado");
             }
             var user = await _userManager.GetUserAsync(User);
 
             if(user == null){
-                return RedirectToPage("/Account/AccessDenied");
+                return View("NoAutorizado");
             }
             var userRoles= await _userManager.GetRolesAsync(user);
 
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
             if (cliente == null)
             {
-                return RedirectToPage("/Account/AccessDenied");
+                return View("NoAutorizado");
             }
 
             var carrito = await _context.Carrito
