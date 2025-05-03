@@ -145,7 +145,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         }
                         await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Administrador"));
                         await _signInManager.RefreshSignInAsync(user);
-                        return RedirectToAction("GerenteGeneral", "Pedidos");
+                        return RedirectToAction("InicioG", "InicioGeren");
                     }
 
                     return RedirectToAction("Cliente", "Productos");
