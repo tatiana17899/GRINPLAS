@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<GRINPLAS.Models.Carrito> Carrito { get; set; }
     public DbSet<GRINPLAS.Models.DetalleCarrito> DetalleCarrito { get; set; }
     public DbSet<GRINPLAS.Models.Trabajadores> Trabajadores { get; set; }
+    public DbSet<GRINPLAS.Models.Notificacion> Notificaciones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,7 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey<Trabajadores>(t => t.ApplicationUserId)
             .OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Cliente>()
             .Property(c => c.FecCre)
             .HasColumnType("timestamp without time zone");

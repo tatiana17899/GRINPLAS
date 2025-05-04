@@ -30,6 +30,7 @@ namespace GRINPLAS.Models
         public string? Pago { get; set; }
         public string? ComprobantePago { get; set; }
         public ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();
+        public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
 
     }
 }

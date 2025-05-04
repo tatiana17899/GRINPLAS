@@ -2,10 +2,41 @@
 @using GRINPLAS.ViewModel
 @model ProfileEditViewModel
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-<div class="profile-image-container" id="profileTrigger">
-    <img src="@(Model.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
-         class="rounded-circle" 
-         style="width: 40px; height: 40px; cursor: pointer;">
+<link href="~/css/notificaciones.css" rel="stylesheet" />
+<div class="d-flex align-items-center">
+    <div class="profile-image-container" id="profileTrigger">
+        <img src="@(Model.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
+            class="rounded-circle" 
+            style="width: 40px; height: 40px; cursor: pointer;">
+    </div>
+    <div class="dropdown me-3 ms-4 d-flex" style="width: 50px;
+                height: 50px;
+                background-color: rgba(118, 221, 63, 0.28);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;">
+        <a class="nav-link dropdown-toggle p-0 d-flex align-items-center" href="#" id="navbarDropdownNotifications" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           
+                <i class="fas fa-bell" style="color: #096623; font-size: 1.2rem;"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                    <!-- El contador se actualiza dinámicamente -->
+                </span>
+           
+        </a>
+        <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="navbarDropdownNotifications" style="min-width: 300px; padding: 0;">
+            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                <h6 class="mb-0">Notificaciones</h6>
+                <a href="#" id="markAllAsRead" class="btn btn-success ms-4" style="text-decoration: none; font-size: 0.9rem;">
+                    Marcar todas 
+                </a>
+            </div>
+            <div class="notification-list m-2" style="max-height: 350px; overflow-y: auto;">
+                <!-- Las notificaciones se cargarán dinámicamente aquí -->
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -83,8 +114,44 @@
         </div>
     </div>
 </div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    $(document).ready(function() {
+    // Cargar notificaciones al abrir el dropdown
+    $('#navbarDropdownNotifications').on('show.bs.dropdown', function() {
+        // Aquí iría la lógica para cargar notificaciones dinámicamente
+        console.log("Cargando notificaciones...");
+    });
+
+    // Marcar como leída al hacer clic
+    $(document).on('click', '.notification-item', function(e) {
+        e.preventDefault();
+        var notificacionId = $(this).data('id');
+        console.log("Marcando notificación " + notificacionId + " como leída");
+        
+        // Aquí iría la llamada AJAX para marcar como leída
+        $.post('/Notificaciones/MarcarComoLeida', { id: notificacionId }, function() {
+            window.location.href = $(this).attr('href');
+        });
+    });
+
+    // Actualizar contador de notificaciones
+    function actualizarContador() {
+            // Aquí iría la llamada AJAX para obtener el contador
+            console.log("Actualizando contador de notificaciones...");
+            // Ejemplo:
+            // $.get('/Notificaciones/ContadorNoLeidas', function(count) {
+            //     $('.badge').text(count > 0 ? count : '');
+            // });
+        }
+
+        // Actualizar cada 30 segundos
+        setInterval(actualizarContador, 30000);
+        actualizarContador();
+    });
     // Habilita la edición de campos de texto
     function enableEdit(fieldName) {
         const field = document.querySelector(`input[name="${fieldName}"]`);
@@ -320,3 +387,4 @@
         }
     });
 </script>
+<script src="~/js/notification.js"></script>

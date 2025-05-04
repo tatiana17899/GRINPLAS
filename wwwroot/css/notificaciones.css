@@ -1,0 +1,75 @@
+.notification-item {
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.notification-item.bg-light-green {
+  background-color: #e8f5e9;
+}
+
+.notification-title {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.notification-message {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.notification-time {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 2px;
+}
+
+.notification-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.status-pedido {
+  background-color: #4caf50;
+}
+
+.status-pago {
+  background-color: #f44336;
+}
+
+.notification-action {
+  font-size: 0.8rem;
+  color: #888;
+  text-decoration: none;
+  align-self: flex-end;
+  margin-left: auto;
+  padding: 3px 10px;
+}
+
+.notification-action:hover {
+  color: #333;
+}
+
+.dropdown-menu {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.notification-list {
+  transition: all 0.3s ease;
+}
+
+.notification-item {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.notification-item.fade-out {
+  opacity: 0;
+  transform: translateX(-10px);
+}
