@@ -55,10 +55,10 @@ namespace GRINPLAS.Controllers
                 return RedirectToPage("/Account/AccessDenied");
             }
             var viewModel = new PedidoViewModel{
-                Pedidos = await _context.Pedidos.Include (p => p.Cliente).ToListAsync(),
+                Pedidos = await _context.Pedidos.Include (p => p.Cliente).Where(p => p.Status == "proceso" || p.Status == "entregado" || p.Status == "cancelado").ToListAsync(),
                 nuevoPedido = new Pedido(),
                 Clientes = await _context.Clientes.ToListAsync(),
-                 Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync()
+                Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync()
             };
              ViewBag.TotalMangas = await _context.DetallePedidos
                 .Where(dp => dp.Producto.Categoria.Nombre == "Mangas")
