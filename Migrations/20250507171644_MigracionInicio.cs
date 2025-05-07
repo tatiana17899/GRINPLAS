@@ -31,6 +31,7 @@ namespace GRINPLAS.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -181,13 +182,38 @@ namespace GRINPLAS.Migrations
                     TipDoc = table.Column<string>(type: "text", nullable: true),
                     NumDoc = table.Column<string>(type: "text", nullable: true),
                     Telefono = table.Column<string>(type: "text", nullable: true),
-                    Imagen = table.Column<string>(type: "text", nullable: true)
+                    Imagen = table.Column<string>(type: "text", nullable: true),
+                    FecCre = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clientes", x => x.ClienteId);
                     table.ForeignKey(
                         name: "FK_Clientes_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Trabajadores",
+                columns: table => new
+                {
+                    IdTrabajador = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ApplicationUserId = table.Column<string>(type: "text", nullable: false),
+                    Nombre = table.Column<string>(type: "text", nullable: false),
+                    Apellidos = table.Column<string>(type: "text", nullable: false),
+                    Telefono = table.Column<string>(type: "text", nullable: false),
+                    DNI = table.Column<string>(type: "text", nullable: false),
+                    PosicionLaboral = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Trabajadores", x => x.IdTrabajador);
+                    table.ForeignKey(
+                        name: "FK_Trabajadores_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -225,7 +251,7 @@ namespace GRINPLAS.Migrations
                     CarritoId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ClienteId = table.Column<int>(type: "integer", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    FechaCreacion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -246,12 +272,13 @@ namespace GRINPLAS.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ClienteId = table.Column<int>(type: "integer", nullable: false),
                     Direccion = table.Column<string>(type: "text", nullable: false),
-                    FechaEmision = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FechaEntrega = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    BoletaEmitida = table.Column<string>(type: "text", nullable: true),
+                    FechaEmision = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    FechaEntrega = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Total = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Pago = table.Column<string>(type: "text", nullable: true),
-                    BoletaEmitida = table.Column<string>(type: "text", nullable: true)
+                    ComprobantePago = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -302,8 +329,7 @@ namespace GRINPLAS.Migrations
                     ProductoId = table.Column<int>(type: "integer", nullable: false),
                     Cantidad = table.Column<int>(type: "integer", nullable: false),
                     PrecioUnitario = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    PrecioTotal = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Medida = table.Column<double>(type: "double precision", nullable: false)
+                    PrecioTotal = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -400,6 +426,12 @@ namespace GRINPLAS.Migrations
                 name: "IX_Productos_CategoriaId",
                 table: "Productos",
                 column: "CategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Trabajadores_ApplicationUserId",
+                table: "Trabajadores",
+                column: "ApplicationUserId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -425,6 +457,9 @@ namespace GRINPLAS.Migrations
 
             migrationBuilder.DropTable(
                 name: "DetallePedidos");
+
+            migrationBuilder.DropTable(
+                name: "Trabajadores");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250429061648_MigracionComprobanteCliente")]
-    partial class MigracionComprobanteCliente
+    [Migration("20250507171644_MigracionInicio")]
+    partial class MigracionInicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
