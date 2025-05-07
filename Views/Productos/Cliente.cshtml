@@ -136,61 +136,78 @@
     </div>
 </div>
 
+@* Modal de inicio de sesión requerido *@
+<div class="modal fade" id="modalLoginRequired" tabindex="-1" aria-labelledby="modalLoginRequiredLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body p-4">
+                <i class="fas fa-times-circle mb-4" style="font-size: 80px; color: #E63946;"></i>
+                <h5 class="mb-4" style="color: #3B3B3B;">Primero inicia sesión, para realizar alguna compra</h5>
+                <a href="/Identity/Account/Login" 
+                   class="btn"
+                   style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 30px;">
+                    Iniciar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            let stockActual = 0;
+            const cantidadInput = document.getElementById('cantidadProducto');
+            const cantidadHidden = document.getElementById('cantidadHidden');
+            const incrementarBtn = document.getElementById('incrementarCantidad');
+            const decrementarBtn = document.getElementById('decrementarCantidad');
             const botonesCarrito = document.querySelectorAll('.btn-carrito');
 
             botonesCarrito.forEach(boton => {
-                boton.addEventListener('click', function () {
+                boton.addEventListener('click', function (e) {
+                    const isAuthenticated = '@User.Identity?.IsAuthenticated' === 'True';
+                    
+                    if (!isAuthenticated) {
+                        e.preventDefault();
+                        const modalLoginRequired = new bootstrap.Modal(document.getElementById('modalLoginRequired'));
+                        modalLoginRequired.show();
+                        return;
+                    }
+
                     const nombre = this.getAttribute('data-nombre');
                     const descripcion = this.getAttribute('data-descripcion');
                     const precio = this.getAttribute('data-precio');
                     const imagen = this.getAttribute('data-imagen');
                     const productoId = this.getAttribute('data-producto-id');
-                    const stock = parseInt(this.getAttribute('data-stock'));
+                    stockActual = parseInt(this.getAttribute('data-stock'));
+
+                    // Resetear cantidad a 1 al abrir el modal
+                    cantidadInput.value = '1';
+                    cantidadHidden.value = '1';
 
                     document.getElementById('modalNombreProducto').textContent = nombre;
                     document.getElementById('modalDescripcionProducto').textContent = descripcion;
                     document.getElementById('modalPrecioProducto').textContent = precio;
                     document.getElementById('modalImagenProducto').src = imagen;
                     document.getElementById('productoId').value = productoId;
-                    document.getElementById('stockDisponible').textContent = stock;
+                    document.getElementById('stockDisponible').textContent = stockActual;
 
-                    document.getElementById('cantidadProducto').value = 1;
-                    document.getElementById('cantidadHidden').value = 1;
-                    
-                    // Establecer máximo de cantidad según el stock
-                    document.getElementById('incrementarCantidad').dataset.maxStock = stock;
-
-                    const modal = new bootstrap.Modal(document.getElementById('detalleProductoModal'), {
-                        backdrop: true,
-                        keyboard: true,
-                        focus: true
-                    });
-
-                    modal.show();
+                    const detalleModal = new bootstrap.Modal(document.getElementById('detalleProductoModal'));
+                    detalleModal.show();
                 });
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const cantidadInput = document.getElementById('cantidadProducto');
-            const cantidadHidden = document.getElementById('cantidadHidden');
-            const incrementarBtn = document.getElementById('incrementarCantidad');
-            const decrementarBtn = document.getElementById('decrementarCantidad');
-
+            // Incrementar cantidad
             incrementarBtn.addEventListener('click', function () {
                 let cantidad = parseInt(cantidadInput.value);
-                const maxStock = parseInt(this.dataset.maxStock);
-                
-                if (cantidad < maxStock) {
+                if (cantidad < stockActual) {
                     cantidad++;
                     cantidadInput.value = cantidad;
                     cantidadHidden.value = cantidad;
                 }
             });
 
+            // Decrementar cantidad
             decrementarBtn.addEventListener('click', function () {
                 let cantidad = parseInt(cantidadInput.value);
                 if (cantidad > 1) {
@@ -199,9 +216,8 @@
                     cantidadHidden.value = cantidad;
                 }
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
+            // Manejar mensajes de error y éxito del TempData
             const errorMessage = '@TempData["ErrorMessage"]';
             const successMessage = '@TempData["SuccessMessage"]';
 

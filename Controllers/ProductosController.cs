@@ -119,16 +119,6 @@ namespace GRINPLAS.Controllers
 
         public async Task<IActionResult> Cliente(int pagina = 1)
         {
-            if (_userManager == null)
-            {
-                return RedirectToPage("/Account/AccessDenied");
-            }
-            var user = await _userManager.GetUserAsync(User);
-
-            if(user == null){
-                return RedirectToPage("/Account/AccessDenied");
-            }
-            var userRoles= await _userManager.GetRolesAsync(user);
 
             int productosPorPagina = 6;
             var productos = ObtenerProductos().Where(p => p.Stock > 0); // Filtrar productos con stock > 0
