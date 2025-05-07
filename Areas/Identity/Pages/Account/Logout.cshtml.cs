@@ -39,5 +39,25 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                 return RedirectToPage();
             }
         }
+        public string GetRedirectUrlByRole()
+        {
+            if (User.IsInRole("Administrador"))
+            {
+                return "/InicioAdmi/Inicio";
+            }
+            else if (User.IsInRole("GerenteGeneral"))
+            {
+                return "/InicioGeren/InicioG";
+            }
+            else if (User.IsInRole("Vendedor"))
+            {
+                return "/InicioGeren/InicioG";
+            }
+            else
+            {
+                return "/Productos/Cliente";
+            }
+
+        }
     }
 }

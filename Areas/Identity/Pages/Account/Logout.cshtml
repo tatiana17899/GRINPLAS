@@ -99,7 +99,7 @@
                                         <i class="fas fa-sign-out-alt mr-2"></i> Sí, Cerrar Sesión
                                     </button>
                                 </form>
-                                <a href="/" class="btn btn-logout" style="background-color: #6c757d;">
+                               <a href="@Model.GetRedirectUrlByRole()" class="btn btn-logout" style="background-color: #6c757d;">
                                     <i class="fas fa-times mr-2"></i> Cancelar
                                 </a>
                             </div>
@@ -134,5 +134,6 @@
             }
         });
     </script>
+    
 </body>
 </html>
