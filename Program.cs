@@ -61,6 +61,10 @@ using (var scope = app.Services.CreateScope())
         var gerentePassword = "Tatiana132%&"; 
         await EnsureUserAsync(userManager, gerenteEmail, gerentePassword, "GerenteGeneral");
 
+
+        var vendedorEmail = "usera0efb8e7@grinplas.com";
+        var vendedorPassword = "mqa1+Mky"; 
+        await EnsureUserAsync(userManager, vendedorEmail, vendedorPassword, "Vendedor");
         await context.SaveChangesAsync();
     }
     catch (Exception ex)

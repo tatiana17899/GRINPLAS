@@ -9,16 +9,16 @@ using Microsoft.Extensions.Logging;
 namespace GRINPLAS.Controllers
 {
     
-    public class InicioGerenController : Controller
+    public class VendedorController : Controller
     {
-        private readonly ILogger<InicioGerenController> _logger;
+        private readonly ILogger<VendedorController> _logger;
 
-        public InicioGerenController(ILogger<InicioGerenController> logger)
+        public VendedorController(ILogger<VendedorController> logger)
         {
             _logger = logger;
         }
 
-        public IActionResult InicioGerente()
+        public IActionResult InicioG()
         {
             return View();
         }

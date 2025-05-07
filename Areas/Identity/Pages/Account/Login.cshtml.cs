@@ -119,8 +119,10 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         }
                         await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Gerente"));
                         await _signInManager.RefreshSignInAsync(user);
-                        return RedirectToAction("InicioG", "InicioGeren");
+                        return RedirectToAction("InicioGerente", "InicioGeren");
                     }
+
+
                     if (user != null && await _userManager.IsInRoleAsync(user, "Administrador"))
                     {
                         var existingClaims = await _userManager.GetClaimsAsync(user);
@@ -134,6 +136,8 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         await _signInManager.RefreshSignInAsync(user);
                         return RedirectToAction("Inicio", "InicioAdmi");
                     }
+
+
                     if (user != null && await _userManager.IsInRoleAsync(user, "Vendedor"))
                     {
                         var existingClaims = await _userManager.GetClaimsAsync(user);
@@ -143,9 +147,9 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         {
                             await _userManager.RemoveClaimAsync(user, layoutClaim);
                         }
-                        await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Administrador"));
+                        await _userManager.AddClaimAsync(user, new Claim("LayoutPreference", "Vendedor"));
                         await _signInManager.RefreshSignInAsync(user);
-                        return RedirectToAction("InicioG", "InicioGeren");
+                        return RedirectToAction("InicioG", "Vendedor");
                     }
 
                     return RedirectToAction("Cliente", "Productos");

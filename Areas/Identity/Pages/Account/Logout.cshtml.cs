@@ -47,11 +47,11 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             }
             else if (User.IsInRole("GerenteGeneral"))
             {
-                return "/InicioGeren/InicioG";
+                return "/InicioGeren/InicioGerente";
             }
             else if (User.IsInRole("Vendedor"))
             {
-                return "/InicioGeren/InicioG";
+                return "/Vendedor/InicioG";
             }
             else
             {
