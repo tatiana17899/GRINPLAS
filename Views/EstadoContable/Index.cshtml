@@ -19,32 +19,33 @@
                     <h1 class="display-4 mb-3" style="font-weight: 400; font-size: 40px">
                         Control de Gastos
                     </h1>
-                    <div class="d-flex justify-content-end ms-auto"></div>
-                        <div class="input-group me-2" style="width: auto;">
-                            <input type="text" 
-                                class="form-control" 
-                                placeholder="dd/mm/yy" 
-                                id="fechaInicio"
-                                style="border: 1px solid #97D3A8; border-radius: 15px;">
-                            <div class="input-group-append">
-                                <span class="input-group-text bg-transparent border-0">
-                                    <i class="fas fa-calendar" style="color: #096623;"></i>
-                                </span>
+                    <div class="d-flex justify-content-end ms-auto">
+                        <form asp-action="Index" asp-controller="EstadoContable" method="get" class="d-flex">
+                            <div class="input-group me-2" style="width: auto;">
+                                <div class="position-relative d-flex align-items-center" style="background-color: white; border-radius: 15px; border: 1px solid #97D3A8; height: 38px;">
+                                    <input type="date" 
+                                        class="form-control border-0" 
+                                        name="fechaInicio"
+                                        value="@ViewBag.FechaInicio"
+                                        required
+                                        style="border-radius: 15px; height: 100%;">
+                                </div>
                             </div>
-                        </div>
-                        <span class="me-2" style="font-size: 20px; color: #096623;">a</span>
-                        <div class="input-group" style="width: auto;">
-                            <input type="text" 
-                                class="form-control" 
-                                placeholder="dd/mm/yy" 
-                                id="fechaFin"
-                                style="border: 1px solid #97D3A8; border-radius: 15px;">
-                            <div class="input-group-append">
-                                <span class="input-group-text bg-transparent border-0">
-                                    <i class="fas fa-calendar" style="color: #096623;"></i>
-                                </span>
+                            <span class="me-2 position-relative d-flex" style="font-size: 20px; color: #096623;">a</span>
+                            <div class="input-group me-2" style="width: auto;">
+                                <div class="position-relative d-flex align-items-center" style="background-color: white; border-radius: 15px; border: 1px solid #97D3A8; height: 38px;">
+                                    <input type="date" 
+                                        class="form-control border-0" 
+                                        name="fechaFin"
+                                        value="@ViewBag.FechaFin"
+                                        required
+                                        style="border-radius: 15px; height: 100%;">
+                                </div>
                             </div>
-                        </div>
+                            <button type="submit" class="btn" style="background-color: #1B983E; color: white; border-radius: 25px;">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -90,7 +91,7 @@
                 </div>
             </div>
 
-            <div class="card mt-4">
+            <div class="card mt-4" style="border: none;">
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead class="bg-light">
@@ -127,16 +128,22 @@
                             @if (ViewBag.HasPreviousPage)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage - 1 })" 
-                                    style="color: #00A52B;">Anterior</a>
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        pageNumber = ViewBag.CurrentPage - 1, 
+                                        fechaInicio = ViewBag.FechaInicio,
+                                        fechaFin = ViewBag.FechaFin 
+                                    })" style="color: #00A52B;">Anterior</a>
                                 </li>
                             }
-                            
+
                             @for (int i = 1; i <= ViewBag.TotalPages; i++)
                             {
                                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = i })" 
-                                    style="@(i == ViewBag.CurrentPage ? "background-color: #00A52B; border-color: #00A52B;" : "color: #00A52B;")">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        pageNumber = i,
+                                        fechaInicio = ViewBag.FechaInicio,
+                                        fechaFin = ViewBag.FechaFin 
+                                    })" style="@(i == ViewBag.CurrentPage ? "background-color: #00A52B; border-color: #00A52B;" : "color: #00A52B;")">
                                         @i
                                     </a>
                                 </li>
@@ -145,8 +152,11 @@
                             @if (ViewBag.HasNextPage)
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = ViewBag.CurrentPage + 1 })" 
-                                    style="color: #00A52B;">Siguiente</a>
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        pageNumber = ViewBag.CurrentPage + 1,
+                                        fechaInicio = ViewBag.FechaInicio,
+                                        fechaFin = ViewBag.FechaFin 
+                                    })" style="color: #00A52B;">Siguiente</a>
                                 </li>
                             }
                         </ul>

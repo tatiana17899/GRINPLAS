@@ -20,37 +20,85 @@ namespace GRINPLAS.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1)
+        public async Task<IActionResult> Index(DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1)
         {
-            // Calcular el total de ingresos sumando todos los pedidos
-            decimal totalIngresos = await _context.Pedidos.SumAsync(p => p.Total);
-            ViewBag.TotalIngresos = totalIngresos.ToString("N2"); // Formato con separador de miles
+            // Consulta base de gastos para la paginación
+            var query = _context.Gastos.AsQueryable();
 
-            // Calcular el total de gastos
-            decimal totalGastos = await _context.Gastos.SumAsync(g => g.Valor);
-            ViewBag.TotalGastos = totalGastos.ToString("N2");
-            
-            var gastos = await _context.Gastos
-            .OrderByDescending(g => g.Fecha)
-            .Skip((pageNumber - 1) * _pageSize)
-            .Take(_pageSize)
-            .ToListAsync();
+            // Calcular totales
+            decimal totalIngresos;
+            decimal totalGastos;
 
-            var cantidadGastos = await _context.Gastos.CountAsync();
-            var totalPages = (int)Math.Ceiling(cantidadGastos / (double)_pageSize);
+            if (fechaInicio.HasValue && fechaFin.HasValue)
+            {
+                ViewBag.FechaInicio = fechaInicio.Value.ToString("yyyy-MM-dd");
+                ViewBag.FechaFin = fechaFin.Value.ToString("yyyy-MM-dd");
 
+                // Filtrar gastos por fecha
+                query = query.Where(g => g.Fecha.Date >= fechaInicio.Value.Date && 
+                                        g.Fecha.Date <= fechaFin.Value.Date);
+
+                // Calcular ingresos filtrados por fecha
+                totalIngresos = await _context.Pedidos
+                    .Where(p => p.FechaEmision.Date >= fechaInicio.Value.Date &&
+                            p.FechaEmision.Date <= fechaFin.Value.Date)
+                    .SumAsync(p => p.Total);
+
+                // Calcular gastos filtrados por fecha
+                totalGastos = await _context.Gastos
+                    .Where(g => g.Fecha.Date >= fechaInicio.Value.Date &&
+                            g.Fecha.Date <= fechaFin.Value.Date)
+                    .SumAsync(g => g.Valor);
+            }
+            else
+            {
+                // Usar el mes actual por defecto para la visualización
+                fechaInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                fechaFin = DateTime.Now;
+                ViewBag.FechaInicio = fechaInicio.Value.ToString("yyyy-MM-dd");
+                ViewBag.FechaFin = fechaFin.Value.ToString("yyyy-MM-dd");
+
+                // Calcular todos los ingresos
+                totalIngresos = await _context.Pedidos.SumAsync(p => p.Total);
+
+                // Calcular todos los gastos
+                totalGastos = await _context.Gastos.SumAsync(g => g.Valor);
+            }
+
+            // Obtener total de registros para la paginación
+            var totalItems = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)_pageSize);
+
+            // Validar número de página
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageNumber > totalPages && totalPages > 0) pageNumber = totalPages;
+
+            // Obtener los gastos paginados (4 por página)
+            var gastos = await query
+                .OrderByDescending(g => g.Fecha)
+                .Skip((pageNumber - 1) * _pageSize)
+                .Take(_pageSize)
+                .ToListAsync();
+
+            // Configurar ViewBag para la paginación
             ViewBag.CurrentPage = pageNumber;
             ViewBag.TotalPages = totalPages;
             ViewBag.HasPreviousPage = pageNumber > 1;
             ViewBag.HasNextPage = pageNumber < totalPages;
+            ViewBag.TotalItems = totalItems;
+            
+            // Guardar parámetros de filtrado para los links de paginación
+            ViewBag.FechaInicioParam = fechaInicio?.ToString("yyyy-MM-dd");
+            ViewBag.FechaFinParam = fechaFin?.ToString("yyyy-MM-dd");
 
-            // Datos para la gráfica
+            // Configurar totales y datos del gráfico
+            ViewBag.TotalIngresos = totalIngresos.ToString("N2");
+            ViewBag.TotalGastos = Math.Abs(totalGastos).ToString("N2");
             ViewBag.ChartData = new
             {
                 Ingresos = totalIngresos,
-                Gastos = totalGastos
+                Gastos = Math.Abs(totalGastos)
             };
-
 
             return View(gastos);
         }
