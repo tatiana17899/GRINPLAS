@@ -1,0 +1,88 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirmar email";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .confirmation-container {
+            background-color: #7fb5b5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .confirmation-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .confirmation-title {
+            color: #1a9651;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .thank-you-button {
+            background-color: #c1e1c1;
+            color: #333;
+            padding: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 15px;
+            font-weight: normal;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .home-button {
+            background-color: #1a6665;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: block;
+            font-weight: normal;
+            border: none;
+            width: 100%;
+        }
+        
+        .home-button:hover {
+            background-color: #155554;
+            color:white
+        }
+    </style>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <h2 class="confirmation-title">¡Gracias por confirmar 
+tu cuenta!</h2>
+        
+            <a href="/Identity/Account/Login" class="home-button">Ir página de iniciar sesion</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null; 
+}
+<link rel="stylesheet" href="~/css/login.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<body style="background-color: #1b665fc4;">
+    <div class="login-container">
+        <div class="card login-card">
+            <div class="card-body">
+            <form id="registerForm" style="color: #1b665e" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2 class="card-title text-center">Registrar Cuenta</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="mb-3">
+                    <label asp-for="Input.NombreEmpresa">Nombre</label>
+                    <input asp-for="Input.NombreEmpresa" class="form-control" aria-required="true" />
+                    <span asp-validation-for="Input.NombreEmpresa" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.TipDoc">Tipo de Documento</label>
+                    <select asp-for="Input.TipDoc" class="form-control" aria-required="true" id="docType">
+                        <option value="">Seleccione tipo</option>
+                        <option value="DNI">DNI</option>
+                        <option value="RUC">RUC</option>
+                    </select>
+                    <span asp-validation-for="Input.TipDoc" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.NumDoc">Número de Documento</label>
+                    <input asp-for="Input.NumDoc" class="form-control" aria-required="true" 
+                           id="docNumber"/>
+                    <small class="form-text text-muted">
+                        Máximo <span id="maxLength">8</span> dígitos
+                    </small>
+                    <span asp-validation-for="Input.NumDoc" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.Telefono">Teléfono</label>
+                    <input asp-for="Input.Telefono" class="form-control" aria-required="true">
+                    <span asp-validation-for="Input.Telefono" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.Email">Email</label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" 
+                           aria-required="true" placeholder="name@example.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.Password">Contraseña</label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" 
+                           aria-required="true" placeholder="Escribir contraseña" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Input.ConfirmPassword">Confirmar Contraseña</label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" 
+                           aria-required="true" placeholder="Escribir contraseña" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="Input.TerminosCondiciones" id="acceptTerms" />
+                    <label class="form-check-label" for="acceptTerms">
+                        Acepto los <a asp-controller="InicioAdmi" asp-action="TyC" target="_blank" class="text-success">Términos y Condiciones</a>
+                    </label>
+                    <span asp-validation-for="Input.TerminosCondiciones" class="text-danger"></span>
+                </div>
+                <div>
+                    <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-success">Registrarse</button>
+                </div>
+
+                <div class="container" style="margin-top: 30px">
+                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-success">¿Ya tienes cuenta? Iniciar Sesión</a>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/register.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}

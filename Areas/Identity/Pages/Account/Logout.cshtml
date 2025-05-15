@@ -1,0 +1,139 @@
+﻿@page
+@model LogoutModel
+
+@{
+    ViewData["Title"] = "Cerrar Sesión";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .logout-modal {
+            background-color: rgba(27, 102, 95, 0.9);
+        }
+        .logout-modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .logout-header {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            background-color: #1b665e;
+            color: white;
+            border-bottom: none;
+            position: relative;
+        }
+        .logout-body {
+            padding: 30px;
+            text-align: center;
+        }
+        .logout-footer {
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            background-color: #f8f9fa;
+            border-top: none;
+            justify-content: center;
+        }
+        .btn-logout {
+            background-color: #1b665e;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+        }
+        .btn-logout:hover {
+            background-color: #144a45;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-logout:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(27, 102, 94, 0.5);
+        }
+        .success-message {
+            color: #1b665e;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        .close {
+            color: white;
+            opacity: 0.8;
+            text-shadow: none;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 1.5rem;
+        }
+        .close:hover {
+            color: white;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="logout-modal d-flex justify-content-center align-items-center min-vh-100">
+    <!-- Modal -->
+    <div class="modal show d-block" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content logout-modal-content">
+                <div class="modal-header logout-header">
+                    <h5 class="modal-title" id="logoutModalLabel">@ViewData["Title"]</h5>
+                </div>
+                <div class="modal-body logout-body">
+                    @{
+                        if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <p class="mb-4">¿Estás seguro que deseas cerrar tu sesión?</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                    <button type="submit" class="btn btn-logout">
+                                        <i class="fas fa-sign-out-alt mr-2"></i> Sí, Cerrar Sesión
+                                    </button>
+                                </form>
+                               <a href="@Model.GetRedirectUrlByRole()" class="btn btn-logout" style="background-color: #6c757d;">
+                                    <i class="fas fa-times mr-2"></i> Cancelar
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="success-message">
+                                <i class="fas fa-check-circle fa-3x mb-3" style="color: #28a745;"></i>
+                                <p>Has cerrado sesión exitosamente.</p>
+                            </div>
+                            <a href="/" class="btn btn-logout">
+                                <i class="fas fa-home mr-2"></i> Volver al Inicio
+                            </a>
+                        }
+                    }
+                </div>
+                <div class="modal-footer logout-footer">
+                    <small class="text-muted">GRINPLAS &copy; @DateTime.Now.Year</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        // Opcional: Cerrar el modal al hacer clic fuera de él
+        document.querySelector('.logout-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                window.location.href = '/';
+            }
+        });
+    </script>
+    
+</body>
+</html>

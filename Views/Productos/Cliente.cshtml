@@ -1,0 +1,237 @@
+@using GRINPLAS.ViewModel
+@using System.Linq
+@model IEnumerable<Producto>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Cliente";
+    Layout = "~/Views/Shared/_LayoutProducto.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+
+
+<div class="container mt-5">
+    <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
+        <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+            <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+                <span style="color: #7DAE8A;">NUESTROS</span> PRODUCTOS
+            </h1>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-container">
+        @foreach (var producto in Model)
+        {
+            <div class="col d-flex justify-content-center">
+                <div class="card" style="background-color: #F2F2F2; border: none; border-radius: 29px; width: 380px; height: 560px;">
+                    <div class="d-flex justify-content-center px-2 py-4">
+                        <img src="@producto.Imagen" class="rounded-4" alt="Imagen de @producto.Nombre" style="width: 90%; height: 300px; object-fit: cover; border-radius: 29px;">
+                    </div>
+                    <div class="card-body text-center" style="padding: 8px;">
+                        <h3 class="card-title fw-semibold text-uppercase" style="font-size: 24px; letter-spacing: 0.2px; color: #3B3B3B;">@producto.Nombre</h3>
+                        <p class="card-text fw-medium" style="font-size: 16px; letter-spacing: 0.2px; color: #3B3B3B;">@producto.Descripcion</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center px-4" style="padding-bottom: 15px;">
+                        <p class="card-text fw-bold mb-0" style="font-size: 30px; letter-spacing: 0.2px; color: #000;">S/@producto.Precio.ToString("F2")</p>
+                        <button class="btn rounded-circle d-flex justify-content-center align-items-center btn-carrito" 
+                                style="width: 60px; height: 60px; background-color: #1B665E;" 
+                                data-nombre="@producto.Nombre" 
+                                data-descripcion="@producto.Descripcion" 
+                                data-precio="S/@producto.Precio.ToString("F2")"
+                                data-imagen="@producto.Imagen"
+                                data-producto-id="@producto.ProductoId"
+                                data-stock="@producto.Stock">
+                            <i class="fas fa-shopping-cart text-white" style="font-size: 25px;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        @if (ViewBag.PaginaActual > 1)
+        {
+            <a href="@Url.Action("Cliente", new { pagina = ViewBag.PaginaActual - 1 })" 
+            class="btn d-flex align-items-center justify-content-center" 
+            style="background-color: white; color: #8FC1B5; border: 1px solid #8FC1B5; border-radius: 30px; padding: 10px 30px; font-size: 24px; margin-right: 10px;">
+                <i class="fas fa-arrow-left" style="font-size: 20px; margin-right: 10px;"></i>
+                <span style="line-height: 1;">Anterior</span>
+            </a>
+        }
+
+        @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+        {
+            <a href="@Url.Action("Cliente", new { pagina = ViewBag.PaginaActual + 1 })" class="btn d-flex align-items-center justify-content-center" style="background-color: #8FC1B5; color: white; border: none; border-radius: 30px; padding: 10px 30px; font-size: 24px;">
+                <span style="line-height: 1; margin-right: 10px;">Siguiente</span>
+                <i class="fas fa-arrow-right" style="font-size: 20px;"></i>
+            </a>
+        }
+    </div>
+</div>
+<div class="modal fade" id="detalleProductoModal" tabindex="-1" aria-labelledby="detalleProductoModalLabel" aria-hidden="true" style="z-index: 2050;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered custom-modal-size">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: none !important;">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5 text-center">
+                            <img id="modalImagenProducto" src="" alt="Imagen del producto" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-7">
+                            <h5 id="modalNombreProducto" class="fw-bold mb-3"></h5>
+                            <p id="modalDescripcionProducto" class="text-muted mb-4"></p>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h4 id="modalPrecioProducto" class="fw-bold mb-0"></h4>
+                                <div class="d-flex align-items-center">
+                                    <button id="decrementarCantidad" class="btn" style="background-color: #B2DCB9">-</button>
+                                    <input id="cantidadProducto" type="text" value="1" class="form-control text-center mx-2" style="width: 50px;" readonly>
+                                    <button id="incrementarCantidad" class="btn" style="background-color: #B2DCB9">+</button>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-3">Stock disponible: <span id="stockDisponible" class="fw-bold"></span> unidades</p>
+                            <form id="formAgregarAlCarrito" method="post" action="~/Productos/AgregarAlCarrito">
+                                <input type="hidden" id="productoId" name="productoId" value="">
+                                <input type="hidden" id="cantidadHidden" name="cantidad" value="1">
+                                <button type="submit" id="btnComprar" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 8px 0; font-size: 16px;">
+                                    <i class="fas fa-shopping-cart me-2"></i> Comprar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalSuccess" tabindex="-1" aria-labelledby="modalSuccessLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
+                <h5 id="modalSuccessMessage" class="fw-bold mt-3" style="color: #3B3B3B;"></h5>
+                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-times-circle" style="font-size: 80px; color: #E74C3C;"></i>
+                <h5 id="modalErrorMessage" class="fw-bold mt-3" style="color: #3B3B3B;"></h5>
+                <button type="button" class="btn mt-4" style="background-color: #E74C3C; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal de inicio de sesión requerido *@
+<div class="modal fade" id="modalLoginRequired" tabindex="-1" aria-labelledby="modalLoginRequiredLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body p-4">
+                <i class="fas fa-times-circle mb-4" style="font-size: 80px; color: #E63946;"></i>
+                <h5 class="mb-4" style="color: #3B3B3B;">Primero inicia sesión, para realizar alguna compra</h5>
+                <a href="/Identity/Account/Login" 
+                   class="btn"
+                   style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 30px;">
+                    Iniciar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let stockActual = 0;
+            const cantidadInput = document.getElementById('cantidadProducto');
+            const cantidadHidden = document.getElementById('cantidadHidden');
+            const incrementarBtn = document.getElementById('incrementarCantidad');
+            const decrementarBtn = document.getElementById('decrementarCantidad');
+            const botonesCarrito = document.querySelectorAll('.btn-carrito');
+
+            botonesCarrito.forEach(boton => {
+                boton.addEventListener('click', function (e) {
+                    const isAuthenticated = '@User.Identity?.IsAuthenticated' === 'True';
+                    
+                    if (!isAuthenticated) {
+                        e.preventDefault();
+                        const modalLoginRequired = new bootstrap.Modal(document.getElementById('modalLoginRequired'));
+                        modalLoginRequired.show();
+                        return;
+                    }
+
+                    const nombre = this.getAttribute('data-nombre');
+                    const descripcion = this.getAttribute('data-descripcion');
+                    const precio = this.getAttribute('data-precio');
+                    const imagen = this.getAttribute('data-imagen');
+                    const productoId = this.getAttribute('data-producto-id');
+                    stockActual = parseInt(this.getAttribute('data-stock'));
+
+                    // Resetear cantidad a 1 al abrir el modal
+                    cantidadInput.value = '1';
+                    cantidadHidden.value = '1';
+
+                    document.getElementById('modalNombreProducto').textContent = nombre;
+                    document.getElementById('modalDescripcionProducto').textContent = descripcion;
+                    document.getElementById('modalPrecioProducto').textContent = precio;
+                    document.getElementById('modalImagenProducto').src = imagen;
+                    document.getElementById('productoId').value = productoId;
+                    document.getElementById('stockDisponible').textContent = stockActual;
+
+                    const detalleModal = new bootstrap.Modal(document.getElementById('detalleProductoModal'));
+                    detalleModal.show();
+                });
+            });
+
+            // Incrementar cantidad
+            incrementarBtn.addEventListener('click', function () {
+                let cantidad = parseInt(cantidadInput.value);
+                if (cantidad < stockActual) {
+                    cantidad++;
+                    cantidadInput.value = cantidad;
+                    cantidadHidden.value = cantidad;
+                }
+            });
+
+            // Decrementar cantidad
+            decrementarBtn.addEventListener('click', function () {
+                let cantidad = parseInt(cantidadInput.value);
+                if (cantidad > 1) {
+                    cantidad--;
+                    cantidadInput.value = cantidad;
+                    cantidadHidden.value = cantidad;
+                }
+            });
+
+            // Manejar mensajes de error y éxito del TempData
+            const errorMessage = '@TempData["ErrorMessage"]';
+            const successMessage = '@TempData["SuccessMessage"]';
+
+            if (errorMessage && errorMessage !== '') {
+                const modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                document.getElementById('modalErrorMessage').textContent = errorMessage;
+                modalError.show();
+            }
+
+            if (successMessage && successMessage !== '') {
+                const modalSuccess = new bootstrap.Modal(document.getElementById('modalSuccess'));
+                document.getElementById('modalSuccessMessage').textContent = successMessage;
+                modalSuccess.show();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,139 @@
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<style>
+    .main-content {
+        padding: 40px;
+        min-height: 700px;
+        max-width: 1200px;
+    }
+
+    .welcome-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .left-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-top: 40px;
+    }
+
+    .welcome-text h1 {
+        color: #096623;
+        font-size: 48px;
+        margin-bottom: 30px;
+        line-height: 1.2;
+        text-decoration: none !important;
+    }
+
+    .right-column {
+        width: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-image {
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 5px solid var(--main-green);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .user-info {
+        max-width: 400px;
+    }
+
+    .form-control {
+        border-radius: 20px;
+        padding: 12px 15px;
+        margin-bottom: 25px;
+        border: 1px solid #ddd;
+        width: 100%;
+        font-size: 16px;
+        background-color: white;
+    }
+
+    .btn-logout-main {
+        background-color: #096623;
+        color: white;
+        border: none;
+        padding: 13px 16px; 
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        text-align: center;
+        font-size: 17px;
+    }
+
+    .btn-logout-main:hover {
+        background-color: #0a7d2b;
+        color: white;
+    }
+
+    .breadcrumb {
+        padding: 20px 40px;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+        text-decoration: none !important;
+        font-size: 16px;
+    }
+
+    hr {
+        display: none;
+    }
+</style>
+
+<div class="main-content">
+    <div class="breadcrumb">
+        <a class="text-muted">Inicio</a>
+    </div>
+
+    <div class="welcome-content">
+        <div class="left-column">
+            <div class="welcome-text">
+                <h1>¡Bienvenido a nuestro <br> espacio!</h1>
+            </div>
+            
+            <div class="user-info">
+                <input type="email" class="form-control" value="usera0efb8e7@grinplas.com" readonly>
+                <br>
+                <a href="~/Identity/Account/Logout" class="btn-logout-main">Cerrar Sesión</a>
+            </div>
+        </div>
+        
+        <div class="right-column">
+            <div class="profile-image">
+                <img src="https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg"
+                    alt="Perfil">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/gerente.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}

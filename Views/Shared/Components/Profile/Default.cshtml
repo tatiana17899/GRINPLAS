@@ -1,0 +1,322 @@
+@using Microsoft.AspNetCore.Identity
+@using GRINPLAS.ViewModel
+@model ProfileEditViewModel
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<div class="profile-image-container" id="profileTrigger">
+    <img src="@(Model.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
+         class="rounded-circle" 
+         style="width: 40px; height: 40px; cursor: pointer;">
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="profile-slideout" id="profilePanel">
+    <button class="close-btn" id="closeProfile">&times;</button>
+    <div class="profile-content">
+        <div class="w-100 max-w-sm mx-auto">
+            <div class="d-flex align-items-center justify-content-between p-2">
+                <h5 class="text-gray-500 font-semibold profile-title">PERFIL</h5>
+            </div>
+            <form id="profileForm">
+                <div class="d-flex flex-column align-items-center mt-3">
+                    <div class="avatar-container">
+                        <img id="profileImage" 
+                             src="@(Model.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
+                             alt="Profile" 
+                             class="profile-img">
+                        <input type="file" 
+                               id="imageUpload" 
+                               accept="image/*" 
+                               style="display: none" 
+                               onchange="loadFile(event)">
+                        <!--<label class="camera-btn" onclick="document.getElementById('imageUpload').click();">
+                            <i class="bi bi-camera"></i>
+                        </label>-->
+                    </div>
+                    <div class="mt-3 w-100 px-2">
+                        <!-- Email -->
+                        <div class="input-wrapper">
+                            <input type="email" class="form-control text-center" 
+                                   value="@Model.Email" readonly />
+                            <i class="bi bi-pencil edit-icon" onclick="enableEdit('email')"></i>
+                        </div>
+                        
+                        <!-- Nombre Empresa -->
+                        <div class="input-wrapper">
+                            <input type="text" class="form-control text-center profile-field" 
+                                   name="NombreEmpresa" value="@Model.NombreEmpresa" readonly />
+                            <i class="bi bi-pencil edit-icon" onclick="enableEdit('NombreEmpresa')"></i>
+                        </div>
+                        
+                        <!-- Tipo Documento -->
+                        <div class="input-wrapper">
+                            <select class="form-control text-center profile-field" name="TipDoc" disabled>
+                                <option value="DNI" selected="@(Model.TipDoc == "DNI")">DNI</option>
+                                <option value="RUC" selected="@(Model.TipDoc == "RUC")">RUC</option>
+                            </select>
+                            <i class="bi bi-pencil edit-icon" onclick="enableSelect('TipDoc')"></i>
+                        </div>
+                        
+                        <!-- Número Documento -->
+                        <div class="input-wrapper">
+                            <input type="text" class="form-control text-center profile-field" 
+                                   name="NumDoc" value="@Model.NumDoc" readonly />
+                            <i class="bi bi-pencil edit-icon" onclick="enableEdit('NumDoc')"></i>
+                        </div>
+                        
+                        <!-- Teléfono -->
+                        <div class="input-wrapper">
+                            <input type="text" class="form-control text-center profile-field" 
+                                   name="Telefono" value="@Model.Telefono" readonly />
+                            <i class="bi bi-pencil edit-icon" onclick="enableEdit('Telefono')"></i>
+                        </div>
+                        
+                        <!-- Botón Guardar -->
+                        <button type="submit" class="btn btn-success w-100 mb-2" id="saveButton" style="display:none;">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <a href="~/HistorialPedidos/Index" class="btn btn-outline-success w-100 mb-2">Ver Historial de Pedidos</a>
+            <a href="~/Identity/Account/Logout" class="btn btn-success w-100">Cerrar Sesión</a>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Habilita la edición de campos de texto
+    function enableEdit(fieldName) {
+        const field = document.querySelector(`input[name="${fieldName}"]`);
+        const saveButton = document.getElementById('saveButton');
+        
+        if (field.readOnly) {
+            field.removeAttribute('readonly');
+            field.focus();
+            saveButton.style.display = 'block';
+        } else {
+            field.setAttribute('readonly', 'true');
+        }
+    }
+
+    // Habilita la edición de campos select (dropdown)
+    function enableSelect(fieldName) {
+        const field = document.querySelector(`select[name="${fieldName}"]`);
+        const saveButton = document.getElementById('saveButton');
+        
+        field.disabled = !field.disabled;
+        if (!field.disabled) {
+            field.focus();
+            saveButton.style.display = 'block';
+        }
+    }
+
+    // Muestra el modal para cambiar contraseña
+    function showPasswordModal() {
+        const modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+        modal.show();
+    }
+
+    // Función para mostrar errores con SweetAlert
+    function showError(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message,
+            confirmButtonColor: '#28a745'
+        });
+    }
+
+    // Función para mostrar éxito con SweetAlert
+    function showSuccess(message) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: message,
+            confirmButtonColor: '#28a745'
+        });
+    }
+
+    function validateForm() {
+        const tipDoc = document.querySelector('[name="TipDoc"]').value;
+        const numDoc = document.querySelector('[name="NumDoc"]').value;
+        const telefono = document.querySelector('[name="Telefono"]').value;
+        
+        if (tipDoc === "DNI" && (numDoc.length !== 8 || !/^\d+$/.test(numDoc))) {
+            showError("El DNI debe tener 8 dígitos numéricos");
+            return false;
+        }
+        
+        if (tipDoc === "RUC" && (numDoc.length !== 11 || !/^\d+$/.test(numDoc))) {
+            showError("El RUC debe tener 11 dígitos numéricos");
+            return false;
+        }
+        
+        if (telefono && !/^[0-9]{7,15}$/.test(telefono)) {
+            showError("El teléfono debe contener entre 7 y 15 dígitos numéricos");
+            return false;
+        }
+        
+        return true;
+    }
+
+    async function updatePassword() {
+        const currentPassword = document.querySelector('[name="CurrentPassword"]').value;
+        const newPassword = document.querySelector('[name="NewPassword"]').value;
+        const confirmPassword = document.querySelector('[name="ConfirmPassword"]').value;
+        
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            showError("Todos los campos son obligatorios");
+            return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+            showError("Las contraseñas nuevas no coinciden");
+            return;
+        }
+        
+        try {
+            const response = await fetch('/Account/ChangePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    CurrentPassword: currentPassword,
+                    NewPassword: newPassword,
+                    ConfirmPassword: confirmPassword
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showSuccess('Contraseña actualizada correctamente');
+                bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+                document.getElementById('changePasswordForm').reset();
+            } else {
+                showError(data.message || 'Error al cambiar la contraseña');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Error al conectar con el servidor');
+        }
+    }
+
+    document.getElementById('profileForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
+        
+        const imagen = document.getElementById('profileImage')?.src || 
+                    "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg";
+        
+        const formData = {
+            NombreEmpresa: document.querySelector('[name="NombreEmpresa"]').value,
+            TipDoc: document.querySelector('[name="TipDoc"]').value,
+            NumDoc: document.querySelector('[name="NumDoc"]').value,
+            Telefono: document.querySelector('[name="Telefono"]').value,
+            Imagen: imagen
+        };
+        
+        try {
+            // Mostrar loading mientras se procesa
+            Swal.fire({
+                title: 'Procesando...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            const response = await fetch('/Account/UpdateProfile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            Swal.close(); // Cerrar el loading
+            
+            if (data.success) {
+                await showSuccess('Perfil actualizado correctamente');
+                if (data.requiresReload) {
+                    location.reload();
+                }
+            } else {
+                showError(data.message || 'Error al actualizar el perfil');
+            }
+        } catch (error) {
+            Swal.close(); // Cerrar el loading si hay error
+            console.error('Error:', error);
+            showError('Error al conectar con el servidor');
+        }
+    });
+
+    window.loadFile = function(event) {
+        const output = document.getElementById('profileImage');
+        if (output && event.target.files[0]) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(event.target.files[0].type)) {
+                showError('Solo se permiten imágenes (JPEG, PNG, GIF)');
+                return;
+            }
+            
+            if (event.target.files[0].size > 2 * 1024 * 1024) {
+                showError('La imagen no debe exceder los 2MB');
+                return;
+            }
+            
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function() {
+                URL.revokeObjectURL(output.src);
+                document.getElementById('saveButton').style.display = 'block';
+                
+                // Mostrar confirmación de imagen actualizada
+                showSuccess('Imagen actualizada correctamente');
+            }
+        }
+    };
+
+    // El resto del código (manejo del panel deslizante) permanece igual
+    document.addEventListener("DOMContentLoaded", function() {
+        const profileTrigger = document.getElementById("profileTrigger");
+        const profilePanel = document.getElementById("profilePanel");
+        const closeProfile = document.getElementById("closeProfile");
+        const overlay = document.getElementById("overlay");
+
+        if (profileTrigger && profilePanel && closeProfile && overlay) {
+            profileTrigger.addEventListener("click", function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                profilePanel.classList.add("active");
+                overlay.style.display = "block";
+            });
+
+            closeProfile.addEventListener("click", function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                profilePanel.classList.remove("active");
+                overlay.style.display = "none";
+            });
+
+            overlay.addEventListener("click", function(event) {
+                event.preventDefault();
+                profilePanel.classList.remove("active");
+                overlay.style.display = "none";
+            });
+
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "Escape") {
+                    profilePanel.classList.remove("active");
+                    overlay.style.display = "none";
+                }
+            });
+        }
+    });
+</script>

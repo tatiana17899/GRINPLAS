@@ -1,0 +1,297 @@
+@using GRINPLAS.ViewModel
+@using System.Linq
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Cliente";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<div class="container mt-5">
+    <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
+        <div class="d-inline-block bg-white p-3" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+            <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+                Mi <span style="color: #7DAE8A;">carrito de compras</span>
+            </h1>
+        </div>
+    </div>
+
+    <div class="container"></div>
+
+    @if (Model.Carrito.Count == 0)
+    {
+        <div class="text-center py-5" style="background-color: #F0F0F0; border-radius: 12px; margin-bottom: 20px;">
+            <i class="fas fa-shopping-cart" style="font-size: 60px; color: #7DAE8A;"></i>
+            <h3 class="mt-3" style="color: #3B3B3B;">No hay productos seleccionados en el carrito</h3>
+            <p class="text-muted">Agrega productos para continuar con tu compra</p>
+            <a href="@Url.Action("Cliente", "Productos")" class="btn mt-3" 
+               style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px;">
+                Ver productos
+            </a>
+        </div>
+    }
+
+    @if (Model.Carrito.Count > 0)
+    {
+        <!-- Tabla del carrito -->
+        <table class="table text-center align-middle" style="border-radius: 12px; overflow: hidden;">
+          <thead style="background-color: white; border-bottom: 2px solid #D3D3D3;">
+            <tr>
+              <th style="width: 10%;">Imagen</th>
+              <th style="width: 15%;">Nombre del Producto</th>
+              <th style="width: 20%;">Descripción</th>
+              <th style="width: 5%;">Cantidad</th>
+              <th style="width: 10%;">Categoría</th>
+              <th style="width: 15%;">Precio Unitario</th>
+              <th style="width: 15%;">Total</th>
+              <th style="width: 10%;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var detalle in Model.Carrito)
+            {
+              <tr style="background-color: #F0F0F0; border-radius: 12px; overflow: hidden;">
+                <td>
+                    <img src="@detalle.Producto.Imagen" alt="Producto 1" style="width: 50px; height: 50px; border-radius: 8px;">
+                </td>
+                <td>@detalle.Producto.Nombre</td>
+                <td>@detalle.Producto.Descripcion</td>
+                <td>@detalle.Cantidad</td>
+                <td>@detalle.Producto.Categoria.Nombre</td>
+                <td>S/@detalle.PrecioUnitario.ToString("F2")</td>
+                <td>S/@detalle.Subtotal.ToString("F2")</td>
+                <td>
+                    <button 
+                        class="btn btn-link p-0 eliminarProducto" 
+                        data-producto-id="@detalle.ProductoId"
+                        style="color: #0E8930; font-size: 16px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <hr style="border: 1px solid #000000; margin: 20px 0;"> 
+        <div class="d-flex justify-content-end p-4" style="background-color: #E4EEE7; border-radius: 12px;">
+          <div class="text-end">
+            
+            <p class="fw-bold mb-3" style="font-size: 18px; color: #1B665E;">
+                Total: <span style="margin-left: 10px; color: black;">S/@Model.Subtotal.ToString("F2")</span>
+            </p>
+            <button class="btn" 
+                    style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalGenerarPedido">
+                Generar pedido
+            </button>
+          </div>
+        </div>
+    }
+</div>
+
+
+@* Modal de generación de pedido *@
+<div class="modal fade" id="modalGenerarPedido" tabindex="-1" aria-labelledby="modalGenerarPedidoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: none;">
+                <h5 class="modal-title fw-bold text-center w-100" id="modalGenerarPedidoLabel" style="color: #0E8930;">¡Ya casi está listo tu pedido!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formGenerarPedido" method="post" action="/Carrito/GenerarPedido" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-4">
+                        <label class="fw-bold mb-2" style="color: #3B3B3B;">Indica punto de recojo del pedido:</label>
+                        <div class="d-flex align-items-center" style="padding: 10px; border-bottom: 1px solid #D3D3D3;">
+                            <i class="fas fa-map-marker-alt me-3" style="font-size: 24px; color: #3B3B3B;"></i>
+                            <input type="text" name="direccion" id="direccionInput" class="form-control border-0 shadow-none" placeholder="Ingresa tu Dirección de entrega" required style="padding-left: 0;">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <p class="fw-bold mb-2" style="color: #3B3B3B;">Deposita a esta cuenta bancaria: 1999 222 3390 222</p>
+                    </div>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center">
+                            <label for="comprobantePago" class="btn d-flex justify-content-center align-items-center" 
+                                style="width: 45%; border: 1px solid #D3D3D3; border-radius: 8px; padding: 10px; font-size: 12px; color: #3B3B3B; cursor: pointer;">
+                                Adjuntar comprobante de pago <span style="color: red;">*</span>
+                            </label>
+                            <input type="file" name="comprobantePago" id="comprobantePago" class="form-control d-none" required>
+                            <div id="fileInfo" class="ms-3 d-none" style="flex-grow: 1;">
+                                <span id="fileName" style="font-size: 14px; color: #3B3B3B;"></span>
+                                <a id="viewFile" href="#" target="_blank" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button id="deleteFile" class="btn btn-link p-0 ms-2" style="color: #1B665E; font-size: 16px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="btnGenerarPedido" class="btn w-100" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 0; font-size: 16px;">
+                        Confirmar pedido
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal de confirmación de pedido *@
+<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <i class="fas fa-check-circle" style="font-size: 80px; color: #0E8930;"></i>
+                <h5 class="fw-bold mt-3" style="color: #3B3B3B;">Tu pedido se ha registrado con éxito!</h5>
+                <button type="button" class="btn mt-4" style="background-color: #1B665E; color: white; border-radius: 12px; padding: 10px 20px; font-size: 18px;" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal de confirmación para eliminar un producto *@
+<div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-labelledby="modalEliminarProductoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body p-4">
+                <div class="mb-4">
+                    <i class="fas fa-question-circle" style="font-size: 80px; color: #3074FF;"></i>
+                </div>
+                <h5 class="mb-4" style="color: #3B3B3B;">¿Deseas eliminar este producto del carrito de compras?</h5>
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="button" id="btnConfirmarEliminar" class="btn" style="background-color: #0E8930; color: white; border-radius: 12px; padding: 10px 30px;">
+                        Si, Guardar
+                    </button>
+                    <button type="button" class="btn" data-bs-dismiss="modal" style="background-color: #FF3F3F; color: white; border-radius: 12px; padding: 10px 30px;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputFile = document.getElementById('comprobantePago');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const viewFileButton = document.getElementById('viewFile');
+            const deleteFileButton = document.getElementById('deleteFile');
+            const formGenerarPedido = document.getElementById('formGenerarPedido');
+
+            // Mostrar nombre del archivo seleccionado
+            inputFile.addEventListener('change', function () {
+                if (inputFile.files.length > 0) {
+                    fileName.textContent = inputFile.files[0].name;
+                    fileInfo.classList.remove('d-none');
+
+                    const fileURL = URL.createObjectURL(inputFile.files[0]);
+                    viewFileButton.href = fileURL;
+                }
+            });
+
+            // Eliminar archivo seleccionado
+            deleteFileButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                inputFile.value = '';
+                fileName.textContent = '';
+                fileInfo.classList.add('d-none');
+            });
+
+            // Manejar envío del formulario
+            formGenerarPedido.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                // Validar campos
+                const direccion = document.querySelector('#direccionInput').value;
+                const archivo = document.querySelector('#comprobantePago').files[0];
+
+                if (!direccion) {
+                    alert('Por favor, ingresa la dirección de entrega.');
+                    return;
+                }
+
+                if (!archivo) {
+                    alert('Por favor, adjunta el comprobante de pago.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/Carrito/GenerarPedido', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'RequestVerificationToken': '@token'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const modalGenerarPedido = bootstrap.Modal.getInstance(document.getElementById('modalGenerarPedido'));
+                        modalGenerarPedido.hide();
+
+                        const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+                        modalConfirmacion.show();
+                    } else {
+                        const data = await response.json();
+                        alert('Error al generar el pedido: ' + (data.message || 'Error desconocido'));
+                    }
+                } catch (error) {
+                    alert('Error al procesar la solicitud: ' + error.message);
+                }
+            });
+
+
+            // Manejar eliminación de productos
+            let productoIdToDelete = null;
+            const modalEliminarProducto = new bootstrap.Modal(document.getElementById('modalEliminarProducto'));
+
+            document.querySelectorAll('.eliminarProducto').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    productoIdToDelete = this.getAttribute('data-producto-id');
+                    modalEliminarProducto.show();
+                });
+            });
+
+            document.getElementById('btnConfirmarEliminar').addEventListener('click', async function() {
+                try {
+                    const response = await fetch('/Carrito/EliminarProducto', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': '@token'
+                        },
+                        body: JSON.stringify({ productoId: productoIdToDelete })
+                    });
+
+                    if (response.ok) {
+                        modalEliminarProducto.hide();
+                        window.location.reload();
+                    } else {
+                        const data = await response.json();
+                        alert('Error al eliminar el producto: ' + (data.message || 'Error desconocido'));
+                    }
+                } catch (error) {
+                    alert('Error al procesar la solicitud: ' + error.message);
+                }
+            });
+        });
+
+        document.getElementById('modalConfirmacion').addEventListener('hidden.bs.modal', function () {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            window.location.href = '/Carrito/Cliente';
+        });
+    </script>
+}

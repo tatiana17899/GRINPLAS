@@ -1,0 +1,54 @@
+#sidebar {
+  width: 30vw;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+#sidebar.collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+}
+
+#main-content {
+  width: calc(110vw - 20vw);
+  transition: width 0.3s ease;
+}
+
+#main-content.expanded {
+  width: 800vw;
+}
+#submenu.collapse {
+  transition: all 0.15s ease !important;
+}
+#submenu {
+  overflow: hidden !important;
+}
+
+.modal-backdrop {
+  z-index: 1040 !important;
+}
+
+.modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1055 !important;
+}
+
+.modal-custom-zindex {
+  z-index: 1055;
+}
+.modal-backdrop-custom {
+  z-index: 1045;
+}
+
+
+.custom-modal-size {
+  max-width: 150% !important;
+  max-height: 60vh !important;
+}
+
+.modal-content {
+  height: 100%;
+}
