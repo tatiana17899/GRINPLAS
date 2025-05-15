@@ -1,0 +1,31 @@
+.input-group .input-group-append {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    z-index: 10;
+}
+
+.input-group .input-group-text {
+    height: 100%;
+    padding-right: 15px;
+}
+
+.input-group {
+    position: relative;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #00A52B;
+    border-color: #00A52B;
+    color: white;
+}
+
+.pagination .page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(9, 195, 61, 0.25);
+}
+
+.pagination .page-link:hover {
+    color: #096623;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
