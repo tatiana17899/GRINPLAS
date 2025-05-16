@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<GRINPLAS.Models.Carrito> Carrito { get; set; }
     public DbSet<GRINPLAS.Models.DetalleCarrito> DetalleCarrito { get; set; }
     public DbSet<GRINPLAS.Models.Trabajadores> Trabajadores { get; set; }
+    public DbSet<GRINPLAS.Models.Notificacion> Notificaciones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
