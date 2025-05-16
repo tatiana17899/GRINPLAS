@@ -41,7 +41,7 @@ namespace GRINPLAS.Controllers
                     titulo = n.Titulo,
                     mensaje = n.Mensaje,
                     fechaCreacion = n.FechaCreacion,
-                    tipo = n.Tipo ,
+                    tipo = n.Tipo,
                     pedidoId = n.PedidoId,
                     leida = n.Leida,
                     usuarioId = n.UsuarioId
@@ -175,7 +175,7 @@ namespace GRINPLAS.Controllers
                 .Where(n => n.UsuarioId == user.Id && !n.Leida)
                 .OrderByDescending(n => n.FechaCreacion)
                 .Take(10)
-                .Select(n => new 
+                .Select(n => new
                 {
                     notificacionId = n.NotificacionId,
                     titulo = n.Titulo,
@@ -190,5 +190,26 @@ namespace GRINPLAS.Controllers
 
             return Json(new { success = true, data = notificaciones });
         }
+
+        [HttpGet]
+        public IActionResult ObtenerProductosStockBajo()
+        {
+            var productos = _context.Productos
+                .Where(p => p.Stock <= 5)
+                .Select(p => new { nombre = p.Nombre, stock = p.Stock })
+                .ToList();
+
+            return Json(new { success = true, data = productos });
+        }
+
+         [HttpGet]
+        public IActionResult ContadorProductosStockBajo()
+        {
+            var count = _context.Productos.Count(p => p.Stock <= 5);
+            return Json(count);
+        }
+
     }
+            
+
 }
