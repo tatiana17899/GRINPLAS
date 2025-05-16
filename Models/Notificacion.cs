@@ -9,6 +9,7 @@ namespace GRINPLAS.Models
 {
     public class Notificacion
     {
+        //notificaciones xd
         [Key]
         public int NotificacionId { get; set; }
         
