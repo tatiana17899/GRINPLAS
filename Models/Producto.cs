@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace GRINPLAS.Models
 {
+    [Table("Productos")]
     public class Producto
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductoId { get; set; }
+
         [Required]
         public string? Nombre { get; set; }
         public string? Descripcion { get; set; }
