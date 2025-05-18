@@ -147,7 +147,7 @@ namespace GRINPLAS.Controllers
                         pedido.PedidoId
                     );
                 }
-                else if (pago == "Rechazado" && pedido.Pago != "Rechazado")
+                else if (pago == "desaprobado" && pedido.Pago != "desaprobado")
                 {
                     await CrearNotificacion(
                         pedido.Cliente.User.Id,
@@ -373,7 +373,16 @@ namespace GRINPLAS.Controllers
                                 FechaCreacion = DateTime.UtcNow,
                                 Leida = false
                             };
-
+                            var notificacionCliente = new Notificacion
+                            {
+                                UsuarioId = user.Id,
+                                Titulo = "Confirmación de pedido",
+                                Mensaje = $"Tu pedido #{pedido.PedidoId} se ha registrado correctamente",
+                                Tipo = "confirmacion_pedido",
+                                PedidoId = pedido.PedidoId,
+                                FechaCreacion = DateTime.UtcNow,
+                                Leida = false
+                            };
                             _context.Notificaciones.Add(notificacion);
                         }
                     }
@@ -396,6 +405,98 @@ namespace GRINPLAS.Controllers
                 return Json(new { success = false, message = "Error interno del servidor" });
             }
         }
-        
+        [HttpPost]
+        public async Task<IActionResult> CrearPedido([FromBody] PedidoDto pedidoDto)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
+
+                var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
+                if (cliente == null) return BadRequest("Cliente no encontrado");
+
+                // 1. Crear y guardar el pedido
+                var pedido = new Pedido
+                {
+                    ClienteId = cliente.ClienteId,
+                    FechaEmision = DateTime.UtcNow,
+                    Status = "Pendiente",
+                    Pago = "Pendiente",
+                    Direccion = pedidoDto.Direccion,
+                    Total = pedidoDto.Total
+                };
+
+                _context.Pedidos.Add(pedido);
+                await _context.SaveChangesAsync(); 
+
+                // 2. Crear notificación para el cliente
+                var notificacionCliente = new Notificacion
+                {
+                    UsuarioId = user.Id,
+                    Titulo = "Confirmación de pedido",
+                    Mensaje = $"Tu pedido #{pedido.PedidoId} se ha registrado correctamente",
+                    Tipo = "confirmacion_pedido",
+                    PedidoId = pedido.PedidoId,
+                    FechaCreacion = DateTime.UtcNow,
+                    Leida = false
+                };
+                _context.Notificaciones.Add(notificacionCliente);
+                await _context.SaveChangesAsync();
+                // 4. Confirmar transacción
+                await transaction.CommitAsync();
+
+                // Log para depuración
+                _logger.LogInformation($"Notificación de confirmación creada con ID: {notificacionCliente.NotificacionId}");
+
+                return Json(new { 
+                    success = true, 
+                    pedidoId = pedido.PedidoId,
+                    notificacionId = notificacionCliente.NotificacionId
+                });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error al crear pedido y notificaciones");
+                return Json(new { 
+                    success = false, 
+                    error = "Error al crear el pedido",
+                    detail = ex.Message 
+                });
+            }
+        }
+        [HttpPost]
+        [Authorize] 
+        public async Task<IActionResult> CrearNotificacionConfirmacionPedido([FromBody] NotificacionDto notificacionDto)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized(new { success = false, message = "Usuario no autenticado" });
+
+                var notificacion = new Notificacion
+                {
+                    UsuarioId = user.Id, // Notificación para el usuario actual (cliente)
+                    Titulo = notificacionDto.titulo ?? "Confirmación de pedido",
+                    Mensaje = notificacionDto.mensaje ?? "Tu pedido se ha registrado correctamente",
+                    Tipo = "confirmacion_pedido", // Tipo específico para cliente
+                    PedidoId = notificacionDto.pedidoId,
+                    FechaCreacion = DateTime.UtcNow,
+                    Leida = false
+                };
+
+                _context.Notificaciones.Add(notificacion);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, notificacionId = notificacion.NotificacionId });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear notificación de confirmación");
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
     }
 }

@@ -125,11 +125,16 @@ function cargarNotificaciones() {
               tipoIndicator = "Estado de Pago";
               circleColor = "#4a6bff";
               break;
-            case "estado": // Compatibilidad con el backend actual
+            case "status":
             case "pedido":
               tipoClass = "status-pedido";
               tipoIndicator = "Estado Pedido";
               circleColor = "#b45656";
+              break;
+            case "confirmacion_pedido":
+              tipoClass = "status-success";
+              tipoIndicator = "Confirmación";
+              circleColor = "#28a745";
               break;
             default:
               tipoClass = "status-general";

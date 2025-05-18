@@ -41,7 +41,7 @@ namespace GRINPLAS.Controllers
                     titulo = n.Titulo,
                     mensaje = n.Mensaje,
                     fechaCreacion = n.FechaCreacion,
-                    tipo = n.Tipo,
+                    tipo = n.Tipo ,
                     pedidoId = n.PedidoId,
                     leida = n.Leida,
                     usuarioId = n.UsuarioId
@@ -175,7 +175,7 @@ namespace GRINPLAS.Controllers
                 .Where(n => n.UsuarioId == user.Id && !n.Leida)
                 .OrderByDescending(n => n.FechaCreacion)
                 .Take(10)
-                .Select(n => new
+                .Select(n => new 
                 {
                     notificacionId = n.NotificacionId,
                     titulo = n.Titulo,
@@ -190,26 +190,41 @@ namespace GRINPLAS.Controllers
 
             return Json(new { success = true, data = notificaciones });
         }
-
-        [HttpGet]
-        public IActionResult ObtenerProductosStockBajo()
+        public async Task<IActionResult> CrearNotificacion(string usuarioId, string titulo, string mensaje, string tipo, int? pedidoId = null)
+    {
+        try
         {
-            var productos = _context.Productos
-                .Where(p => p.Stock <= 5)
-                .Select(p => new { nombre = p.Nombre, stock = p.Stock })
-                .ToList();
+            // Verificar que el usuario existe
+            var usuario = await _userManager.FindByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                
+                return NotFound("Usuario no encontrado");
+            }
 
-            return Json(new { success = true, data = productos });
+            var notificacion = new Notificacion
+            {
+                UsuarioId = usuarioId,
+                Titulo = titulo,
+                Mensaje = mensaje,
+                Tipo = tipo,
+                PedidoId = pedidoId,
+                FechaCreacion = DateTime.UtcNow,
+                Leida = false
+            };
+
+            _context.Notificaciones.Add(notificacion);
+            await _context.SaveChangesAsync();
+
+            
+            return Ok(new { success = true, notificacionId = notificacion.NotificacionId });
         }
-
-         [HttpGet]
-        public IActionResult ContadorProductosStockBajo()
+        catch (Exception ex)
         {
-            var count = _context.Productos.Count(p => p.Stock <= 5);
-            return Json(count);
+           
+            return StatusCode(500, "Error interno al crear notificación");
         }
+    }
 
     }
-            
-
 }
