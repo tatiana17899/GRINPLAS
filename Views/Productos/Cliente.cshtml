@@ -135,8 +135,28 @@
         </div>
     </div>
 </div>
+<!-- Chatbot circular -->
+<div id="chatbot-circle" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #1B665E; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+    <i class="fas fa-comment-dots text-white" style="font-size: 25px;"></i>
+</div>
 
+<div id="chatbot-container" style="position: fixed; bottom: 100px; right: 30px; width: 320px; background: white; border: 1px solid #ddd; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; z-index: 1001; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div id="chatbot-header" style="background: #1B665E; color: white; padding: 15px; border-top-left-radius: 15px; border-top-right-radius: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 600;">Asistente de Reclamos</span>
+        <button id="close-chatbot" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">×</button>
+    </div>
+    <div id="chatbot-messages" style="height: 250px; overflow-y: auto; padding: 15px; background: #f9f9f9;"></div>
+    <div style="padding: 15px; border-top: 1px solid #eee; background: white; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+        <div style="display: flex;">
+            <input id="user-input" type="text" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none;" placeholder="Escribe tu mensaje..." />
+            <button id="send-btn" style="margin-left: 10px; width: 40px; height: 40px; border-radius: 50%; background: #1B665E; color: white; border: none; cursor: pointer;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
 @section Scripts {
+    <script src="~/js/chatbot.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const botonesCarrito = document.querySelectorAll('.btn-carrito');
