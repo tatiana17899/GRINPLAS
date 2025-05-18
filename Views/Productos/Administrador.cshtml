@@ -25,6 +25,10 @@
       <p>Listado de productos</p>
     </div>
     <div class="d-flex gap-2 mb-3">
+      <!-- Botón separado -->
+      <button id="btnExportExcel" class="btn btn-success ms-2" type="button" style="width: 180px; height: 45px;">
+        <i class="fas fa-file-excel me-2"></i>Exportar Excel
+      </button>
       <form method="get" asp-action="BuscarProductos" class="d-flex gap-2 mb-3">
         <div class="input-group border border-success rounded">
           <input type="text" id="nombreFiltro" name="nombreFiltro" class="form-control border-0"
@@ -32,7 +36,7 @@
         </div>
         <div class="input-group border border-success rounded">
           <select id="categoriaFiltro" name="categoriaFiltro" class="form-select border-0">
-            <option value="0">Todas las categorías</option>
+            <option value="0">Categoría</option>
             @foreach (var categoria in Model.Categorias)
             {
               <option value="@categoria.CategoriaId">@categoria.Nombre</option>
@@ -45,9 +49,10 @@
           style="width: 160px; height: 45px;">Resetear</button>
       </form>
 
-      <!-- Botón separado -->
-      <button id="btnExportExcel" class="btn btn-success ms-2" type="button" style="width: 180px; height: 45px;">
-        <i class="fas fa-file-excel me-2"></i>Exportar Excel
+
+      <button id="btnRegistrarProducto" class="btn btn-success ms-2" type="button" style="width: 180px; height: 45px;"
+        data-bs-toggle="modal" data-bs-target="#registerModal">
+        <i class="fas fa-plus me-2"></i>Registrar Producto
       </button>
 
 
@@ -67,6 +72,7 @@
             <th style="width: 15%;">Categoría</th>
             <th style="width: 10%;">Precio</th>
             <th style="width: 10%;">Cantidad</th>
+            <th style="width: 10%;">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -83,13 +89,126 @@
               <td>@producto.Categoria.Nombre</td>
               <td>@producto.Precio</td>
               <td>@producto.Stock</td>
+              <td class="text-center">
+                <a href="#" class="text-success me-2" data-bs-toggle="modal" data-bs-target="#editModal"
+                  data-id="@producto.ProductoId" data-nombre="@producto.Nombre" data-descripcion="@producto.Descripcion"
+                  data-precio="@producto.Precio" data-stock="@producto.Stock" data-imagen="@producto.Imagen"
+                  data-categoria="@producto.CategoriaId">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="#" class="text-success" onclick="confirmDelete(@producto.ProductoId)">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </td>
             </tr>
           }
         </tbody>
+
       </table>
     </form>
   </div>
 </div>
+<!-- Modal Registrar Producto -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="registerModalLabel">Registrar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="registerProductForm" method="post" asp-action="RegistrarProducto">
+          @Html.AntiForgeryToken()
+          <input type="hidden" name="ProductoId" value="0" />
+
+          <div class="mb-3">
+            <label for="Nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="Nombre" name="Nombre" required />
+          </div>
+          <div class="mb-3">
+            <label for="Descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="Descripcion" name="Descripcion" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="Precio" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="Precio" name="Precio" step="0.01" required />
+          </div>
+          <div class="mb-3">
+            <label for="Stock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="Stock" name="Stock" required />
+          </div>
+          <div class="mb-3">
+            <label for="Imagen" class="form-label">Imagen URL</label>
+            <input type="text" class="form-control" id="Imagen" name="Imagen" required />
+          </div>
+          <div class="mb-3">
+            <label for="CategoriaId" class="form-label">Categoría</label>
+            <select class="form-select" id="CategoriaId" name="CategoriaId" required>
+              @foreach (var categoria in Model.Categorias)
+              {
+                <option value="@categoria.CategoriaId">@categoria.Nombre</option>
+              }
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Registrar Producto</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Editar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editProductForm" method="post" asp-action="EditarProducto">
+          <input type="hidden" id="ProductoId" name="ProductoId" />
+          <div class="mb-3">
+            <label for="Nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="Nombre" name="Nombre" />
+          </div>
+          <div class="mb-3">
+            <label for="Descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="Descripcion" name="Descripcion"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="Precio" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="Precio" name="Precio" step="0.01" />
+          </div>
+          <div class="mb-3">
+            <label for="Stock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="Stock" name="Stock" />
+          </div>
+          <div class="mb-3">
+            <label for="Imagen" class="form-label">Imagen URL</label>
+            <input type="text" class="form-control" id="Imagen" name="Imagen" />
+          </div>
+          <div class="mb-3">
+            <label for="CategoriaId" class="form-label">Categoría</label>
+            <select class="form-select" id="CategoriaId" name="CategoriaId">
+              @foreach (var categoria in Model.Categorias)
+              {
+                <option value="@categoria.CategoriaId">@categoria.Nombre</option>
+              }
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Guardar cambios</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="deleteForm" method="post" asp-action="EliminarProducto">
+  @Html.AntiForgeryToken()
+  <input type="hidden" id="deleteProductId" name="id" />
+</form>
+
 
 @section Scripts {
   <script src="~/js/administrador.js"></script>
@@ -147,5 +266,64 @@
         XLSX.writeFile(wb, "Historial_Productos.xlsx");
       });
     });
+
+    function confirmDelete(productId) {
+      Swal.fire({
+        title: '¿Deseas eliminar este producto?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, Guardar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#dc3545'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('deleteProductId').value = productId;
+          document.getElementById('deleteForm').submit();
+        }
+      });
+    }
+
+
+
+    $('#editModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var productId = button.data('id');
+      var nombre = button.data('nombre');
+      var descripcion = button.data('descripcion');
+      var precio = button.data('precio');
+      var stock = button.data('stock');
+      var imagen = button.data('imagen');
+      var categoria = button.data('categoria');
+
+      var modal = $(this);
+      modal.find('#ProductoId').val(productId);
+      modal.find('#Nombre').val(nombre);
+      modal.find('#Descripcion').val(descripcion);
+      modal.find('#Precio').val(precio);
+      modal.find('#Stock').val(stock);
+      modal.find('#Imagen').val(imagen);
+      modal.find('#CategoriaId').val(categoria);
+    });
+
+
   </script>
+  @if (TempData["SuccessMessage"] != null)
+  {
+    <script>
+      Swal.fire({
+        icon: 'success',
+        text: '@TempData["SuccessMessage"]',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    </script>
+  }
+  @if (TempData["ErrorMessage"] != null)
+  {
+    <script>
+      Swal.fire('Error', '@TempData["ErrorMessage"]', 'error');
+    </script>
+  }
+
 }
