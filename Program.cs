@@ -97,7 +97,7 @@ app.Use(async (context, next) =>
 {
     if (!context.User.Identity.IsAuthenticated && context.Request.Path == "/")
     {
-        context.Response.Redirect("/Productos/Cliente");
+        context.Response.Redirect("/Home/Index");
         return;
     }
     await next();
@@ -106,7 +106,7 @@ app.Use(async (context, next) =>
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Productos}/{action=Cliente}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
