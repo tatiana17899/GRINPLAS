@@ -3,129 +3,131 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - G&R industrias plásticas </title>
+    <title>@ViewData["Title"] - G&R industrias plásticas</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GRINPLAS.styles.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <style>
+        .notification-item.unread {
+            background-color: #f8f9fa;
+        }
+        .notification-item:hover {
+            background-color: #e9ecef;
+            cursor: pointer;
+        }
+        .notification-time {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        .notification-badge {
+            font-size: 0.6rem;
+            padding: 0.25em 0.4em;
+        }
+        .notification-dropdown {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body style="background-color: #c5dbcd">
     <div class="d-flex flex-column">
-      <div
-        class="d-flex align-items-center p-3"
-        style="background-color: #c5dbcd"
-      >
-        <button
-          class="btn me-3 p-3"
-          id="menu-toggle"
-          style="border-radius: 50%; background-color: rgba(19, 155, 51, 0.2)"
-        >
-          <img
-            src="https://i.ibb.co/84XNccvZ/menu-5.png"
-            alt="menu-toggle"
-            width="25px"
-            height="25px"
-            border="0"
-          />
+      <!-- Encabezado con notificaciones -->
+      <div class="d-flex align-items-center p-3" style="background-color: #c5dbcd">
+        <!-- Botón menú -->
+        <button class="btn me-3 p-3" id="menu-toggle" style="border-radius: 50%; background-color: rgba(19, 155, 51, 0.2)">
+          <img src="https://i.ibb.co/84XNccvZ/menu-5.png" alt="menu-toggle" width="25px" height="25px" border="0" />
         </button>
         <span class="fs-3 fw-bold" style="color: #096623">G&R</span>
+
+        <!-- Área de notificaciones -->
         <div class="ms-auto align-items-center d-flex">
-          <div
-            class="d-flex flex-column"
-            style="border: solid 2px #fff; border-radius: 30px; width: 350px"
-          >
-            <div class="fw-bold fs-5 text-star text-success me-auto ps-4 pt-1">
-              <!--Lógica nombre gerente-->
-              Nicanor Guevara Estremadoiro
-            </div>
-            <div
-              class="text-star fw-normal fs-6 ml-2 ps-4 pb-2"
-              style="color: rgba(4, 85, 27, 0.52)"
-            >
-              <!--Lógica nombre correo gerente-->
-            nicanorguevara332@gmail.com
-            </div>
-          </div>
-          <div class="position-absolute" style="transform: translateX(270px)">
-            <img
-              src="https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg"
-              alt="img-perfil"
-              width="90px"
-              height="90px"
-              style="border-radius: 50%"
-            />
+          <div class="d-flex flex-row align-items-center justify-content-between" style="border: solid 2px #fff; border-radius: 20px; width: 480px; background: c5dbce;">
+              <!-- Campana de notificaciones -->
+              <div class="dropdown d-flex align-items-center ms-4 me-3" style="width: 50px; height: 50px; background-color: #f8f9fa; border-radius: 50%; justify-content: center; position: relative;">
+                  <a class="nav-link dropdown-toggle p-0 d-flex align-items-center" href="#" id="navbarDropdownNotifications" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-bell" style="color: #096623; font-size: 1.2rem;"></i>
+                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notificationCounter">
+                          0
+                      </span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="navbarDropdownNotifications" style="min-width: 350px; padding: 0;">
+                      <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                          <h6 class="mb-0">Notificaciones</h6>
+                          <div>
+                              <a href="#" id="markAllAsRead" class="btn btn-sm btn-success" style="text-decoration: none; font-size: 0.8rem;">
+                                  Marcar todas
+                              </a>
+                              <a href="#" id="refreshNotifications" class="btn btn-sm btn-outline-secondary ms-2" style="text-decoration: none; font-size: 0.8rem;">
+                                  <i class="fas fa-sync-alt"></i>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="notification-list" id="notificationList" style="max-height: 400px; overflow-y: auto;">
+                          <div class="text-center py-3">
+                              <div class="spinner-border text-success spinner-border-sm" role="status">
+                                  <span class="visually-hidden">Cargando...</span>
+                              </div>
+                              <span class="ms-2">Cargando notificaciones...</span>
+                          </div>
+                      </div>
+                      <div class="text-center py-2 border-top">
+                          <a href="#" class="text-success" id="viewAllNotifications">Ver todas</a>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- Información de usuario -->
+              <div class="d-flex flex-column flex-grow-1">
+                  <div class="fw-bold fs-5 text-star text-success" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                      Nicanor Guevara Estremadoiro
+                  </div>
+                  <div class="text-star fw-normal fs-6" style="color: rgba(4, 85, 27, 0.52); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                      nicanorguevara332@gmail.com
+                  </div>
+              </div>
+              
+              <!-- Foto de perfil -->
+              <div class="ms-3 me-4 d-flex align-items-center">
+                  <img src="https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg"
+                      alt="img-perfil" width="60px" height="60px" style="border-radius: 50%" />
+              </div>
           </div>
         </div>
       </div>
+
+      <!-- Contenido principal -->
       <div class="d-flex flex-row">
+        <!-- Barra lateral -->
         <div class="d-flex flex-column" id="sidebar">
-          <nav
-            id="navbar"
-            class="p-4 mt-5 ms-2 me-2"
-            style="border-radius: 50px; background-color: #dbebe0"
-          >
-            <a
-              class="nav-link active p-3"
-              style="
-                background-color: rgba(9, 102, 35, 0.57);
-                border-radius: 20px;
-                color: #fff;
-              "
-              href="~/InicioAdmi/Inicio"
-            >
+          <nav id="navbar" class="p-4 mt-5 ms-2 me-2" style="border-radius: 50px; background-color: #dbebe0">
+            <a class="nav-link active p-3" style="background-color: rgba(9, 102, 35, 0.57); border-radius: 20px; color: #fff;" href="~/InicioAdmi/Inicio">
               <i class="fas fa-home me-2"></i> Inicio
             </a>
-            <a
-              class="nav-link fw-normal p-3" href="~/Pedidos/Administrador" style="color: #096623"
-            >
+            <a class="nav-link fw-normal p-3" href="~/Pedidos/Administrador" style="color: #096623">
               <i class="fas fa-box me-2"></i>Pedidos
-              
             </a>
-            
             <a class="nav-link fw-normal p-3" href="~/Productos/Administrador" style="color: #096623">
               <i class="fas fa-box-open me-2"></i>Productos
             </a>
           </nav>
-          <div
-            class="d-flex flex-column align-items-center p-4 mt-2 ms-2 me-2"
-            style="background-color: #dbebe0; border-radius: 50px"
-            id="navbar-footer"
-          >
+          <div class="d-flex flex-column align-items-center p-4 mt-2 ms-2 me-2" style="background-color: #dbebe0; border-radius: 50px" id="navbar-footer">
             <div class="p-5">
-              <a
-                class="nav-link"
-                asp-area="Identity" asp-page="/Account/Logout" method="post"
-                style="margin-left: 30px; margin-right: 30px; color: #096623"
-              >
+              <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout" method="post" style="margin-left: 30px; margin-right: 30px; color: #096623">
                 <i class="fas fa-sign-out-alt me-2" style="color: #096623"></i>
                 Cerrar Sesión
               </a>
-              <p
-                class="text-success small mt-4"
-                style="margin-left: 30px; margin-right: 30px"
-              >
+              <p class="text-success small mt-4" style="margin-left: 30px; margin-right: 30px">
                 © 2025 G&R Industrias Plasticas S.A. Todos los derechos reservados.
               </p>
             </div>
           </div>
         </div>
-        <!--Main Content-->
+        
+        <!-- Contenido principal -->
         <div class="d-flex flex-column m-3" id="main-content">
           <main style="background-color: #ffffff; border-radius: 30px">
              @RenderBody()
@@ -133,10 +135,15 @@
         </div>
       </div>
     </div>
+
+    <!-- Scripts -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/notiAdmin.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-    @await RenderSectionAsync("Scripts", required:false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
+</html>
