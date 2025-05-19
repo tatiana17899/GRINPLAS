@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250429061648_MigracionComprobanteCliente")]
-    partial class MigracionComprobanteCliente
+    [Migration("20250516172848_notificaciones")]
+    partial class notificaciones
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,6 +228,47 @@ namespace GRINPLAS.Migrations
                     b.HasIndex("ProductoId");
 
                     b.ToTable("DetallePedidos");
+                });
+
+            modelBuilder.Entity("GRINPLAS.Models.Notificacion", b =>
+                {
+                    b.Property<int>("NotificacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("NotificacionId"));
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Leida")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Tipo")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("NotificacionId");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Notificaciones");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Pedido", b =>
@@ -543,6 +584,23 @@ namespace GRINPLAS.Migrations
                     b.Navigation("Pedido");
 
                     b.Navigation("Producto");
+                });
+
+            modelBuilder.Entity("GRINPLAS.Models.Notificacion", b =>
+                {
+                    b.HasOne("GRINPLAS.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId");
+
+                    b.HasOne("GRINPLAS.Models.ApplicationUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Pedido", b =>

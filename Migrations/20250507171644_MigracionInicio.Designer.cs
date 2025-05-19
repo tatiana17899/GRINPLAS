@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250415200424_AddFecCreToCliente")]
-    partial class AddFecCreToCliente
+    [Migration("20250507171644_MigracionInicio")]
+    partial class MigracionInicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,6 +243,9 @@ namespace GRINPLAS.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ComprobantePago")
+                        .HasColumnType("text");
 
                     b.Property<string>("Direccion")
                         .IsRequired()

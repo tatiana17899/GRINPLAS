@@ -586,11 +586,11 @@ namespace GRINPLAS.Migrations
             modelBuilder.Entity("GRINPLAS.Models.Notificacion", b =>
                 {
                     b.HasOne("GRINPLAS.Models.Pedido", "Pedido")
-                        .WithMany("Notificaciones")
+                        .WithMany()
                         .HasForeignKey("PedidoId");
 
                     b.HasOne("GRINPLAS.Models.ApplicationUser", "Usuario")
-                        .WithMany("Notificaciones")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -688,8 +688,6 @@ namespace GRINPLAS.Migrations
                 {
                     b.Navigation("Cliente");
 
-                    b.Navigation("Notificaciones");
-
                     b.Navigation("Trabajador");
                 });
 
@@ -713,8 +711,6 @@ namespace GRINPLAS.Migrations
             modelBuilder.Entity("GRINPLAS.Models.Pedido", b =>
                 {
                     b.Navigation("DetallePedidos");
-
-                    b.Navigation("Notificaciones");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Producto", b =>
