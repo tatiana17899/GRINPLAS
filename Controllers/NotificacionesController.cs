@@ -225,6 +225,51 @@ namespace GRINPLAS.Controllers
             return StatusCode(500, "Error interno al crear notificación");
         }
     }
+        [HttpPost]
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> GenerarNotificacionesStockBajo()
+        {
+            
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized(new { success = false, message = "Usuario no autenticado" });
 
+            
+            var productosBajoStock = await _context.Productos
+                .Where(p => p.Stock <= 5)
+                .ToListAsync();
+
+            int creadas = 0;
+            foreach (var producto in productosBajoStock)
+            {
+                
+                var notificacionesAnteriores = await _context.Notificaciones
+                    .Where(n => n.UsuarioId == user.Id
+                        && n.Tipo == "bajo_stock"
+                        && n.Mensaje.Contains(producto.Nombre))
+                    .ToListAsync();
+
+                if (notificacionesAnteriores.Any())
+                {
+                    _context.Notificaciones.RemoveRange(notificacionesAnteriores);
+                }
+
+                
+                var notificacion = new Notificacion
+                {
+                    UsuarioId = user.Id,
+                    Titulo = "Alerta",
+                    Mensaje = $"Solo queda {producto.Stock} unidad{(producto.Stock == 1 ? "" : "es")} del producto \"{producto.Nombre}\".",
+                    Tipo = "bajo_stock",
+                    PedidoId = null,
+                    FechaCreacion = DateTime.UtcNow,
+                    Leida = false
+                };
+                _context.Notificaciones.Add(notificacion);
+                creadas++;
+            }
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, creadas });
+        }
     }
 }
