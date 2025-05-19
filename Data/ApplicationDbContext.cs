@@ -30,7 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey<Trabajadores>(t => t.ApplicationUserId)
             .OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Cliente>()
             .Property(c => c.FecCre)
             .HasColumnType("timestamp without time zone");

@@ -10,6 +10,7 @@ namespace GRINPLAS.Models
     {
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
         public Cliente? Cliente { get; set;}
-        public Trabajadores? Trabajador { get; set;}
+        public ICollection<Notificacion> Notificaciones { get; set; } = new List<Notificacion>();
+        public Trabajadores? Trabajador { get; set; }
     }
 }
