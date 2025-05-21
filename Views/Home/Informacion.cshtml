@@ -1,3 +1,213 @@
 @{
     ViewData["Title"] = "Informacion";
+    Layout = "~/Views/Shared/_LayoutSomos.cshtml";
+}
+
+
+     <div class="container clearfix">
+        <!-- Sección NOSOTROS -->
+        <div class="nosotros">
+            <h1 class="nosotros-title" style="font-size:50px">NOSOTROS</h1>
+            <p class="nosotros-subtitle" style="font-size:30px">Nos dedicamos a la producción y comercialización de diversos</p>
+            <div class="highlight" style="font-size:20px">ARTICULOS DE PLÁSTICOS</div>
+            <p class="nosotros-text" style="font-size:20px">
+                integrando equipos y maquinaria vital para nuestra operación.
+            </p>
+            <p class="nosotros-text" style="font-size:20px">
+                Enfocándonos en la <span class="bold-text">innovación constante</span> a través de la inversión en investigación y desarrollo.
+            </p>
+        </div>
+        
+        <!-- Imagen principal con cuadrado turquesa -->
+        <div class="main-image-container">
+            <div class="main-image">
+                <img src="https://i.postimg.cc/wBBxBHJR/be8e8ca95e2e2da735281a460b01c59d.png" alt="Fachada de la empresa">
+            </div>
+            <div class="turquoise-square-container">
+                <div class="turquoise-square"></div>
+            </div>
+            
+            <!-- Sección Proveedores -->
+            <div class="green-box">
+                <h2><span style="font-size:10px; color:rgba(243, 255, 254, 0.45);font-weight:500px
+">Nuestros</span><br><span style="font-size:30px; color:rgba(243, 255, 254, 0.45);font-weight:500px
+">PROVEEDORES</span></h2>
+                <ul class="provider-list">
+                    <li class="provider-item">
+                        <span class="provider-number">01</span> Dispercol
+                    </li>
+                    <li class="provider-item">
+                        <span class="provider-number">02</span> Corplas
+                    </li>
+                    <li class="provider-item">
+                        <span class="provider-number">03</span> Mastercol
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Galería de fotos - Texto, flecha e imágenes -->
+        <div class="gallery-section">
+            <div class="gallery-text">Visita nuestra galería de fotos</div>
+            <span class="gallery-arrow" id="open-gallery">→</span>
+            <div class="gallery-images">
+                <div class="gallery-image">
+                    <img src="https://i.postimg.cc/Mp6qsx93/images-7.jpg" alt="Producto plástico amarillo" style="background-color: #ffd700;">
+                </div>
+                <div class="gallery-image">
+                    <img src="https://i.postimg.cc/GmXrVNNL/images-6.jpg" alt="Producto plástico blanco" style="background-color: #e0e0e0;">
+                </div>
+                <div class="gallery-image">
+                    <img src="https://i.postimg.cc/QMVs3mGp/images-5.jpg" alt="Producto plástico colorido" style="background: linear-gradient(45deg, #ff3366, #9933ff);">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="margin-top:250px; margin-bottom:100px">
+        <!-- Sección Objetivo General -->
+        <div class="objetivo-section">
+            <h1 class="objetivo-title">Objetivo General</h1>
+            <p class="objetivo-text">
+                Proporcionar productos de alta calidad y un servicio de excelencia 
+                para PYMEs dedicados a la venta de diversos artículos plásticos.
+            </p>
+        </div>
+        
+        <!-- Sección Compromiso Integral -->
+        <div class="compromiso-section" style="margin-top:100px">
+            <h2 class="compromiso-title">Compromiso Integral</h2>
+            <div class="compromiso-grid">
+                <div class="compromiso-item">
+                    <span class="star-icon">★</span>
+                    <span class="compromiso-text">Proporcionar productos de alta calidad</span>
+                </div>
+                <div class="compromiso-item">
+                    <span class="star-icon">★</span>
+                    <span class="compromiso-text">Servicio de excelencia para PYMEs</span>
+                </div>
+                <div class="compromiso-item">
+                    <span class="star-icon">★</span>
+                    <span class="compromiso-text">Innovación en los procesos de fabricación</span>
+                </div>
+                <div class="compromiso-item">
+                    <span class="star-icon">★</span>
+                    <span class="compromiso-text">Implementación de prácticas sostenibles</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección MVV (Misión, Visión, Valores) -->
+        <div class="mvv-section" style="margin-top:100px">
+            <!-- Misión -->
+            <div class="mvv-card">
+                <svg class="mvv-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="icon-circle" cx="12" cy="12" r="10" fill="#32A852"/>
+                    <circle cx="12" cy="12" r="5" fill="white"/>
+                    <circle cx="12" cy="12" r="3" fill="#32A852"/>
+                </svg>
+                <h3 class="mvv-title">Misión</h3>
+                <p class="mvv-text">
+                    Convertirse en una de las empresas más reconocidas en el Perú, 
+                    brindando servicios de alta calidad especialmente en productos de 
+                    plástico, con la finalidad de satisfacer las necesidades de sus clientes.
+                </p>
+            </div>
+            
+            <!-- Visión -->
+            <div class="mvv-card">
+                <svg class="mvv-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="12,2 5,20 19,20" fill="#32A852"/>
+                </svg>
+                <h3 class="mvv-title">Visión</h3>
+                <p class="mvv-text">
+                    Desarrollar un enfoque integral que abarque todas las áreas de la empresa, 
+                    con el propósito de implementar estrategias innovadoras que mejoren la 
+                    productividad, proporcionen información detallada sobre los productos a los 
+                    clientes y garanticen una entrega oportuna y eficaz de los productos.
+                </p>
+            </div>
+            
+            <!-- Valores -->
+            <div class="mvv-card">
+                <svg class="mvv-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12,2 L16,8 L22,9 L17,14 L18,20 L12,17 L6,20 L7,14 L2,9 L8,8 Z" fill="#32A852"/>
+                </svg>
+                <h3 class="mvv-title">Valores</h3>
+                <ul class="valores-list">
+                    <li>Responsabilidad</li>
+                    <li>Honestidad</li>
+                    <li>Trabajo en equipo</li>
+                    <li>Confianza</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de galería -->
+    <div class="modal" id="gallery-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2>Galería de Productos</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/Mp6qsx93/images-7.jpg" alt="Producto plástico 1">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/GmXrVNNL/images-6.jpg" alt="Producto plástico 2">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/QMVs3mGp/images-5.jpg" alt="Producto plástico 3">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/0QM8pfV8/f31b69e6ab8603aa0f2ec83ba4ac6d31.png" alt="Producto plástico 4">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/brSjtwNd/6d7e9ac6b6ae214d5d0422e6670fb09e.png" alt="Producto plástico 5">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://i.postimg.cc/ZRMSndm1/9523376ecb24e2c5019ff46463d78ffa.png" alt="Producto plástico 6">
+                </div>
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+    <script>
+        // Funcionalidad para el modal de la galería
+        const openGallery = document.getElementById('open-gallery');
+        const galleryModal = document.getElementById('gallery-modal');
+        const closeModal = document.getElementById('close-modal');
+        
+        openGallery.addEventListener('click', () => {
+            galleryModal.style.display = 'flex';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            galleryModal.style.display = 'none';
+        });
+        
+        // Cerrar el modal al hacer clic fuera de él
+        window.addEventListener('click', (event) => {
+            if (event.target === galleryModal) {
+                galleryModal.style.display = 'none';
+            }
+        });
+        
+        // Animación para el hover en la flecha de la galería
+        const galleryArrow = document.querySelector('.gallery-arrow');
+        
+        galleryArrow.addEventListener('mouseenter', () => {
+            galleryArrow.style.transform = 'translateX(10px)';
+        });
+        
+        galleryArrow.addEventListener('mouseleave', () => {
+            galleryArrow.style.transform = 'translateX(0)';
+        });
+        
+        // Animación para las imágenes de la galería
+        const galleryImages = document.querySelectorAll('.gallery-image');
+        
+        galleryImages.forEach((image, index) => {
+            image.style.animationDelay = `${index * 0.2}s`;
+            image.style.animation = 'fadeIn 0.5s ease-in-out forwards';
+        });
+    </script>
 }
