@@ -3,6 +3,7 @@ using System;
 using GRINPLAS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513041346_AddGastosTable")]
+    partial class AddGastosTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,47 +250,6 @@ namespace GRINPLAS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Gastos");
-                });
-
-            modelBuilder.Entity("GRINPLAS.Models.Notificacion", b =>
-                {
-                    b.Property<int>("NotificacionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("NotificacionId"));
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("Leida")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Mensaje")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PedidoId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Tipo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Titulo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UsuarioId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("NotificacionId");
-
-                    b.HasIndex("PedidoId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("Notificaciones");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Pedido", b =>
@@ -603,23 +565,6 @@ namespace GRINPLAS.Migrations
                     b.Navigation("Pedido");
 
                     b.Navigation("Producto");
-                });
-
-            modelBuilder.Entity("GRINPLAS.Models.Notificacion", b =>
-                {
-                    b.HasOne("GRINPLAS.Models.Pedido", "Pedido")
-                        .WithMany()
-                        .HasForeignKey("PedidoId");
-
-                    b.HasOne("GRINPLAS.Models.ApplicationUser", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Pedido", b =>
