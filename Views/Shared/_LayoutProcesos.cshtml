@@ -5,113 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - G&R INDUSTRIAS PLASTICAS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/inicio.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/procesos.css" asp-append-version="true" />
+     
     <link rel="stylesheet" href="~/GRINPLAS.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
-        .hero-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            background-size: cover;
-            background-position: center;
-            z-index: 0;
-        }
-        nav{
-            z-index: 2;
-        }
-        .hero-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-        }
-
-        .hero-content .container {
-            position: relative;
-            z-index: 0;
-        }
-        .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }
-        .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-        .hero-content .btn-success {
-            padding: 8px 25px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .slider {
-            margin-top: 20px;
-        }
-        .slider i {
-            color: rgba(255, 255, 255, 0.6);
-            margin: 0 5px;
-            font-size: 1.2rem;
-        }
-        .nav-elements {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        .nav-elements a {
-            white-space: nowrap;
-        }
-        .login-section {
-            margin-left: 20px;
-        }
-        .telefono {
-        background-color: #fff;
-        height: 70px;
-        width: 270px;
-        margin-left: 10px;
-        transform: translateX(79vw);
-        padding: 2rem 2rem;
-        border-bottom-left-radius: 30px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1030;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-        }
-
-        .telefono .container {
-        gap: 0.5rem;
-        }
-
-        .telefono i {
-        color: #096623;
-        font-size: 1.2rem;
-        }
-
-        .telefono .numero {
-        color: #096623;
-        font-weight: 500;
-        margin: 0;
-        }
-        
-    
-    </style>
 </head>
 <body>
     <div id="loading-screen">
@@ -120,14 +17,7 @@
 Plasticas S.A</div>
     </div>
     <div class="d-flex flex-column" style="position: relative; z-index: 0;">
-        <header class="position-relative header d-flex justify-content-center p-3 m-3" style="height: 500px; 
-         background-image:url('https://i.ibb.co/mry5W1tX/b31edadeb493ee7e5858827193910ed0.jpg'); 
-         overflow: hidden;
-         background-size: cover;
-         background-position: center;
-         background-repeat: no-repeat;
-         background-attachment: fixed;
-         border-radius: 30px;">
+        <header class="position-relative d-flex justify-content-center p-3 m-3" style="height: 500px; background-color: #D9D9D9; border-radius: 30px;">
 
             <!-- Menú superior izquierdo -->
             <nav class="position-absolute top-0 start-0 m-3 bg-white rounded-pill d-flex align-items-center px-3 py-2 shadow" style="width: auto;">
@@ -165,45 +55,34 @@ Plasticas S.A</div>
                 </div>
             </nav>
             
-            <!-- Teléfono -->
-            <section class="telefono">
-                <div class="container d-flex align-items-center">
-                <i class="fa-solid fa-phone"></i>
-                <p class="numero mb-0">(+51) 935 789 352</p>
-                </div>
-            </section>
-            
             <!-- Hero section -->
-            <section class="hero-content mt-5">
-                <div class="social-icons">
-                    <a href="#"><i class="fa-brands fa-instagram" style="color: #00b489;"></i></a>
-                    <a href="#"><i class="fa-brands fa-facebook" style="color: #00b489;"></i></a>
-                </div>
-                <div class="container">
-                    <h1>BIENVENIDO/A A<br>G&R INDUSTRIAS<br>PLÁSTICAS S.A</h1>
-                    <p>
-                        ¿Listo para adquirir tu producto?<br>EL CORAZÓN DE LO QUE HACEMOS<br>Y EL POR QUÉ
-                    </p>
-                    <button class="btn btn-success" style="margin-top: 20px;
-        margin-left: 20px;
-        border: #fff solid 2px;
-        color: #fff;
-        padding: 10px;
-        background-color: transparent;
-        font-weight: 100px;
-        cursor: pointer;">VER MÁS</button>
-                    <div class="slider">
-                        <i class="fa-solid fa-bag-shopping" id="slide1"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide2"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide3"></i>
+            <section class="hero-content" style="margin-top:80px">
+                <h1 class="title-1">¿Cómo fabricamos nuestra bolsa de plástico?</h1>
+        
+                <!-- Procesos en círculos -->
+                <div class="process-container">
+                    <div class="process-item">
+                        <div class="process-circle">
+                            <img src="https://i.postimg.cc/q79fddGT/images-18.jpg" alt="Proceso de Extrusión">
+                        </div>
+                        <div class="process-name">Extrusión</div>
+                    </div>
+                    
+                    <div class="process-item">
+                        <div class="process-circle">
+                            <img src="https://i.postimg.cc/fLXGzgH0/images-19.jpg" alt="Proceso de Impresión">
+                        </div>
+                        <div class="process-name">Impresión</div>
+                    </div>
+                    
+                    <div class="process-item">
+                        <div class="process-circle">
+                            <img src="https://i.postimg.cc/nrJ6CY5S/destacado-sellar-bolsas-polipropileno.jpg" alt="Proceso de Sellado">
+                        </div>
+                        <div class="process-name">Sellado</div>
                     </div>
                 </div>
             </section>
-            <!--<div class="slider">
-                        <i class="fa-solid fa-bag-shopping" id="slide1"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide2"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide3"></i>
-                    </div>-->
         </header>
         
         <div class="d-flex flex-column mx-3 my-3" id="main-content">
@@ -270,11 +149,11 @@ Plasticas S.A</div>
             </div>
         </div>
         </footer>
-    </div>   
+    </div>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/logger.js"></script>
-    <script src="~/js/carrusel.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

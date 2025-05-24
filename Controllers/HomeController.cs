@@ -57,7 +57,14 @@ public class HomeController : Controller
     {
         return View();
     }
-
+    public IActionResult Informacion()
+    {
+        return View();
+    }
+    public IActionResult Procesos()
+    {
+        return View();
+    }
     public IActionResult Privacy()
     {
         return View();
