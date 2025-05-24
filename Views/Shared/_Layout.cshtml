@@ -3,29 +3,155 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GRINPLAS</title>
+    <title>@ViewData["Title"] - G&R INDUSTRIAS PLASTICAS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site2.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/inicio.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GRINPLAS.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        .hero-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        nav{
+            z-index: 2;
+        }
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .hero-content .container {
+            position: relative;
+            z-index: 0;
+        }
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        .hero-content .btn-success {
+            padding: 8px 25px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .slider {
+            margin-top: 20px;
+        }
+        .slider i {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0 5px;
+            font-size: 1.2rem;
+        }
+        .nav-elements {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .nav-elements a {
+            white-space: nowrap;
+        }
+        .login-section {
+            margin-left: 20px;
+        }
+        .telefono {
+        background-color: #fff;
+        height: 70px;
+        width: 270px;
+        margin-left: 10px;
+        transform: translateX(79vw);
+        padding: 2rem 2rem;
+        border-bottom-left-radius: 30px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        }
+
+        .telefono .container {
+        gap: 0.5rem;
+        }
+
+        .telefono i {
+        color: #096623;
+        font-size: 1.2rem;
+        }
+
+        .telefono .numero {
+        color: #096623;
+        font-weight: 500;
+        margin: 0;
+        }
+        
+    
+    </style>
 </head>
 <body>
+    <div id="loading-screen">
+        <i class="fa-solid fa-bag-shopping bag-spinner"></i>
+        <div class="grinplas-text">G&R Industrias <br>
+Plasticas S.A</div>
+    </div>
     <div class="d-flex flex-column" style="position: relative; z-index: 0;">
-        <header class="position-relative d-flex justify-content-center p-3 m-3" style="height: 300px; background-color: #70A67F; border-radius: 30px;">
+        <header class="position-relative header d-flex justify-content-center p-3 m-3" style="height: 500px; 
+         background-image:url('https://i.ibb.co/mry5W1tX/b31edadeb493ee7e5858827193910ed0.jpg'); 
+         overflow: hidden;
+         background-size: cover;
+         background-position: center;
+         background-repeat: no-repeat;
+         background-attachment: fixed;
+         border-radius: 30px;">
+
             <!-- Menú superior izquierdo -->
             <nav class="position-absolute top-0 start-0 m-3 bg-white rounded-pill d-flex align-items-center px-3 py-2 shadow" style="width: auto;">
-                <div class="nav-container">
+                <div class="nav-container d-flex align-items-center">
                     <span class="fw-bold text-success ms-3">G&R</span>
                     
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                    <!-- El botón hamburguesa solo aparecerá en pantallas pequeñas -->
+                    <button class="navbar-toggler ms-2 d-md-none" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#navbarCollapse" 
+                            aria-controls="navbarCollapse" 
+                            aria-expanded="false" 
+                            aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     
-                    <div class="navbar-collapse collapse d-sm-inline-flex">
+                    <div class="navbar-collapse collapse d-md-flex" id="navbarCollapse">
                         <div class="nav-elements">
-                            <a href="~/Productos/Cliente" class="text-dark text-decoration-none">Productos</a>
-                            <a href="~/Carrito/Cliente" class="text-decoration-none">
+                            <a href="~/Home/Index" class="text-decoration-none" style="color:#096623; margin-left:30px">Inicio</a>
+                            <a href="~/Home/Informacion" class="text-decoration-none" style="color:#096623">¿Quiénes Somos?</a>
+                            <a href="~/Home/Procesos" class="text-decoration-none" style="color:#096623">Procesos</a>
+                            <a href="~/Productos/Cliente" class="text-decoration-none" style="color:#096623">Productos</a>
+                            <a href="~/Carrito/Cliente" class="text-decoration-none" style="color:#096623">
                                 <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
                                     <i class="fas fa-shopping-cart text-white" style="font-size: 12px;"></i>
                                 </div>
@@ -38,6 +164,46 @@
                     </div>
                 </div>
             </nav>
+            
+            <!-- Teléfono -->
+            <section class="telefono">
+                <div class="container d-flex align-items-center">
+                <i class="fa-solid fa-phone"></i>
+                <p class="numero mb-0">(+51) 935 789 352</p>
+                </div>
+            </section>
+            
+            <!-- Hero section -->
+            <section class="hero-content mt-5">
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram" style="color: #00b489;"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook" style="color: #00b489;"></i></a>
+                </div>
+                <div class="container">
+                    <h1>BIENVENIDO/A A<br>G&R INDUSTRIAS<br>PLÁSTICAS S.A</h1>
+                    <p>
+                        ¿Listo para adquirir tu producto?<br>EL CORAZÓN DE LO QUE HACEMOS<br>Y EL POR QUÉ
+                    </p>
+                    <button class="btn btn-success" style="margin-top: 20px;
+        margin-left: 20px;
+        border: #fff solid 2px;
+        color: #fff;
+        padding: 10px;
+        background-color: transparent;
+        font-weight: 100px;
+        cursor: pointer;">VER MÁS</button>
+                    <div class="slider">
+                        <i class="fa-solid fa-bag-shopping" id="slide1"></i>
+                        <i class="fa-solid fa-bag-shopping" id="slide2"></i>
+                        <i class="fa-solid fa-bag-shopping" id="slide3"></i>
+                    </div>
+                </div>
+            </section>
+            <!--<div class="slider">
+                        <i class="fa-solid fa-bag-shopping" id="slide1"></i>
+                        <i class="fa-solid fa-bag-shopping" id="slide2"></i>
+                        <i class="fa-solid fa-bag-shopping" id="slide3"></i>
+                    </div>-->
         </header>
         
         <div class="d-flex flex-column mx-3 my-3" id="main-content">
@@ -48,34 +214,67 @@
         
         <footer class="mt-5 text-white py-4" style="background-color: #70A67F;">
           <div class="container">
-              <div class="row gx-5">
-                  <div class="col-md-4 text-start">
-                      <p class="fw-bold fs-1">G&R INDUSTRIAS PLASTICAS S.A.</p>
-                      <p class="fw-semibold fs-5 text-white">
-                          Nos esforzamos en crear los mejores plásticos, como bolsas y mangas, ofreciendo siempre un servicio de excelencia para PYMEs.
-                      </p>
-                  </div>
-                  <div class="col-md-4 mt-4">
-                      <p class="fw-medium fs-4">Nos Encontramos:</p>
-                      <p class="fw-medium" style="color: #1B665E; font-size: 15px;">
-                        MZA. E-1 LOTE. 9 ASOC ALAMEDA DEL NORTE (ALT OVALO DE PUENTE PIEDRA) LIMA - LIMA - PUENTE PIEDRA
-                      </p>
-                      <p class="fw-medium fs-4">Email:</p>
-                      <p class="fw-medium" style="color: #1B665E; font-size: 15px;">grplasticsac@gmail.com</p>
-                  </div>
-                  <div class="col-md-4 mt-4">
-                      <p class="fw-medium fs-4">Llámenos:</p>
-                      <p class="fw-medium" style="color: #1B665E; font-size: 15px;">+51 991383639</p>
-                  </div>
-              </div>
-              <hr style="color: #185952" />
-              <p class="opacity-53 fw-semibold fs-6" style="color: #096623;">© 2025 G&R Industrias Plásticas S.A. Todos los derechos reservados.</p>
-          </div>
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                <h2 class="h4" style="font-weight: bold">G&R INDUSTRIAS PLÁSTICAS</h2>
+                <p style="font-weight: bold">
+                    Nos esforzamos en crear los mejores plásticos, como bolsas y
+                    mangas, ofreciendo siempre un servicio de excelencia para PYMEs.
+                </p>
+                <a
+                    href="IniciarSesionAdmin.html"
+                    style="text-decoration: none; color: #ffffff; font-weight: bold"
+                    >Administrador</a
+                >
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                <h3 class="h5">Nos Encontramos:</h3>
+                <p style="color: #1b665e">
+                    MZA. E-1 LOTE. 9 ASOC ALAMEDA DEL NORTE (ALT OVALO DE PUENTE
+                    PIEDRA) LIMA - LIMA - PUENTE PIEDRA
+                </p>
+                <h3 class="h5 mt-4">Email</h3>
+                <p style="color: #1b665e">soporte@grinplas.com</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                <h3 class="h5">Llámenos</h3>
+                <p style="color: #1b665e">+51 935 789 352</p>
+                <button class="btn mt-4 d-flex align-items" style="background:rgba(2, 130, 117, 0.48)
+; border-radius:10px">
+                    <i
+                    class="fas fa-book-open me-2"
+                    style="
+                        color: #1b665e;
+                        background-color: rgba(255, 255, 255, 0.71);
+                        font-size: 40px;
+                        padding: 10px;
+                        border-radius: 10px;
+                    "
+                    ></i>
+                    <p class="text-white fw-2 fs-5 mt-3 ms-2">Libro de reclamaciones</p>
+                </button>
+                </div>
+            </div>
+            <div class="row mt-4 pt-4 border-top border-light">
+                <div class="col-md-6">
+                <p
+                    class="mb-0"
+                    style="color: rgba(9, 102, 35, 0.53); font-weight: bold"
+                >
+                    © 2024 G&R INDUSTRIAS PLÁSTICAS S.A. Todos los derechos reservados.
+                </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                <a href="#" class="text-success fw-2" style="text-decoration: none">Políticas de Reclamos.</a>
+                </div>
+            </div>
+        </div>
         </footer>
-    </div>
-    
+    </div>   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/logger.js"></script>
+    <script src="~/js/carrusel.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -61,10 +61,6 @@ using (var scope = app.Services.CreateScope())
         var gerentePassword = "Tatiana132%&"; 
         await EnsureUserAsync(userManager, gerenteEmail, gerentePassword, "GerenteGeneral");
 
-
-        var vendedorEmail = "usera0efb8e7@grinplas.com";
-        var vendedorPassword = "mqa1+Mky"; 
-        await EnsureUserAsync(userManager, vendedorEmail, vendedorPassword, "Vendedor");
         await context.SaveChangesAsync();
     }
     catch (Exception ex)
@@ -86,6 +82,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -97,7 +94,7 @@ app.Use(async (context, next) =>
 {
     if (!context.User.Identity.IsAuthenticated && context.Request.Path == "/")
     {
-        context.Response.Redirect("/Productos/Cliente");
+        context.Response.Redirect("/Home/Index");
         return;
     }
     await next();

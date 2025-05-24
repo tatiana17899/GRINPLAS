@@ -18,10 +18,10 @@ namespace GRINPLAS.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser>? _userManager;
         private readonly ILogger<ProductosController> _logger;
-        
+
         [ActivatorUtilitiesConstructor]
         public ProductosController(
-        ApplicationDbContext context, 
+        ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         ILogger<ProductosController> logger)
         {
@@ -40,22 +40,25 @@ namespace GRINPLAS.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Administrador(DateTime? fechaInicio, DateTime? fechaFin)
         {
-           if (_userManager == null)
-           {
-               return RedirectToPage("/Account/AccessDenied");
-           }
-           var user = await _userManager.GetUserAsync(User);
-
-            if(user == null){
+            if (_userManager == null)
+            {
                 return RedirectToPage("/Account/AccessDenied");
             }
-            var userRoles= await _userManager.GetRolesAsync(user);
+            var user = await _userManager.GetUserAsync(User);
 
-            if(!userRoles.Contains("Administrador")){
+            if (user == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (!userRoles.Contains("Administrador"))
+            {
                 return RedirectToPage("/Account/AccessDenied");
             }
 
-            var viewModel = new ProductoViewModel{
+            var viewModel = new ProductoViewModel
+            {
                 nuevoProducto = new Producto(),
                 Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync(),
                 Categorias = await _context.Categorias.ToListAsync(),
@@ -111,6 +114,75 @@ namespace GRINPLAS.Controllers
 
             return View("Administrador", viewModel);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegistrarProducto(Producto producto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (producto.ProductoId == 0)
+                {
+                    // Inserción: no asignar ProductoId, que lo genere la BD
+                    _context.Add(producto);
+                }
+                else
+                {
+                    // Actualización
+                    _context.Update(producto);
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Producto guardado exitosamente.";
+                return RedirectToAction("Administrador");
+            }
+
+            // Si el modelo no es válido, recarga vista con datos actuales
+            var viewModel = new ProductoViewModel
+            {
+                nuevoProducto = producto,
+                Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync(),
+                Categorias = await _context.Categorias.ToListAsync()
+            };
+
+            return View("Administrador", viewModel);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditarProducto(Producto producto)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Productos.Update(producto);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Administrador");
+            }
+
+
+            return View(producto);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarProducto(int id)
+        {
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
+            {
+                TempData["ErrorMessage"] = "Producto no encontrado.";
+                return RedirectToAction("Administrador");
+            }
+
+            _context.Productos.Remove(producto);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "El producto fue eliminado";
+            return RedirectToAction("Administrador");
+        }
+
+
+
+
+
 
         private IQueryable<Producto> ObtenerProductos()
         {
@@ -121,7 +193,7 @@ namespace GRINPLAS.Controllers
         {
 
             int productosPorPagina = 6;
-            var productos = ObtenerProductos().Where(p => p.Stock > 0); // Filtrar productos con stock > 0
+            var productos = ObtenerProductos().Where(p => p.Stock > 0);
 
             var productosPaginados = await productos
                 .OrderBy(p => p.ProductoId)
@@ -189,7 +261,7 @@ namespace GRINPLAS.Controllers
             // Verificar si ya hay unidades en el carrito
             var detalleExistente = carrito.detalleCarrito.FirstOrDefault(dc => dc.ProductoId == productoId);
             int cantidadEnCarrito = detalleExistente?.Cantidad ?? 0;
-            
+
             // Verificar si hay suficiente stock
             if (producto.Stock < cantidad + cantidadEnCarrito)
             {

@@ -13,7 +13,7 @@ using Microsoft.Build.Framework;
 
 namespace GRINPLAS.Controllers
 {
-    [Authorize(Roles = "GerenteGeneral")]
+  
     public class ClienteGraficoController : Controller
     {
         private readonly ILogger<ClienteGraficoController> _logger;
