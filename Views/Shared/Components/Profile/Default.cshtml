@@ -3,10 +3,10 @@
 @model ProfileEditViewModel
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link href="~/css/notificaciones.css" rel="stylesheet" />
-<div class="d-flex align-items-center">
+<div class="d-flex align-items-center" style=" z-index: 4000;">
     <div class="profile-image-container" id="profileTrigger">
         <img src="@(Model.Imagen ?? "https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg")" 
-            class="rounded-circle" 
+            class="rounded-circle mt-1" 
             style="width: 40px; height: 40px; cursor: pointer;">
     </div>
     <div class="dropdown me-3 ms-4 d-flex" style="width: 50px;
@@ -17,7 +17,7 @@
                 align-items: center;
                 justify-content: center;
                 position: relative;">
-        <a class="nav-link dropdown-toggle p-0 d-flex align-items-center" href="#" id="navbarDropdownNotifications" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link-a dropdown-toggle p-0 d-flex align-items-center" style="text-decoration:none;" href="#" id="navbarDropdownNotifications" role="button" data-bs-toggle="dropdown" aria-expanded="false">
            
                 <i class="fas fa-bell" style="color: #096623; font-size: 1.2rem;"></i>
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">

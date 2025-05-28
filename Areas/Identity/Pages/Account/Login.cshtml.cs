@@ -152,7 +152,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         return RedirectToAction("InicioG", "Vendedor");
                     }
 
-                    return RedirectToAction("Cliente", "Productos");
+                    return RedirectToAction("Index", "Home");
                 }
                 if (result.RequiresTwoFactor)
                 {

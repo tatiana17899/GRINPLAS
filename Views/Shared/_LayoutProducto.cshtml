@@ -45,27 +45,42 @@ Plasticas S.A</div>
                 background-position: center;
                 background-repeat: no-repeat;
                 background-attachment: fixed;">
-            </div>
+            
             <!-- Menú superior izquierdo -->
-            <div class="position-absolute top-0 start-0 m-4 bg-white rounded-pill d-flex align-items-center px-3 py-2 shadow">
-             <a href="~/Productos/Cliente" class="text-decoration-none">
-                  <span class="fw-bold text-success me-3">G&R</span>
-              </a>
-              <nav class="d-flex align-items-center gap-3">
-                <a href="~/Home/Index" class="text-decoration-none" style="color:#096623; margin-left:30px">Inicio</a>
-                <a href="~/Home/Informacion" class="text-decoration-none" style="color:#096623">¿Quiénes Somos?</a>
-                <a href="~/Home/Procesos" class="text-decoration-none" style="color:#096623">Procesos</a>
-                <a href="~/Productos/Cliente" class="text-decoration-none" style="color:#096623">Productos</a>
-                <a href="~/Carrito/Cliente" class="text-decoration-none">
-                  <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
-                    <i class="fas fa-shopping-cart text-white" style="font-size: 12px;"></i>
-                  </div>
-                </a>
-                <div class="login-section">
+            <nav class="position-absolute top-0 start-0 m-3 bg-white rounded-pill d-flex align-items-center px-3 py-2 shadow" style="width: auto;">
+                <div class="nav-container d-flex align-items-center">
+                    <span class="fw-bold text-success ms-3">G&R</span>
+                    
+                    <!-- El botón hamburguesa solo aparecerá en pantallas pequeñas -->
+                    <button class="navbar-toggler ms-2 d-md-none" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#navbarCollapse" 
+                            aria-controls="navbarCollapse" 
+                            aria-expanded="false" 
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <div class="navbar-collapse collapse d-md-flex" id="navbarCollapse">
+                        <div class="nav-elements">
+                            <a href="~/Home/Index" class="text-decoration-none" style="color:#096623; margin-left:30px">Inicio</a>
+                            <a href="~/Home/Informacion" class="text-decoration-none" style="color:#096623">¿Quiénes Somos?</a>
+                            <a href="~/Home/Procesos" class="text-decoration-none" style="color:#096623">Procesos</a>
+                            <a href="~/Productos/Cliente" class="text-decoration-none" style="color:#096623">Productos</a>
+                            <a href="~/Carrito/Cliente" class="text-decoration-none" style="color:#096623">
+                                <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                    <i class="fas fa-shopping-cart text-white" style="font-size: 12px;"></i>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="login-section">
                             <partial name="_LoginPartial"/>
+                        </div>
+                    </div>
                 </div>
-              </nav>
-            </div>
+            </nav>
           </div>
         </header>
 

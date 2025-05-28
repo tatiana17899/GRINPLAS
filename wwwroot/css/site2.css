@@ -254,14 +254,14 @@ main.show {
     margin-top: 10px;
   }
 }
-img {
+/*img {
   border-radius: 40px;
   width: 33vw;
   height: 33vh;
   z-index: 0;
   bottom: 10px;
   position: relative;
-}
+}*/
 .d-flex1 {
   width: 250px;
   padding: 20px;
