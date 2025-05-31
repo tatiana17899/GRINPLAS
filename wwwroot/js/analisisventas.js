@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `/AnalisisVentas/GetChartData?period=${currentPeriod}&category=${currentCategory}&customDate=${customDate}`
     )
       .then((response) => {
-        if (!response.ok) throw new Error("Error en la respuesta del servidor");
+        if (!response.ok) throw new Error("Error");
         return response.json();
       })
       .then((data) => {
@@ -274,7 +274,6 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error:", error);
-        showError("Error al conectarse con el servidor");
       })
       .finally(() => {
         loader.remove();
