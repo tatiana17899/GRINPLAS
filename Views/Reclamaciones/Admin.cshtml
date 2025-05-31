@@ -1,0 +1,137 @@
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Administrador";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<div class="d-flex flex-column">
+    <div class="container p-6 m-2">
+      <div class="d-flex align-items-center small">
+        <a href="#" class="text-muted" style="text-decoration: none">
+          Inicio
+        </a>
+        <span class="mx-2">/</span>
+        <span class="fw-bold" style="color: #09c33d">Historial de reclamaciones</span>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <h1 class="display-6 ps-5 fw-semibold fs-2">
+        Historial de reclamaciones
+      </h1>
+    </div>
+    <div class="mt-4 table-responsive ms-5 me-5">
+      <table id="ordersTable" class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Nombres</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Detalle</th>
+                <th>Responder</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reclamo in Model.Reclamaciones)
+            {
+                <tr>
+                    <td>@reclamo.Nombre</td>
+                    <td>@reclamo.Telefono</td>
+                    <td>@reclamo.Correo</td>
+                    <td>@reclamo.Detalle</td>
+                    <td class="text-center">
+                        <button class="btn btn-link p-0" title="Responder"
+                            onclick="responderReclamo(@reclamo.ReclamacionId, '@(reclamo.Respuesta ?? "")', @(reclamo.Estado.ToString().ToLower()))">
+                            <i class="fas fa-envelope text-success"></i>
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <input class="form-check-input" type="checkbox"
+                            @( (!string.IsNullOrEmpty(reclamo.Respuesta) || reclamo.Estado) ? "checked" : "" )
+                            disabled>
+                    </td>
+                </tr>
+            }
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<!-- Modal para responder reclamo -->
+<div class="modal fade" id="responderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px; border: none;">
+            <div class="modal-header" style="border-bottom: none;">
+                <h5 class="modal-title text-center w-100" style="color: #2EA950; font-weight: 700;">Responder reclamo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="respuestaForm">
+                    <input type="hidden" id="reclamoId" />
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #096623; font-weight: bold;">Detalle de la respuesta</label>
+                        <textarea class="form-control" id="respuestaTexto" rows="5" required 
+                                  style="border: 2px solid #096623; border-radius: 10px; background-color: #fff"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center" style="border-top: none;">
+                <button type="button" class="btn" onclick="enviarRespuesta()" 
+                        style="background-color: #1B665E; color: white; padding: 10px 40px; border-radius: 10px; font-size: 16px;">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function responderReclamo(id, respuesta, estado) {
+            $('#reclamoId').val(id);
+            $('#respuestaTexto').val(respuesta);
+            if (estado === true || estado === "true") {
+                $('#respuestaTexto').prop('readonly', true);
+                $('.btn-success[onclick="enviarRespuesta()"]').hide(); // Oculta el botón Enviar
+            } else {
+                $('#respuestaTexto').prop('readonly', false);
+                $('.btn-success[onclick="enviarRespuesta()"]').show(); // Muestra el botón Enviar
+            }
+            $('#responderModal').modal('show');
+        }
+        function cambiarEstado(id, estado) {
+            fetch(`/Reclamaciones/CambiarEstado/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estado: estado })
+            });
+        }
+
+        function enviarRespuesta() {
+            const id = $('#reclamoId').val();
+            const respuesta = $('#respuestaTexto').val();
+
+            fetch(`/Reclamaciones/ResponderReclamo/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(respuesta) // Enviar solo la respuesta como string
+            }).then(response => {
+                if (response.ok) {
+                    $('#responderModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error al guardar la respuesta.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error al guardar la respuesta.');
+            });
+        }
+    </script>
+}

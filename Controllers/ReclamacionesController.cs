@@ -4,6 +4,15 @@ using GRINPLAS.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using GRINPLAS.ViewModel;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Build.Framework;
+
 namespace GRINPLAS.Controllers
 {
   public class ReclamacionesController : Controller
@@ -71,26 +80,66 @@ namespace GRINPLAS.Controllers
 
     public async Task<IActionResult> HistorialCliente()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
+      var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      if (string.IsNullOrEmpty(userId))
+      {
+        return RedirectToAction("Login", "Account");
+      }
+
+      var cliente = await _context.Clientes
+          .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+
+      if (cliente == null)
+      {
+        return NotFound();
+      }
+
+      var reclamos = await _context.Reclamaciones
+          .Where(r => r.ClienteId == cliente.ClienteId)
+          .OrderByDescending(r => r.FechaCreacion)
+          .ToListAsync();
+
+      return View(reclamos ?? new List<Reclamaciones>());
+    }
+
+    public async Task<IActionResult> Admin()
+    {
+      var reclamaciones = await _context.Reclamaciones.OrderByDescending(r => r.FechaCreacion).ToListAsync();
+
+
+      var viewModel = new ReclamacionViewModel
+      {
+        Reclamaciones = await _context.Reclamaciones.OrderByDescending(r => r.FechaCreacion).ToListAsync(),
+      };
+
+      return View(viewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CambiarEstado(int id, bool estado)
+    {
+      var reclamo = await _context.Reclamaciones.FindAsync(id);
+      if (reclamo != null)
+      {
+        reclamo.Estado = estado;
+        await _context.SaveChangesAsync();
+      }
+      return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResponderReclamo(int id, [FromBody] string respuesta)
+    {
+        var reclamo = await _context.Reclamaciones.FindAsync(id);
+        if (reclamo != null)
         {
-            return RedirectToAction("Login", "Account");
+            reclamo.Respuesta = respuesta;
+            reclamo.Estado = true; // Marcar como atendido
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
-        var cliente = await _context.Clientes
-            .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
-
-        if (cliente == null)
-        {
-            return NotFound();
-        }
-
-        var reclamos = await _context.Reclamaciones
-            .Where(r => r.ClienteId == cliente.ClienteId)
-            .OrderByDescending(r => r.FechaCreacion)
-            .ToListAsync();
-
-        return View(reclamos ?? new List<Reclamaciones>());
+        return NotFound();
     }
   }
 }
