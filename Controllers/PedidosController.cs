@@ -216,7 +216,7 @@ namespace GRINPLAS.Controllers
                     pedido.Cliente.User.Id,
                     "Dirección actualizada",
                     "La dirección de entrega de tu pedido ha sido actualizada",
-                    "estado",
+                    "direccion",
                     pedido.PedidoId
                 );
 

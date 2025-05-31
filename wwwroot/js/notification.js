@@ -1,54 +1,25 @@
 $(document).ready(function () {
+  // Inicializar componentes Bootstrap
   $('[data-bs-toggle="tooltip"]').tooltip();
   $('[data-bs-toggle="popover"]').popover();
 
-  // Carga el contador de notificaciones al cargar la página
+  // Cargar contador inicial
   cargarContadorNotificaciones();
 
-  // Maneja el evento de mostrar el dropdown de notificaciones
+  // Configurar dropdown de notificaciones
   $("#navbarDropdownNotifications").on("show.bs.dropdown", function () {
     cargarNotificaciones();
   });
 
-  // Maneja el clic en una notificación individual
-  $(document).on("click", ".notification-item", function (e) {
-    e.preventDefault();
-    var notificacionId = $(this).data("id");
-    var url = $(this).attr("href");
-
-    // Primero marcar como leída
-    $.ajax({
-      url: "/Notificaciones/MarcarComoLeida",
-      type: "POST",
-      data: { id: notificacionId },
-      success: function () {
-        // Actualizar contador sin eliminar la notificación
-        cargarContadorNotificaciones();
-
-        // Redirigir al destino correcto
-        if (url && url !== "#") {
-          window.location.href = url;
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error al marcar la notificación como leída:", error);
-        alert(
-          "Error al marcar la notificación como leída. Por favor intenta nuevamente."
-        );
-      },
-    });
-  });
-
-  // Maneja el clic en "Marcar todas como leídas"
+  // Manejar "Marcar todas como leídas"
   $("#markAllAsRead").click(function (e) {
     e.preventDefault();
-    e.stopPropagation(); // Importante para evitar que se cierre el dropdown
+    e.stopPropagation();
 
     $.ajax({
       url: "/Notificaciones/MarcarTodasComoLeidas",
       type: "POST",
       success: function () {
-        // Ocultar todas las notificaciones con animación
         $(".notification-list")
           .children()
           .each(function (index) {
@@ -56,8 +27,6 @@ $(document).ready(function () {
               .delay(100 * index)
               .fadeOut(300, function () {
                 $(this).remove();
-
-                // Verificar si es el último elemento
                 if ($(".notification-list").children().length === 0) {
                   $(".notification-list").html(
                     '<div class="dropdown-item text-center py-3">No hay notificaciones nuevas</div>'
@@ -65,93 +34,60 @@ $(document).ready(function () {
                 }
               });
           });
-
-        // Actualizar contador a 0
         $(".notification-badge").text("");
       },
       error: function (xhr, status, error) {
-        console.error(
-          "Error al marcar todas las notificaciones como leídas:",
-          error
-        );
-        alert(
-          "Error al marcar todas las notificaciones como leídas. Por favor intenta nuevamente."
-        );
+        console.error("Error al marcar notificaciones:", error);
+        alert("Error al procesar la solicitud");
       },
     });
   });
 
-  // Actualizar contador periódicamente
+  // Actualización periódica del contador
   var notificationInterval = setInterval(cargarContadorNotificaciones, 30000);
-
-  // Limpiar intervalo al salir de la página
   $(window).on("beforeunload", function () {
     clearInterval(notificationInterval);
   });
 });
 
-// Modificación en cargarNotificaciones para manejar correctamente distintos tipos de notificaciones
+// Función principal para cargar notificaciones
 function cargarNotificaciones() {
-  var notificationList = $(".notification-list");
-  if (!notificationList.length) return;
-
-  notificationList.html(
+  var $notificationList = $(".notification-list");
+  $notificationList.html(
     '<div class="dropdown-item text-center py-3">Cargando notificaciones...</div>'
   );
 
   $.get("/Notificaciones/ObtenerNotificacionesNoLeidas")
     .done(function (response) {
-      notificationList.empty();
+      $notificationList.empty();
 
       if (response.success && response.data && response.data.length > 0) {
         response.data.forEach(function (notificacion) {
-          // Validación y valores por defecto
-          notificacion = {
-            notificacionId: notificacion.notificacionId || 0,
-            titulo: notificacion.titulo || "Notificación",
-            mensaje: notificacion.mensaje || "Sin mensaje detallado",
-            fechaCreacion:
-              notificacion.fechaCreacion || new Date().toISOString(),
-            tipo: (notificacion.tipo || "general").toLowerCase(),
-            pedidoId: notificacion.pedidoId || null,
-            leida: notificacion.leida || false,
-          };
-
-          var tipoClass, tipoIndicator, circleColor;
-
-          switch (notificacion.tipo) {
+          // Configuración de estilo según tipo (MANTENIENDO TU DISEÑO EXACTO)
+          var tipoIndicator, circleColor;
+          switch ((notificacion.tipo || "general").toLowerCase()) {
             case "pago":
-              tipoClass = "status-pago";
               tipoIndicator = "Estado de Pago";
               circleColor = "#4a6bff";
               break;
-            case "status":
-            case "pedido":
-              tipoClass = "status-pedido";
+            case "estado":
               tipoIndicator = "Estado Pedido";
               circleColor = "#b45656";
               break;
-            case "confirmacion_pedido":
-              tipoClass = "status-success";
-              tipoIndicator = "Confirmación";
+            case "nuevo_pedido":
+              tipoIndicator = "Confirmación Pedido";
+              circleColor = "#28a745";
+              break;
+            case "direccion":
+              tipoIndicator = "Dirección Actualizada";
               circleColor = "#28a745";
               break;
             default:
-              tipoClass = "status-general";
               tipoIndicator = "Notificación";
               circleColor = "#6c757d";
           }
 
-          // URL dinámica según tipo
-          var url = "/HistorialPedidos/Index";
-          if (notificacion.pedidoId) {
-            if (notificacion.tipo === "pago") {
-              url = "/HistorialPedidos/Index";
-            } else {
-              url = "/HistorialPedidos/Index";
-            }
-          }
-
+          // Plantilla HTML con tus estilos inline originales
           var item = `
             <div class="position-relative mb-3" style="
               width: 100%;
@@ -178,11 +114,12 @@ function cargarNotificaciones() {
               ">
                 <div class="d-flex justify-content-between align-items-end">
                   <p class="mb-0" style="font-size: 13px">
-                    ${notificacion.mensaje}
+                    ${notificacion.mensaje || "Sin mensaje detallado"}
                   </p>
-                  <a href="${url}" class="notification-item text-decoration-none fw-bold" 
-                    data-id="${notificacion.notificacionId}"
-                    style="color: rgba(19, 155, 58, 0.375); font-size: 13px">
+                  <a href="/HistorialPedidos/Index" 
+                     class="notification-item text-decoration-none fw-bold" 
+                     data-id="${notificacion.notificacionId}"
+                     style="color: rgba(19, 155, 58, 0.375); font-size: 13px">
                     Ir a
                   </a>
                 </div>
@@ -192,52 +129,52 @@ function cargarNotificaciones() {
               </div>
             </div>`;
 
-          notificationList.append(item);
+          $notificationList.append(item);
         });
       } else {
-        notificationList.html(
+        $notificationList.html(
           '<div class="dropdown-item text-center py-3">No hay notificaciones</div>'
         );
       }
     })
     .fail(function () {
-      notificationList.html(
+      $notificationList.html(
         '<div class="dropdown-item text-center py-3">Error al cargar notificaciones</div>'
       );
     });
 }
 
+// Manejador de clic en notificaciones (Versión optimizada)
 $(document).on("click", ".notification-item", function (e) {
   e.preventDefault();
   var notificacionId = $(this).data("id");
-  var url = $(this).attr("href"); // Obtenemos la URL del enlace
 
-  // Marcar como leída en el backend
   $.ajax({
     url: "/Notificaciones/MarcarComoLeida",
     type: "POST",
     data: { id: notificacionId },
     success: function () {
       cargarContadorNotificaciones();
-      window.location.href = url;
+      window.location.href = "/HistorialPedidos/Index";
     },
-    error: function (xhr, status, error) {
-      console.error("Error al marcar la notificación como leída:", error);
-      window.location.href = url; // Redirigir igualmente
+    error: function () {
+      window.location.href = "/HistorialPedidos/Index";
     },
   });
 });
 
+// Función para cargar el contador de notificaciones
 function cargarContadorNotificaciones() {
   $.get("/Notificaciones/ContadorNoLeidas")
     .done(function (count) {
       $(".notification-badge").text(count > 0 ? count : "");
     })
     .fail(function (xhr, status, error) {
-      console.error("Error al cargar el contador de notificaciones:", error);
+      console.error("Error al cargar contador:", error);
     });
 }
 
+// Función para formatear fechas (Mantenida igual)
 function formatearFecha(fecha) {
   if (!fecha) return "Fecha desconocida";
 

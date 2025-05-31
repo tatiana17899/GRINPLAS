@@ -26,7 +26,7 @@ public class EmailSender : IEmailSender
         {
             var client = new SmtpClient(_smtpServer, _smtpPort)
             {
-                Credentials = new NetworkCredential(_smtpUsername, _smtpPassword),
+                Credentials = new NetworkCredential("grplasticsac@gmail.com", "nxptjgzuhjbywvrz"),
                 EnableSsl = true
             };
 
