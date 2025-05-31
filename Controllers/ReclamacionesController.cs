@@ -102,17 +102,23 @@ namespace GRINPLAS.Controllers
       return View(reclamos ?? new List<Reclamaciones>());
     }
 
-    public async Task<IActionResult> Admin()
+    public async Task<IActionResult> Admin(int page = 1, int pageSize = 4)
     {
-      var reclamaciones = await _context.Reclamaciones.OrderByDescending(r => r.FechaCreacion).ToListAsync();
+        var totalReclamaciones = await _context.Reclamaciones.CountAsync();
+        var reclamaciones = await _context.Reclamaciones
+            .OrderByDescending(r => r.FechaCreacion)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
+        var viewModel = new ReclamacionViewModel
+        {
+            Reclamaciones = reclamaciones,
+            CurrentPage = page,
+            TotalPages = (int)Math.Ceiling(totalReclamaciones / (double)pageSize)
+        };
 
-      var viewModel = new ReclamacionViewModel
-      {
-        Reclamaciones = await _context.Reclamaciones.OrderByDescending(r => r.FechaCreacion).ToListAsync(),
-      };
-
-      return View(viewModel);
+        return View(viewModel);
     }
 
     [HttpPost]

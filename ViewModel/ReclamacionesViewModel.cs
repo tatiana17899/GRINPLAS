@@ -9,5 +9,7 @@ namespace GRINPLAS.ViewModel
     public class ReclamacionViewModel
     {
         public List<Reclamaciones> Reclamaciones { get; set; } = new List<Reclamaciones>();
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
     }
 }
