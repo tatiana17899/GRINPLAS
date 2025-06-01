@@ -165,7 +165,7 @@
                 <h5 class="mb-4" style="color: #3B3B3B;">¿Deseas eliminar este producto del carrito de compras?</h5>
                 <div class="d-flex justify-content-center gap-3">
                     <button type="button" id="btnConfirmarEliminar" class="btn" style="background-color: #0E8930; color: white; border-radius: 12px; padding: 10px 30px;">
-                        Si, Guardar
+                        Si, Eliminar
                     </button>
                     <button type="button" class="btn" data-bs-dismiss="modal" style="background-color: #FF3F3F; color: white; border-radius: 12px; padding: 10px 30px;">
                         Cancelar
@@ -242,10 +242,10 @@
                         modalConfirmacion.show();
                     } else {
                         const data = await response.json();
-                        alert('Error al generar el pedido: ' + (data.message || 'Error desconocido'));
+                        alert('Error al generar el pedido: ');
                     }
                 } catch (error) {
-                    alert('Error al procesar la solicitud: ' + error.message);
+                    alert('Error al procesar la solicitud: ');
                 }
             });
 
@@ -278,10 +278,10 @@
                         window.location.reload();
                     } else {
                         const data = await response.json();
-                        alert('Error al eliminar el producto: ' + (data.message || 'Error desconocido'));
+                        alert('Error al eliminar el producto: ');
                     }
                 } catch (error) {
-                    alert('Error al procesar la solicitud: ' + error.message);
+                    alert('Error al procesar la solicitud: ');
                 }
             });
         });

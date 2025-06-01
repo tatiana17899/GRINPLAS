@@ -27,65 +27,76 @@
             </a>
         </div>
 
-        <div class="table-responsive rounded-lg">
-            <table id="trabajadoresTable" class="table table-striped">
-                <thead class="table-light">
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Teléfono</th>
-                        <th>DNI</th>
-                        <th>Posición</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center" role="alert">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <h4 class="alert-heading">No hay trabajadores registrados en el sistema</h4>
+                <p>Puedes agregar nuevos trabajadores haciendo clic en el botón "Crear Nuevo"</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive rounded-lg">
+                <table id="trabajadoresTable" class="table table-striped">
+                    <thead class="table-light">
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Apellidos)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
-                            <td>@Html.DisplayFor(modelItem => item.DNI)</td>
-                            <td>
-                                @if(item.PosicionLaboral == "Vendedor")
-                                {
-                                    <i class="fas fa-shopping-bag me-2"></i>
-                                }
-                                else if(item.PosicionLaboral == "GerenteGeneral")
-                                {
-                                    <i class="fas fa-user-tie me-2"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-user-tag me-2"></i>
-                                }
-                                @Html.DisplayFor(modelItem => item.PosicionLaboral)
-                            </td>
-                            <td class="action-buttons">
-                                <!-- Botón Editar con Modal -->
-                                <button class="btn btn-sm" data-bs-toggle="modal" style="background-color: #096623; color: white"
-                                        data-bs-target="#editModal" 
-                                        data-id="@item.IdTrabajador"
-                                        data-nombre="@item.Nombre"
-                                        data-apellidos="@item.Apellidos"
-                                        data-telefono="@item.Telefono"
-                                        data-dni="@item.DNI"
-                                        data-posicion="@item.PosicionLaboral">
-                                    <i class="fas fa-edit"></i> 
-                                </button>
-                                
-                                <!-- Botón Eliminar con SweetAlert -->
-                                <button class="btn  btn-sm delete-btn" style="background-color: #096623; color: white"
-                                        data-id="@item.IdTrabajador">
-                                    <i class="fas fa-trash-alt"></i> 
-                                </button>
-                            </td>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Teléfono</th>
+                            <th>DNI</th>
+                            <th>Posición</th>
+                            <th>Acciones</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Apellidos)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DNI)</td>
+                                <td>
+                                    @if(item.PosicionLaboral == "Vendedor")
+                                    {
+                                        <i class="fas fa-shopping-bag me-2"></i>
+                                    }
+                                    else if(item.PosicionLaboral == "GerenteGeneral")
+                                    {
+                                        <i class="fas fa-user-tie me-2"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-tag me-2"></i>
+                                    }
+                                    @Html.DisplayFor(modelItem => item.PosicionLaboral)
+                                </td>
+                                <td class="action-buttons">
+                                    <!-- Botón Editar con Modal -->
+                                    <button class="btn btn-sm" data-bs-toggle="modal" style="background-color: #096623; color: white"
+                                            data-bs-target="#editModal" 
+                                            data-id="@item.IdTrabajador"
+                                            data-nombre="@item.Nombre"
+                                            data-apellidos="@item.Apellidos"
+                                            data-telefono="@item.Telefono"
+                                            data-dni="@item.DNI"
+                                            data-posicion="@item.PosicionLaboral">
+                                        <i class="fas fa-edit"></i> 
+                                    </button>
+                                    
+                                    <!-- Botón Eliminar con SweetAlert -->
+                                    <button class="btn  btn-sm delete-btn" style="background-color: #096623; color: white"
+                                            data-id="@item.IdTrabajador">
+                                        <i class="fas fa-trash-alt"></i> 
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
 <!-- Modal para Editar -->
