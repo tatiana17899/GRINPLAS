@@ -26,56 +26,37 @@ namespace GRINPLAS.Controllers
 
     public IActionResult Cliente()
     {
-      return View();
+      return View(new Reclamaciones());
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CrearReclamo(Reclamaciones reclamo)
+    public IActionResult CrearReclamo(Reclamaciones model)
     {
-      try
-      {
         if (ModelState.IsValid)
         {
-          var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cliente = _context.Clientes.FirstOrDefault(c => c.ApplicationUserId == userId);
 
-          if (string.IsNullOrEmpty(userId))
-          {
-            TempData["Error"] = "Usuario no autenticado";
-            return View("Cliente", reclamo);
-          }
+            if (cliente == null)
+            {
+                ModelState.AddModelError("", "No se encontró el cliente.");
+                return View("Cliente", model);
+            }
 
-          var cliente = await _context.Clientes
-              .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+            model.ClienteId = cliente.ClienteId;
+            model.Nombre = cliente.NombreEmpresa;
+            model.Correo = User.FindFirstValue(ClaimTypes.Email);
+            model.Telefono = cliente.Telefono;
 
-          if (cliente == null)
-          {
-            TempData["Error"] = "Cliente no encontrado";
-            return View("Cliente", reclamo);
-          }
+            _context.Reclamaciones.Add(model);
+            _context.SaveChanges();
 
-          reclamo.ClienteId = cliente.ClienteId;
-          reclamo.Nombre = cliente.NombreEmpresa;
-          reclamo.Correo = User.FindFirstValue(ClaimTypes.Email);
-          reclamo.Telefono = cliente.Telefono;
-          reclamo.FechaCreacion = DateTime.Now;
-          reclamo.Estado = false;
-
-          _context.Reclamaciones.Add(reclamo);
-          await _context.SaveChangesAsync();
-
-          TempData["Success"] = "Reclamo creado exitosamente";
-          return View("Cliente", reclamo);
+            TempData["Success"] = "Reclamo registrado correctamente";
+            return RedirectToAction("Cliente");
         }
 
-        TempData["Error"] = "Por favor complete todos los campos requeridos";
-        return View("Cliente", reclamo);
-      }
-      catch (Exception ex)
-      {
-        TempData["Error"] = "Error al crear el reclamo: " + ex.Message;
-        return View("Cliente", reclamo);
-      }
+        return View("Cliente", model);
     }
 
     public async Task<IActionResult> HistorialCliente()

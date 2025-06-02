@@ -1,0 +1,321 @@
+@model List<GRINPLAS.Models.Reclamaciones>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Mi Historial de Reclamos";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <style>
+        .container-fluid {
+            padding: 3rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead {
+            background-color: #70A67F;
+            color: white;
+        }
+
+        .table thead th {
+            padding: 1.25rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.9rem;
+            border-bottom: 2px solid #6dbe88;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .table tbody td {
+            padding: 2rem 1.25rem !important;
+            vertical-align: middle;
+            border-top: 1.5px solid #e9ecef;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        
+        /* Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 90%;
+            max-height: 70vh; 
+            overflow-y: auto;
+        }
+
+        .modal-sm {
+            max-width: 450px;
+            max-height: 60vh; 
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+
+        .modal-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 0 auto;
+        display: block;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+    .dataTables_paginate {
+        margin-top: 25px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border-radius: 0;
+        border: none !important;
+        background: transparent !important;
+        color: #838683 !important;
+        padding: 6px 0.00001px;
+        font-weight: 500;
+        font-size: 1.1rem;
+        outline: none;
+        min-width: 0;
+    }
+  
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.current) {
+        color: #096623 !important;
+
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        color: #bdbdbd !important;
+        background: #f8f9fa !important;
+  
+    }
+    .dataTables_wrapper .dataTables_paginate span {
+        display: flex;
+    
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button a,
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        color: #757575 !important;
+        text-decoration: none !important;
+    }
+
+    .shadow-titulo-historial {
+        box-shadow: 0 6px 4px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(0,0,0,0.10);
+    } 
+    </style>
+</head>
+<body>
+
+    
+            <div class="container mt-5"></div>
+            <div class="text-center mb-5" style="margin-top: -150px; z-index: 100; position: relative;">
+                <div class="d-inline-block bg-white p-3 shadow-titulo-historial" style="padding: 20px 40px; height: 150px; border-radius: 97px; width: fit-content;">
+                    <h1 class="fw-bold" style="color: #0E8930; margin-top: 15px; margin-left: 15px; margin-right: 15px;">
+                        <span style="color: #7DAE8A;">MI HISTORIAL</span>  DE RECLAMOS
+                    </h1>
+                </div>
+            </div>
+
+            <div style="margin: 0 auto; max-width: 1200px;">
+                <table class="table table-hover" id="tablaReclamos">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Detalle</th>
+                            <th>Fecha</th>
+                            <th>Mensaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var reclamo in Model)
+                        {
+                            <tr>
+                                <td>@reclamo.Cliente?.NombreEmpresa</td>
+                                <td>@reclamo.Detalle</td>
+                                <td>@reclamo.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(reclamo.Respuesta))
+                                    {
+                                        <i class="fa fa-eye eye-icon" style="cursor:pointer; color: #096623;" data-respuesta="@reclamo.Respuesta"></i>
+                                    }
+                                    else
+                                    {
+                                        <span>--</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="alert alert-warning text-center mt-3">
+                        <i class="fas fa-exclamation-circle"></i> No tienes reclamos registrados.
+                    </div>
+                }
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="responderModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="border-radius: 15px; border: none;">
+                        <div class="modal-header" style="border-bottom: none;">
+                            <h5 class="modal-title text-center w-100" style="color: #2EA950; font-weight: 700;">Responder reclamo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="respuestaForm">
+                                <input type="hidden" id="reclamoId" />
+                                <div class="mb-3">
+                                    <label class="form-label" style="color: #096623; font-weight: bold;">Respuesta a tu reclamo</label>
+                                    <textarea class="form-control" id="respuestaTexto" rows="5" required 
+                                            style="border: 2px solid #096623; border-radius: 10px; background-color: #fff"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer justify-content-center" style="border-top: none;">
+                            <button type="button" class="btn"" 
+                                    style="background-color: #1B665E; color: white; padding: 10px 40px; border-radius: 10px; font-size: 16px;">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para mostrar detalle de la respuesta -->
+            <div class="modal" id="respuestaModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="border-radius: 15px; border: none;">
+                        <div class="modal-header" style="border-bottom: none;">
+                            <h5 class="modal-title text-center w-100" style="color: #2EA950; font-weight: 700;">Respuesta a tu reclamo</h5>
+                            <button type="button" class="btn-close" id="closeModalBtn" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #096623; font-weight: bold;">Detalle de la respuesta</label>
+                                <textarea class="form-control" id="respuestaDetalle" rows="5" readonly 
+                                    style="border: 2px solid #096623; border-radius: 10px; background-color: #fff"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center" style="border-top: none;">
+                            <button type="button" class="btn" id="okBtn"
+                                    style="background-color: #1B665E; color: white; padding: 10px 40px; border-radius: 10px; font-size: 16px;">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+            
+                          
+           
+            <script>
+                
+                // Modal para ver detalle de respuesta
+                function showModal() {
+                    document.getElementById('respuestaModal').style.display = 'block';
+                }
+                function hideModal() {
+                    document.getElementById('respuestaModal').style.display = 'none';
+                }
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.eye-icon').forEach(function (icon) {
+                        icon.addEventListener('click', function () {
+                            const respuesta = this.getAttribute('data-respuesta');
+                            document.getElementById('respuestaDetalle').value = respuesta;
+                            showModal();
+                        });
+                    });
+
+                    document.getElementById('okBtn').addEventListener('click', hideModal);
+                    document.getElementById('closeModalBtn').addEventListener('click', hideModal);
+
+                    window.onclick = function(event) {
+                        const modal = document.getElementById('respuestaModal');
+                        if (event.target === modal) {
+                            hideModal();
+                        }
+                    }
+                });
+            </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+            <script>
+                $(document).ready(function () {
+                    $('.table').DataTable({
+                        pageLength: 4, 
+                        lengthChange: false, 
+                        info: false,
+                        language: {
+                            lengthMenu: "Mostrar _MENU_ registros por página",
+                            zeroRecords: "No se encontraron resultados",
+                            search: "Buscar:",
+                            paginate: {
+                                first: "Primero",
+                                last: "Último",
+                                next: "Siguiente",
+                                previous: "Anterior"
+                            }
+                        }
+                    });
+                });
+
+            </script>
+</body>
+</html>
