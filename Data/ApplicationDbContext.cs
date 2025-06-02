@@ -21,6 +21,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<GRINPLAS.Models.Gasto> Gastos { get; set; }
     public DbSet<GRINPLAS.Models.Notificacion> Notificaciones { get; set; }
 
+    public DbSet<GRINPLAS.Models.Reclamaciones> Reclamaciones { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

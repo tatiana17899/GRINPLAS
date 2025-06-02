@@ -1,0 +1,96 @@
+@model GRINPLAS.Models.Reclamaciones
+@using GRINPLAS.ViewModel
+@using System.Linq
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Reclamaciones";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="container" style="background-color: #2EA950; padding: 80px; border-radius: 15px; color: white;">
+    <div style="background-color: #71BC85; padding: 40px; border-radius: 10px; margin-bottom: 20px; font-size: 16px; letter-spacing: 0.2px; line-height: 1.5;">
+        <h2 class="text-center" style="font-weight: 700; font-size: 40px">LIBRO DE RECLAMACIONES</h2>
+
+        <div class="mb-4">
+            <h5>1. Objetivo</h5>
+            <p>Garantizar la satisfacción del cliente y la mejora continua de nuestros productos y servicios.</p>
+        </div>
+
+        <div class="mb-4">
+            <h5>2. Presentación del Reclamo</h5>
+            <p>Los clientes pueden presentar reclamos a través de:</p>
+            <ul>
+                <li>Correo electrónico: soporte@grinplas.com</li>
+                <li>Teléfono</li>
+                <li>Mediante la página web de www.Grinplas.com</li>
+            </ul>
+        </div>
+
+        <div class="mb-4">
+            <h5>3. Proceso de Resolución</h5>
+            <ul>
+                <li>Confirmación de recepción en 24 horas hábiles.</li>
+                <li>Evaluación y contacto con el cliente si es necesario.</li>
+                <li>Propuesta de solución: reemplazo del producto, reembolso, crédito o acuerdo mutuo.</li>
+                <li>Resolución en un máximo de 10 días hábiles.</li>
+            </ul>
+        </div>
+
+        <div class="mb-4">
+            <h5>5. Confidencialidad</h5>
+            <p>Toda la información será tratada con confidencialidad y utilizada solo para resolver el reclamo y mejorar nuestros servicios.</p>
+        </div>
+    </div>
+
+    <div style="background-color: white; padding: 40px; border-radius: 25px; color: #2EA950; border: 2px solid #2EA950;">
+        <h3 class="text-center mb-4" style="font-weight: 700; color: #2EA950;">¿Cuál es su reclamo?</h3>
+
+        <form asp-action="CrearReclamo" method="post">
+            @* <div class="form-group mb-4">
+                <label asp-for="Nombre" class="mb-2">Nombre completo</label>
+                <input asp-for="Nombre" class="form-control" required 
+                    style="border: 1px solid #2EA950; border-radius: 8px; padding: 10px;">
+            </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Correo" class="mb-2">Correo electrónico</label>
+                <input asp-for="Correo" class="form-control" type="email" required 
+                    style="border: 1px solid #2EA950; border-radius: 8px; padding: 10px;">
+            </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Telefono" class="mb-2">Teléfono</label>
+                <input asp-for="Telefono" class="form-control" required 
+                    style="border: 1px solid #2EA950; border-radius: 8px; padding: 10px;">
+            </div> *@
+
+            <div class="form-group mb-4">
+                <label asp-for="Detalle" class="mb-2" style="color: #096623">Detalle del Reclamo</label>
+                <textarea asp-for="Detalle" class="form-control" rows="5" required 
+                    style="border: 1px solid #096623; border-radius: 8px; padding: 10px;"></textarea>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn" 
+                    style="background-color: #096623; color: white; padding: 10px 40px; border-radius: 8px; font-size: 16px;">
+                    <i class="fas fa-paper-plane me-2"></i> Enviar Mensaje
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}

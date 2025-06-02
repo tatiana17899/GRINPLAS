@@ -3,6 +3,7 @@ using System;
 using GRINPLAS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250528181459_UpdateReclamacionesModel")]
+    partial class UpdateReclamacionesModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -369,46 +372,6 @@ namespace GRINPLAS.Migrations
                     b.ToTable("Productos");
                 });
 
-            modelBuilder.Entity("GRINPLAS.Models.Reclamaciones", b =>
-                {
-                    b.Property<int>("ReclamacionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReclamacionId"));
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Correo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Detalle")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Estado")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Respuesta")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Telefono")
-                        .HasColumnType("text");
-
-                    b.HasKey("ReclamacionId");
-
-                    b.HasIndex("ClienteId");
-
-                    b.ToTable("Reclamaciones");
-                });
-
             modelBuilder.Entity("GRINPLAS.Models.Trabajadores", b =>
                 {
                     b.Property<int>("IdTrabajador")
@@ -682,17 +645,6 @@ namespace GRINPLAS.Migrations
                         .IsRequired();
 
                     b.Navigation("Categoria");
-                });
-
-            modelBuilder.Entity("GRINPLAS.Models.Reclamaciones", b =>
-                {
-                    b.HasOne("GRINPLAS.Models.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Trabajadores", b =>
