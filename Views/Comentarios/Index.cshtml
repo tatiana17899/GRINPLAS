@@ -18,10 +18,15 @@
 <div class="container py-5">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Comentarios</li>
+            <li class="breadcrumb-item"><a href="/" class="text-dark">Inicio</a></li>
+            <li class="breadcrumb-item active fw-bold" aria-current="page" style="color: #09c33d;">
+                Comentarios
+            </li>
         </ol>
     </nav>
+
+
+
 
     <h2 class="fw-bold mb-4">Historial de Comentarios</h2>
 
@@ -106,8 +111,18 @@
     $(document).ready(function () {
         $('#comentariosTable').DataTable({
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-            },
+                paginate: {
+                    previous: "Anterior",
+                    next: "Siguiente"
+                },
+                lengthMenu: "Mostrar _MENU_ registros",
+                zeroRecords: "No se encontraron resultados",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty: "Mostrando 0 a 0 de 0 registros",
+                infoFiltered: "(filtrado de _MAX_ registros totales)",
+                search: "Buscar:"
+            }
+            ,
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50],
             columnDefs: [
