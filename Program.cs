@@ -108,7 +108,7 @@ app.Use(async (context, next) =>
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Productos}/{action=Cliente}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
