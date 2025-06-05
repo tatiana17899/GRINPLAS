@@ -3,6 +3,7 @@ using System;
 using GRINPLAS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250528191131_UpdateReclamacionesModelDB")]
+    partial class UpdateReclamacionesModelDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -381,6 +384,7 @@ namespace GRINPLAS.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Correo")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Detalle")
@@ -396,10 +400,8 @@ namespace GRINPLAS.Migrations
                     b.Property<string>("Nombre")
                         .HasColumnType("text");
 
-                    b.Property<string>("Respuesta")
-                        .HasColumnType("text");
-
                     b.Property<string>("Telefono")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("ReclamacionId");
@@ -422,6 +424,7 @@ namespace GRINPLAS.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ApplicationUserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("DNI")
@@ -435,10 +438,6 @@ namespace GRINPLAS.Migrations
                     b.Property<string>("PosicionLaboral")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<decimal?>("Sueldo")
-                        .IsRequired()
-                        .HasColumnType("numeric");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
@@ -703,7 +702,8 @@ namespace GRINPLAS.Migrations
                     b.HasOne("GRINPLAS.Models.ApplicationUser", "User")
                         .WithOne("Trabajador")
                         .HasForeignKey("GRINPLAS.Models.Trabajadores", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,61 +9,8 @@
     <link rel="stylesheet" href="~/GRINPLAS.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        .hero-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            background-size: cover;
-            background-position: center;
-            z-index: 0;
-        }
         nav{
             z-index: 2;
-        }
-        .hero-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-        }
-
-        .hero-content .container {
-            position: relative;
-            z-index: 0;
-        }
-        .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }
-        .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-        .hero-content .btn-success {
-            padding: 8px 25px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .slider {
-            margin-top: 20px;
-        }
-        .slider i {
-            color: rgba(255, 255, 255, 0.6);
-            margin: 0 5px;
-            font-size: 1.2rem;
         }
         .nav-elements {
             display: flex;
@@ -120,14 +67,7 @@
 Plasticas S.A</div>
     </div>
     <div class="d-flex flex-column" style="position: relative; z-index: 0;">
-        <header class="position-relative header d-flex justify-content-center p-3 m-3" style="height: 500px; 
-         background-image:url('https://i.ibb.co/mry5W1tX/b31edadeb493ee7e5858827193910ed0.jpg'); 
-         overflow: hidden;
-         background-size: cover;
-         background-position: center;
-         background-repeat: no-repeat;
-         background-attachment: fixed;
-         border-radius: 30px;">
+        <header class="position-relative d-flex justify-content-center">
 
             <!-- Menú superior izquierdo -->
             <nav class="position-absolute top-0 start-0 m-3 bg-white rounded-pill d-flex align-items-center px-3 py-2 shadow" style="width: auto;">
@@ -164,49 +104,10 @@ Plasticas S.A</div>
                     </div>
                 </div>
             </nav>
-            
-            <!-- Teléfono -->
-            <section class="telefono">
-                <div class="container d-flex align-items-center">
-                <i class="fa-solid fa-phone"></i>
-                <p class="numero mb-0">(+51) 935 789 352</p>
-                </div>
-            </section>
-            
-            <!-- Hero section -->
-            <section class="hero-content mt-5">
-                <div class="social-icons">
-                    <a href="#"><i class="fa-brands fa-instagram" style="color: #00b489;"></i></a>
-                    <a href="#"><i class="fa-brands fa-facebook" style="color: #00b489;"></i></a>
-                </div>
-                <div class="container">
-                    <h1>BIENVENIDO/A A<br>G&R INDUSTRIAS<br>PLÁSTICAS S.A</h1>
-                    <p>
-                        ¿Listo para adquirir tu producto?<br>EL CORAZÓN DE LO QUE HACEMOS<br>Y EL POR QUÉ
-                    </p>
-                    <a class="btn btn-success" style="margin-top: 20px;
-        margin-left: 20px;
-        border: #fff solid 2px;
-        color: #fff;
-        padding: 10px;
-        background-color: transparent;
-        font-weight: 100px;
-        cursor: pointer;" href="~/Productos/Cliente">VER MÁS</a>
-                    <div class="slider">
-                        <i class="fa-solid fa-bag-shopping" id="slide1"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide2"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide3"></i>
-                    </div>
-                </div>
-            </section>
-            <!--<div class="slider">
-                        <i class="fa-solid fa-bag-shopping" id="slide1"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide2"></i>
-                        <i class="fa-solid fa-bag-shopping" id="slide3"></i>
-                    </div>-->
+        
         </header>
         
-        <div class="d-flex flex-column mx-3 my-3" id="main-content">
+        <div class="d-flex flex-column mx-1 my-1" id="main-content">
             <main role="main" style="background-color: #ffffff">
                 @RenderBody()
             </main>
