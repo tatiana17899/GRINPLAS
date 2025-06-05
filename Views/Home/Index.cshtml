@@ -108,7 +108,7 @@
         <div class="mb-4">
           <label class="form-label">Nombre:</label>
           <input type="text" name="Nombres" class="form-control" asp-for="Nombres" required
-            oninvalid="this.setCustomValidity('Digite su comentario con sus datos personales en el apartado')"
+            oninvalid="this.setCustomValidity('Debe ingresar la información solicitada')"
             oninput="this.setCustomValidity('')" />
           <span asp-validation-for="Nombres" class="text-danger"></span>
         </div>
@@ -117,14 +117,14 @@
           <div class="col">
             <label class="form-label">Teléfono:</label>
             <input type="text" name="Telefono" class="form-control" asp-for="Telefono" required
-              oninvalid="this.setCustomValidity('Digite su comentario con sus datos personales en el apartado')"
+              oninvalid="this.setCustomValidity('Debe ingresar la información solicitada')"
               oninput="this.setCustomValidity('')" />
             <span asp-validation-for="Telefono" class="text-danger"></span>
           </div>
           <div class="col">
             <label class="form-label">Email:</label>
             <input type="email" name="Email" class="form-control" asp-for="Email" required
-              oninvalid="this.setCustomValidity('Digite su comentario con sus datos personales en el apartado')"
+              oninvalid="this.setCustomValidity('Debe ingresar la información solicitada')"
               oninput="this.setCustomValidity('')" />
             <span asp-validation-for="Email" class="text-danger"></span>
           </div>
@@ -133,7 +133,7 @@
         <div class="mb-4">
           <label class="form-label">Detalle</label>
           <textarea name="Contenido" class="form-control" asp-for="Contenido" required
-            oninvalid="this.setCustomValidity('Digite su comentario con sus datos personales en el apartado')"
+            oninvalid="this.setCustomValidity('Debe ingresar un comentario')"
             oninput="this.setCustomValidity('')"></textarea>
           <span asp-validation-for="Contenido" class="text-danger"></span>
         </div>
@@ -204,16 +204,16 @@
       const mensaje = contenedor.getAttribute("data-mensaje");
 
       const modalHTML = `
-                  <div class="modal fade" id="comentarioExitoModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content text-center p-4 border-0 shadow-lg">
-                        <div class="modal-body">
-                          <i class="fas fa-check-circle" style="font-size: 60px; color: #09c33d;"></i>
-                          <h5 class="mt-3 mb-0 text-success fw-bold">${mensaje}</h5>
+                      <div class="modal fade" id="comentarioExitoModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content text-center p-4 border-0 shadow-lg">
+                            <div class="modal-body">
+                              <i class="fas fa-check-circle" style="font-size: 60px; color: #09c33d;"></i>
+                              <h5 class="mt-3 mb-0 text-success fw-bold">${mensaje}</h5>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>`;
+                      </div>`;
 
       document.body.insertAdjacentHTML('beforeend', modalHTML);
 
