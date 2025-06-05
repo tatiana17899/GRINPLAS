@@ -22,16 +22,16 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> PerfilCliente()
     {
-        var userId = _userManager.GetUserId(User); 
+        var userId = _userManager.GetUserId(User);
 
         var cliente = await _context.Clientes
-            .Include(c => c.User) 
+            .Include(c => c.User)
             .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
         if (cliente == null)
         {
             var user = await _userManager.GetUserAsync(User);
-            cliente = new Cliente 
+            cliente = new Cliente
             {
                 ApplicationUserId = userId,
                 User = user,
@@ -56,6 +56,22 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EnviarComentario(Comentarios comentario)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Comentarios.Add(comentario);
+            await _context.SaveChangesAsync();
+
+            TempData["Mensaje"] = "El comentario se registró con éxito";
+            return RedirectToAction(nameof(Index));
+        }
+
+        TempData["Error"] = "Error al enviar el comentario. Por favor, verifica los datos.";
+        return RedirectToAction(nameof(Index));
     }
     public IActionResult Informacion()
     {

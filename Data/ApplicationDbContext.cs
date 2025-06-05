@@ -23,6 +23,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<GRINPLAS.Models.Reclamaciones> Reclamaciones { get; set; }
 
+    public DbSet<GRINPLAS.Models.Comentarios> Comentarios { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
