@@ -74,7 +74,7 @@ $(document).ready(function () {
           </button>
           <button class="btn btn-sm delete-btn" 
                   data-id="${row.idTrabajador || ""}" 
-                  style="background-color: #dc3545 !important; color: white !important; border: none !important; margin-left: 5px;">
+                  style="background-color: #096623 !important; color: white !important; border: none !important; margin-left: 5px;">
               <i class="fas fa-trash-alt"></i> 
           </button>
         `;
