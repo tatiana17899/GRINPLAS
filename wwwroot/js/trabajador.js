@@ -146,90 +146,112 @@ $(document).ready(function () {
   // Manejar envío del formulario de edición
   $("#editForm").on("submit", function (e) {
     e.preventDefault();
-    var formData = $(this).serialize();
-    $.ajax({
-      url: $(this).attr("action"),
-      type: "POST",
-      data: formData,
-      success: function (response) {
-        if (response.success) {
-          $("#editModal").modal("hide");
-          Swal.fire(
-            "Actualizado!",
-            "El trabajador ha sido actualizado correctamente.",
-            "success"
-          ).then(() => {
-            table.ajax.reload(null, false);
-          });
-        } else {
-          Swal.fire(
-            "Error!",
-            response.message || "No se pudo actualizar el trabajador.",
-            "error"
-          );
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error(xhr.responseText);
-        Swal.fire(
-          "Error!",
-          "Ocurrió un error al actualizar: " + error,
-          "error"
-        );
-      },
-    });
-  });
 
-  // Configurar eliminación
-  $(document).on("click", ".delete-btn", function () {
-    var id = $(this).data("id");
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¡No podrás revertir esto!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Sí, eliminarlo!",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
+    // Primero cerrar el modal de edición
+    $("#editModal").modal("hide");
+
+    // Esperar a que se cierre completamente el modal de edición antes de mostrar el de confirmación
+    $("#editModal").on("hidden.bs.modal", function () {
+      // Remover el evento para evitar múltiples llamadas
+      $("#editModal").off("hidden.bs.modal");
+
+      // Mostrar modal de confirmación
+      $("#confirmacionEditModal").modal("show");
+    });
+
+    // Configurar el botón de confirmación para enviar el formulario
+    $("#btnConfirmarEditar")
+      .off("click")
+      .on("click", function () {
+        $("#confirmacionEditModal").modal("hide");
+
+        var formData = $("#editForm").serialize();
         $.ajax({
-          url: urls.delete,
+          url: $("#editForm").attr("action"),
           type: "POST",
-          data: {
-            id: id,
-            __RequestVerificationToken: $(
+          data: formData,
+          headers: {
+            RequestVerificationToken: $(
               'input[name="__RequestVerificationToken"]'
             ).val(),
           },
           success: function (response) {
             if (response.success) {
-              Swal.fire(
-                "Eliminado!",
-                "El trabajador ha sido eliminado.",
-                "success"
-              ).then(() => {
+              // Mostrar modal de éxito (ID corregido)
+              $("#exitoEditModal").modal("show");
+
+              // Recargar la tabla cuando se cierre el modal de éxito
+              $("#exitoEditModal").on("hidden.bs.modal", function () {
                 table.ajax.reload(null, false);
               });
             } else {
+              // Si hay error, mostrar SweetAlert como antes
               Swal.fire(
                 "Error!",
-                response.message || "No se pudo eliminar el trabajador.",
+                response.message || "No se pudo actualizar el trabajador.",
                 "error"
               );
             }
           },
           error: function (xhr, status, error) {
-            console.error("Error details:", xhr.responseText);
+            console.error(xhr.responseText);
             Swal.fire(
               "Error!",
-              "Ocurrió un error al eliminar: " + error,
+              "Ocurrió un error al actualizar: " + error,
               "error"
             );
           },
         });
-      }
+      });
+  });
+
+  // Configurar eliminación
+  $(document).on("click", ".delete-btn", function () {
+    var id = $(this).data("id");
+
+    // Guardar el ID para usar después
+    $("#confirmacionDeleteModal").data("trabajador-id", id);
+
+    // Mostrar modal de confirmación para eliminación
+    $("#confirmacionDeleteModal").modal("show");
+  });
+
+  // Manejar confirmación de eliminación
+  $("#btnConfirmarEliminar").on("click", function () {
+    var id = $("#confirmacionDeleteModal").data("trabajador-id");
+
+    $("#confirmacionDeleteModal").modal("hide");
+
+    $.ajax({
+      url: urls.delete,
+      type: "POST",
+      data: {
+        id: id,
+        __RequestVerificationToken: $(
+          'input[name="__RequestVerificationToken"]'
+        ).val(),
+      },
+      success: function (response) {
+        if (response.success) {
+          // Mostrar modal de éxito para eliminación
+          $("#exitoDeleteModal").modal("show");
+
+          // Recargar la tabla cuando se cierre el modal de éxito
+          $("#exitoDeleteModal").on("hidden.bs.modal", function () {
+            table.ajax.reload(null, false);
+          });
+        } else {
+          Swal.fire(
+            "Error!",
+            response.message || "No se pudo eliminar el trabajador.",
+            "error"
+          );
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error details:", xhr.responseText);
+        Swal.fire("Error!", "Ocurrió un error al eliminar: " + error, "error");
+      },
     });
   });
 
@@ -243,7 +265,7 @@ $(document).ready(function () {
     });
 
     $(".delete-btn").css({
-      "background-color": "#dc3545",
+      "background-color": "#096623",
       color: "white",
       border: "none",
     });

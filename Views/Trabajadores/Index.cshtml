@@ -56,7 +56,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Editar Trabajador</h5>
+                <h5 class="modal-title" id="editModalLabel" style="color:#096623">Editar Trabajador</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="editForm" method="post">
@@ -93,15 +93,84 @@
                         <input type="number" step="0.01" class="form-control" id="editSueldo" name="Sueldo" required>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn" style="background-color:#096623; color: #fff">Guardar Trabajador</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<!-- Modal de Confirmación para Edición -->
+<div class="modal fade" id="confirmacionEditModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-body text-center p-5">
+                <img src="https://i.postimg.cc/zDHHMc7W/senal-de-advertencia-1.png" alt="Exclamación verde" width="90" height="90" class="mb-4">
+                <h4 class="mb-4">¿Deseas guardar los cambios del trabajador?</h4>
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="button" class="btn px-4 py-2" style="background-color:#096623; color:#fff" id="btnConfirmarEditar">SÍ</button>
+                    <button type="button" class="btn btn-outline-success px-4 py-2" data-bs-dismiss="modal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal de Éxito para Edición -->
+<div class="modal fade" id="exitoEditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-body text-center p-5">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" fill="#096623" class="bi bi-check-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                    </svg>
+                </div>
+                <h4 class="mb-4">Trabajador editado guardado</h4>
+                <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background-color:#096623; color:#fff">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de Confirmación para Eliminación -->
+<div class="modal fade" id="confirmacionDeleteModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-body text-center p-5">
+                <!-- Ícono X en círculo verde -->
+                <div class="mb-4">
+                    <div style="width: 90px; height: 90px; border: 4px solid #096623; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fas fa-times" style="font-size: 40px; color: #096623;"></i>
+                    </div>
+                </div>
+                <h4 class="mb-4">¿Deseas eliminar a este trabajador?</h4>
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="button" class="btn px-4 py-2" id="btnConfirmarEliminar" style="background-color: #096623; color: white;">SÍ</button>
+                    <button type="button" class="btn btn-outline-success px-4 py-2" data-bs-dismiss="modal">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Éxito para Eliminación -->
+<div class="modal fade" id="exitoDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-body text-center p-5">
+                <!-- Ícono check en círculo verde -->
+                <div class="mb-4">
+                    <div style="width: 90px; height: 90px; border: 4px solid #096623; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i class="fas fa-check" style="font-size: 40px; color: #096623;"></i>
+                    </div>
+                </div>
+                <h4 class="mb-4">Trabajador eliminado</h4>
+                <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background-color: #096623; color: white;">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
