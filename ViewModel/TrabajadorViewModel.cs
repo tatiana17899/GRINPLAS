@@ -31,5 +31,8 @@ namespace GRINPLAS.ViewModel
 
     [Required(ErrorMessage = "La posición laboral es obligatoria")]
     public string PosicionLaboral { get; set; }
+    
+    [Required(ErrorMessage = "El Sueldo es obligatoria")]
+    public decimal Sueldo { get; set; }
 }
 }

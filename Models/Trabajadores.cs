@@ -11,9 +11,9 @@ namespace GRINPLAS.Models
     {
         [Key]
         public int IdTrabajador {get; set;}
-        [Required]
+ 
         public string? ApplicationUserId { get; set; }
-        [Required]
+        
         [ForeignKey("ApplicationUserId")]
         public ApplicationUser? User { get; set; } 
         [Required]
@@ -26,5 +26,7 @@ namespace GRINPLAS.Models
         public string? DNI {get; set;}
         [Required]
         public string? PosicionLaboral {get; set;}
+        [Required]
+        public decimal? Sueldo {get; set;}
     }
 }

@@ -21,84 +21,36 @@
         </nav>
 
         <div class="flex-column align-items-center mb-4">
-            <h1 class="display-6  fw-semibold fs-2">Historial de Trabajadores</h1>
+            <h1 class="display-6 fw-semibold fs-2">Historial de Trabajadores</h1>
             <a asp-action="Create" class="btn btn-success">
-                Crear Nuevo
+                Crear Nuevo Trabajador
             </a>
         </div>
 
-        @if (!Model.Any())
-        {
-            <div class="alert alert-info text-center" role="alert">
-                <i class="fas fa-info-circle fa-2x mb-3"></i>
-                <h4 class="alert-heading">No hay trabajadores registrados en el sistema</h4>
-                <p>Puedes agregar nuevos trabajadores haciendo clic en el botón "Crear Nuevo"</p>
-            </div>
-        }
-        else
-        {
-            <div class="table-responsive rounded-lg">
-                <table id="trabajadoresTable" class="table table-striped">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellidos</th>
-                            <th>Teléfono</th>
-                            <th>DNI</th>
-                            <th>Posición</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Apellidos)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Telefono)</td>
-                                <td>@Html.DisplayFor(modelItem => item.DNI)</td>
-                                <td>
-                                    @if(item.PosicionLaboral == "Vendedor")
-                                    {
-                                        <i class="fas fa-shopping-bag me-2"></i>
-                                    }
-                                    else if(item.PosicionLaboral == "GerenteGeneral")
-                                    {
-                                        <i class="fas fa-user-tie me-2"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="fas fa-user-tag me-2"></i>
-                                    }
-                                    @Html.DisplayFor(modelItem => item.PosicionLaboral)
-                                </td>
-                                <td class="action-buttons">
-                                    <!-- Botón Editar con Modal -->
-                                    <button class="btn btn-sm" data-bs-toggle="modal" style="background-color: #096623; color: white"
-                                            data-bs-target="#editModal" 
-                                            data-id="@item.IdTrabajador"
-                                            data-nombre="@item.Nombre"
-                                            data-apellidos="@item.Apellidos"
-                                            data-telefono="@item.Telefono"
-                                            data-dni="@item.DNI"
-                                            data-posicion="@item.PosicionLaboral">
-                                        <i class="fas fa-edit"></i> 
-                                    </button>
-                                    
-                                    <!-- Botón Eliminar con SweetAlert -->
-                                    <button class="btn  btn-sm delete-btn" style="background-color: #096623; color: white"
-                                            data-id="@item.IdTrabajador">
-                                        <i class="fas fa-trash-alt"></i> 
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
+        <div class="table-responsive rounded-lg">
+            <table id="trabajadoresTable" class="table table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Teléfono</th>
+                        <th>DNI</th>
+                        <th>Posición</th>
+                        <th>Sueldo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán via AJAX -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<!-- Token antiforgery para AJAX -->
+@Html.AntiForgeryToken()
+
 <!-- Modal para Editar -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -131,9 +83,14 @@
                         <label for="editPosicion" class="form-label">Posición Laboral</label>
                         <select class="form-select" id="editPosicion" name="PosicionLaboral" required>
                             <option value="Vendedor">Vendedor</option>
-                            <option value="Supervisión de chongos">Supervisión de chongos</option>
+                            <option value="SupervisorCalidad">Supervisión de calidad</option>
                             <option value="Almacenero">Almacenero</option>
+                            <option value="GerenteGeneral">Gerente General</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSueldo" class="form-label">Sueldo</label>
+                        <input type="number" step="0.01" class="form-control" id="editSueldo" name="Sueldo" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -144,14 +101,19 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
-         var urls = {
+        var urls = {
             edit: '@Url.Action("Edit", "Trabajadores")',
             delete: '@Url.Action("Delete", "Trabajadores")',
             getTrabajadores: '@Url.Action("GetTrabajadores", "Trabajadores")'
         };
     </script>
     <script src="~/js/trabajador.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }

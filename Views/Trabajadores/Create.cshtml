@@ -44,10 +44,17 @@
                     <option value="Vendedor">Vendedor</option>
                     <option value="GerenteGeneral">Gerente General</option>
                     <option value="Almacenero">Almacenero</option>
+                    <option value="SupervisorCalidad">Supervisor de calidad</option>
                 </select>
                 <span asp-validation-for="PosicionLaboral" class="text-danger"></span>
             </div>
             
+            <div class="form-group">
+                <label asp-for="Sueldo" class="control-label">Sueldo</label>
+                <input asp-for="Sueldo" class="form-control" placeholder="S/." required/>
+                <span asp-validation-for="Sueldo" class="text-danger"></span>
+            </div>
+
             <div class="form-group pt-4">
                 <button type="submit" class="btn" style="background-color: #096623; color: white">Crear</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
