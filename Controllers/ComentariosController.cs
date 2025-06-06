@@ -1,10 +1,12 @@
 using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using GRINPLAS.Data;
 using GRINPLAS.Models;
-using Microsoft.AspNetCore.Mvc;
 using ClasificacionModelo;
-using System.Threading.Tasks;
-using System.Linq;
+using ClosedXML.Excel;
 
 namespace GRINPLAS.Controllers
 {
@@ -17,7 +19,6 @@ namespace GRINPLAS.Controllers
             _context = context;
         }
 
-        // GET: Comentarios/Index
         public IActionResult Index()
         {
             var comentarios = _context.Comentarios.ToList();
@@ -36,11 +37,7 @@ namespace GRINPLAS.Controllers
                 };
 
                 var resultado = MLModelTextClasification.Predict(input);
-
                 var etiqueta = resultado.PredictedLabel;
-                // Debug: imprime la etiqueta para ver qué está devolviendo
-                Console.WriteLine("Etiqueta predicha: " + etiqueta);
-
 
                 comentario.EsPositivo = etiqueta?.ToLower() == "positivo";
 
@@ -52,6 +49,39 @@ namespace GRINPLAS.Controllers
             }
 
             return View(comentario);
+        }
+
+        public IActionResult ExportarExcel()
+        {
+            var comentarios = _context.Comentarios.ToList();
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Comentarios");
+
+            worksheet.Cell(1, 1).Value = "Id";
+            worksheet.Cell(1, 2).Value = "Nombres";
+            worksheet.Cell(1, 3).Value = "Teléfono";
+            worksheet.Cell(1, 4).Value = "Email";
+            worksheet.Cell(1, 5).Value = "Comentario";
+            worksheet.Cell(1, 6).Value = "Tipo";
+
+            for (int i = 0; i < comentarios.Count; i++)
+            {
+                var c = comentarios[i];
+                worksheet.Cell(i + 2, 1).Value = c.Id;
+                worksheet.Cell(i + 2, 2).Value = c.Nombres;
+                worksheet.Cell(i + 2, 3).Value = c.Telefono;
+                worksheet.Cell(i + 2, 4).Value = c.Email;
+                worksheet.Cell(i + 2, 5).Value = c.Contenido;
+                worksheet.Cell(i + 2, 6).Value = c.EsPositivo ? "Positivo" : "Negativo";
+            }
+
+            var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            var fileName = $"Comentarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
     }
