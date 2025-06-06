@@ -25,9 +25,6 @@
         </ol>
     </nav>
 
-
-
-
     <h2 class="fw-bold mb-4">Historial de Comentarios</h2>
 
     <div class="d-flex justify-content-end mb-4">
@@ -77,34 +74,41 @@
         </table>
     </div>
 
-    <!-- Análisis Visual -->
-    <div class="p-4 rounded" style="background-color: rgba(0, 186, 167, 0.1);">
-        <h4 class="fw-bold mb-4 text-success">Análisis de Comentarios</h4>
+    @if (Model.Count > 0)
+    {
+        <div class="p-4 rounded" style="background-color: rgba(0, 186, 167, 0.1);">
+            <h4 class="fw-bold mb-4 text-success">Análisis de Comentarios</h4>
 
-        <div class="mb-4">
-            <label class="fw-bold">
-                <i class="fas fa-check-circle text-success me-2"></i>Positivos
-            </label>
-            <div class="progress" style="height: 25px;">
-                <div class="progress-bar bg-success" role="progressbar"
-                    style="width: @(Model.Count == 0 ? 0 : positivos * 100 / Model.Count)%">
-                    @positivos comentarios
+            <div class="mb-4">
+                <label class="fw-bold">
+                    <i class="fas fa-check-circle text-success me-2"></i>Positivos
+                </label>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar bg-success" role="progressbar"
+                        style="width: @(positivos * 100 / Model.Count)%">
+                        @positivos comentarios
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="fw-bold">
+                    <i class="fas fa-times-circle text-danger me-2"></i>Negativos
+                </label>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: @(negativos * 100 / Model.Count)%">
+                        @negativos comentarios
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div>
-            <label class="fw-bold">
-                <i class="fas fa-times-circle text-danger me-2"></i>Negativos
-            </label>
-            <div class="progress" style="height: 25px;">
-                <div class="progress-bar bg-danger" role="progressbar"
-                    style="width: @(Model.Count == 0 ? 0 : negativos * 100 / Model.Count)%">
-                    @negativos comentarios
-                </div>
-            </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            No hay datos suficientes para generar el análisis gráfico.
         </div>
-    </div>
+    }
 </div>
 
 <script>
@@ -121,8 +125,7 @@
                 infoEmpty: "Mostrando 0 a 0 de 0 registros",
                 infoFiltered: "(filtrado de _MAX_ registros totales)",
                 search: "Buscar:"
-            }
-            ,
+            },
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50],
             columnDefs: [
