@@ -1,7 +1,7 @@
 @model GRINPLAS.ViewModel.TrabajadorViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
-    ViewData["Title"] = "Lista de Trabajadores";
+    ViewData["Title"] = "Crear nuevo trabajador";
     Layout = "~/Views/Shared/_LayoutGerente.cshtml";
     var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
