@@ -28,6 +28,9 @@
         </div>
 
         <div class="table-responsive rounded-lg">
+            <div id="alertaSinTrabajadores" class="alert alert-warning text-center" style="display:none;">
+                <i class="fas fa-exclamation-triangle"></i> No hay trabajadores registrados en el sistema
+            </div>
             <table id="trabajadoresTable" class="table table-striped">
                 <thead class="table-light">
                     <tr>
@@ -41,14 +44,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Los datos se cargarán via AJAX -->
+                    
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- Token antiforgery para AJAX -->
+
 @Html.AntiForgeryToken()
 
 <!-- Modal para Editar -->
@@ -175,6 +178,8 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+     <script src="~/js/trabajador.js"></script>
+     
     <script>
         var urls = {
             edit: '@Url.Action("Edit", "Trabajadores")',
@@ -182,5 +187,5 @@
             getTrabajadores: '@Url.Action("GetTrabajadores", "Trabajadores")'
         };
     </script>
-    <script src="~/js/trabajador.js"></script>
+   
 }
