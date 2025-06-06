@@ -138,7 +138,7 @@
           <span asp-validation-for="Contenido" class="text-danger"></span>
         </div>
 
-        <input type="hidden" name="EsPositivo" value="true" />
+
         <div class="d-flex justify-content-end">
           <button type="submit" class="btn btn-teal-500 text-white d-flex align-items-center"
             style="background-color: #38b2ac; padding: 10px; width: 200px">
@@ -204,16 +204,16 @@
       const mensaje = contenedor.getAttribute("data-mensaje");
 
       const modalHTML = `
-                      <div class="modal fade" id="comentarioExitoModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                          <div class="modal-content text-center p-4 border-0 shadow-lg">
-                            <div class="modal-body">
-                              <i class="fas fa-check-circle" style="font-size: 60px; color: #09c33d;"></i>
-                              <h5 class="mt-3 mb-0 text-success fw-bold">${mensaje}</h5>
+                        <div class="modal fade" id="comentarioExitoModal" tabindex="-1" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content text-center p-4 border-0 shadow-lg">
+                              <div class="modal-body">
+                                <i class="fas fa-check-circle" style="font-size: 60px; color: #09c33d;"></i>
+                                <h5 class="mt-3 mb-0 text-success fw-bold">${mensaje}</h5>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>`;
+                        </div>`;
 
       document.body.insertAdjacentHTML('beforeend', modalHTML);
 

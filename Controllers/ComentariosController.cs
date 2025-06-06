@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using GRINPLAS.Models;
+using System;
 using GRINPLAS.Data;
-using Microsoft.EntityFrameworkCore;
+using GRINPLAS.Models;
+using Microsoft.AspNetCore.Mvc;
+using ClasificacionModelo;
 using System.Threading.Tasks;
-using System.IO;
-using ClosedXML.Excel;
+using System.Linq;
 
 namespace GRINPLAS.Controllers
 {
@@ -12,65 +12,47 @@ namespace GRINPLAS.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        // Inyectamos el contexto para acceder a la base de datos
         public ComentariosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // Acción para mostrar la lista de comentarios desde la base de datos
-        public async Task<IActionResult> Index()
+        // GET: Comentarios/Index
+        public IActionResult Index()
         {
-            var comentarios = await _context.Comentarios.AsNoTracking().ToListAsync();
+            var comentarios = _context.Comentarios.ToList();
             return View(comentarios);
         }
 
-        // Acción para exportar la lista de comentarios a Excel
-        public async Task<IActionResult> ExportarExcel()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnviarComentario(Comentarios comentario)
         {
-            var comentarios = await _context.Comentarios.AsNoTracking().ToListAsync();
-
-            using (var workbook = new XLWorkbook())
+            if (ModelState.IsValid)
             {
-                var worksheet = workbook.Worksheets.Add("Comentarios");
-
-                // Encabezados de columnas
-                worksheet.Cell(1, 1).Value = "Id";
-                worksheet.Cell(1, 2).Value = "Nombres";
-                worksheet.Cell(1, 3).Value = "Teléfono";
-                worksheet.Cell(1, 4).Value = "Email";
-                worksheet.Cell(1, 5).Value = "Comentario";
-                worksheet.Cell(1, 6).Value = "Tipo";
-
-                // Rellenar filas con datos
-                for (int i = 0; i < comentarios.Count; i++)
+                var input = new MLModelTextClasification.ModelInput
                 {
-                    var c = comentarios[i];
-                    worksheet.Cell(i + 2, 1).Value = c.Id;
-                    worksheet.Cell(i + 2, 2).Value = c.Nombres;
-                    worksheet.Cell(i + 2, 3).Value = c.Telefono;
-                    worksheet.Cell(i + 2, 4).Value = c.Email;
-                    worksheet.Cell(i + 2, 5).Value = c.Contenido;
-                    worksheet.Cell(i + 2, 6).Value = c.EsPositivo ? "Positivo" : "Negativo";
-                }
+                    Comment = comentario.Contenido
+                };
 
-                // Autoajustar columnas para mejor visualización
-                worksheet.Columns().AdjustToContents();
+                var resultado = MLModelTextClasification.Predict(input);
 
-                // Preparar archivo para descarga
-                using (var stream = new MemoryStream())
-                {
-                    workbook.SaveAs(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
+                var etiqueta = resultado.PredictedLabel;
+                // Debug: imprime la etiqueta para ver qué está devolviendo
+                Console.WriteLine("Etiqueta predicha: " + etiqueta);
 
-                    string nombreArchivo = $"Comentarios-{System.DateTime.Now:yyyyMMddHHmmss}.xlsx";
-                    return File(
-                        stream.ToArray(),
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        nombreArchivo
-                    );
-                }
+
+                comentario.EsPositivo = etiqueta?.ToLower() == "positivo";
+
+                _context.Comentarios.Add(comentario);
+                await _context.SaveChangesAsync();
+
+                TempData["Mensaje"] = "Comentario enviado correctamente";
+                return RedirectToAction("Index");
             }
+
+            return View(comentario);
         }
+
     }
 }
