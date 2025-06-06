@@ -77,6 +77,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!result.success) {
         throw new Error(result.error || "Error en los datos");
       }
+      if (result.emptyData) {
+        chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
+        chart.options.plugins.title.display = true;
+        chart.options.plugins.title.font = { size: 14, weight: "bold" };
+        chart.options.plugins.title.color = "#dc3545"; // Color rojo
+        chart.options.plugins.title.text = result.message;
+        chart.update();
+      }
 
       // Actualizar gráfico
       chart.data.datasets[0].data = result.data;

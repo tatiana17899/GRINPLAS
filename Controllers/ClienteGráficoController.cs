@@ -53,6 +53,21 @@ namespace GRINPLAS.Controllers
                             c.User.FechaRegistro <= finSemana)
                     .ToListAsync();
 
+                // Verificar si no hay clientes
+                if (clientes.Count == 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        emptyData = true, // Nuevo campo para indicar que no hay datos
+                        message = "No hay usuarios registrados en la fecha seleccionada",
+                        labels = new[] { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" },
+                        data = new int[7], // Datos vacíos
+                        inicioSemana = inicioSemana.ToString("yyyy-MM-dd"),
+                        finSemana = finSemana.ToString("yyyy-MM-dd")
+                    });
+                }
+
                 var data = new int[7];
                 foreach (var cliente in clientes)
                 {

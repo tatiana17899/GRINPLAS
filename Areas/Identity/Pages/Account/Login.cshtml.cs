@@ -50,11 +50,11 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Completar usuario y contraseña")]
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Completar usuario y contraseña")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -92,7 +92,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                 if (user == null)
                 {
                     // Usuario no existe
-                    ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
+                    ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos");
                     return Page();
                 }
 
@@ -154,6 +154,11 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
                     return RedirectToAction("Index", "Home");
                 }
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos");
+                    return Page();
+                }
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
@@ -166,9 +171,18 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                 else
                 {
                     // Contraseña incorrecta
-                    ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
+                    ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos");
                     return Page();
                 }
+            }
+            if (!ModelState.IsValid)
+            {
+                // Limpia todos los errores de validación existentes
+                ModelState.Clear();
+
+                // Agrega solo UN mensaje genérico
+                ModelState.AddModelError(string.Empty, "Completar usuario y contraseña");
+                return Page();
             }
 
             // Si llegamos aquí, algo falló, volver a mostrar el formulario
