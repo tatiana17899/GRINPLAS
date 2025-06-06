@@ -28,9 +28,9 @@
     <h2 class="fw-bold mb-4">Historial de Comentarios</h2>
 
     <div class="d-flex justify-content-end mb-4">
-        <a class="btn btn-success" href="@Url.Action("ExportarExcel", "Comentarios")" target="_blank">
+        <button id="btnExportar" class="btn btn-success" type="button">
             <i class="fas fa-file-excel"></i> Exportar a Excel
-        </a>
+        </button>
     </div>
 
     <div class="table-responsive rounded shadow-sm mb-5">
@@ -132,5 +132,34 @@
                 { orderable: false, targets: 5 } // No ordenar columna "Tipo"
             ]
         });
+    });
+
+    document.getElementById('btnExportar').addEventListener('click', function () {
+        fetch('@Url.Action("ExportarExcel", "Comentarios")', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Comentarios_${new Date().toISOString().slice(0, 19).replace(/:/g, "")}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                alert("Error al generar el archivo. Intente nuevamente");
+                console.error(error);
+            });
     });
 </script>

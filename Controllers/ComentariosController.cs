@@ -51,13 +51,20 @@ namespace GRINPLAS.Controllers
             return View(comentario);
         }
 
+        [HttpGet]
         public IActionResult ExportarExcel()
         {
             var comentarios = _context.Comentarios.ToList();
 
+            if (!comentarios.Any())
+            {
+                return BadRequest("No hay comentarios para exportar.");
+            }
+
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Comentarios");
 
+            // Encabezados
             worksheet.Cell(1, 1).Value = "Id";
             worksheet.Cell(1, 2).Value = "Nombres";
             worksheet.Cell(1, 3).Value = "Teléfono";
@@ -65,24 +72,31 @@ namespace GRINPLAS.Controllers
             worksheet.Cell(1, 5).Value = "Comentario";
             worksheet.Cell(1, 6).Value = "Tipo";
 
-            for (int i = 0; i < comentarios.Count; i++)
+            int fila = 2;
+            foreach (var c in comentarios)
             {
-                var c = comentarios[i];
-                worksheet.Cell(i + 2, 1).Value = c.Id;
-                worksheet.Cell(i + 2, 2).Value = c.Nombres;
-                worksheet.Cell(i + 2, 3).Value = c.Telefono;
-                worksheet.Cell(i + 2, 4).Value = c.Email;
-                worksheet.Cell(i + 2, 5).Value = c.Contenido;
-                worksheet.Cell(i + 2, 6).Value = c.EsPositivo ? "Positivo" : "Negativo";
+                worksheet.Cell(fila, 1).Value = c.Id;
+                worksheet.Cell(fila, 2).Value = c.Nombres;
+                worksheet.Cell(fila, 3).Value = c.Telefono;
+                worksheet.Cell(fila, 4).Value = c.Email;
+                worksheet.Cell(fila, 5).Value = c.Contenido;
+                worksheet.Cell(fila, 6).Value = c.EsPositivo ? "Positivo" : "Negativo";
+                fila++;
             }
 
-            var stream = new MemoryStream();
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
 
             var fileName = $"Comentarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
+
+
+
 
     }
 }
