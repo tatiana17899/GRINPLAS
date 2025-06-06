@@ -37,73 +37,82 @@ namespace GRINPLAS.Controllers
         public IActionResult Create() => View(new TrabajadorViewModel());
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TrabajadorViewModel model)
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create(TrabajadorViewModel model)
+{
+    if (!ModelState.IsValid) return View(model);
+
+    try
+    {
+        ApplicationUser user = null;
+        string email = null;
+        string password = null;
+
+        // Solo crear usuario y credenciales si es Vendedor
+        if (model.PosicionLaboral == "Vendedor")
         {
-            if (!ModelState.IsValid) return View(model);
+            email = $"user{Guid.NewGuid().ToString("N")[..8]}@grinplas.com";
+            password = GenerarContrasenaValida();
 
-            try
+            user = new ApplicationUser
             {
-                ApplicationUser user = null;
-                string email = null;
-                string password = null;
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
 
-                // Solo crear usuario y credenciales si es Vendedor
-                if (model.PosicionLaboral == "Vendedor")
-                {
-                    email = $"user{Guid.NewGuid().ToString("N")[..8]}@grinplas.com";
-                    password = GenerarContrasenaValida();
-
-                    user = new ApplicationUser
-                    {
-                        UserName = email,
-                        Email = email,
-                        EmailConfirmed = true
-                    };
-
-                    var result = await _userManager.CreateAsync(user, password);
-                    if (!result.Succeeded)
-                    {
-                        result.Errors.ToList().ForEach(e => ModelState.AddModelError("", e.Description));
-                        return View(model);
-                    }
-                }
-
-                var trabajador = new Trabajadores
-                {
-                    Nombre = model.Nombre,
-                    Apellidos = model.Apellidos,
-                    Telefono = model.Telefono,
-                    DNI = model.DNI,
-                    PosicionLaboral = model.PosicionLaboral,
-                    Sueldo = model.Sueldo,
-                    ApplicationUserId = user?.Id // Será null si no es Vendedor
-                };
-
-                _context.Add(trabajador);
-                await _context.SaveChangesAsync();
-
-                // Solo asociar usuario si es Vendedor
-                if (user != null)
-                {
-                    user.Trabajador = trabajador;
-                    await _userManager.UpdateAsync(user);
-                    await _userManager.AddToRoleAsync(user, model.PosicionLaboral);
-                    
-                    // Redirigir a credenciales solo para Vendedores
-                    return RedirectToAction("Credenciales", new { email, password });
-                }
-
-                // Para otros roles, redirigir al listado
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
             {
-                _logger.LogError(ex, "Error al crear trabajador");
-                ModelState.AddModelError("", "Error al crear el trabajador");
+                result.Errors.ToList().ForEach(e => ModelState.AddModelError("", e.Description));
                 return View(model);
             }
         }
+
+        var trabajador = new Trabajadores
+        {
+            Nombre = model.Nombre,
+            Apellidos = model.Apellidos,
+            Telefono = model.Telefono,
+            DNI = model.DNI,
+            PosicionLaboral = model.PosicionLaboral,
+            Sueldo = model.Sueldo,
+            ApplicationUserId = user?.Id
+        };
+
+        _context.Add(trabajador);
+        await _context.SaveChangesAsync();
+
+        if (user != null)
+        {
+            user.Trabajador = trabajador;
+            await _userManager.UpdateAsync(user);
+            await _userManager.AddToRoleAsync(user, model.PosicionLaboral);
+            
+            // Cambia esto para devolver JSON en lugar de redirección
+            return Json(new { 
+                success = true, 
+                isVendedor = true,
+                email = email,
+                password = password
+            });
+        }
+
+        // Para otros roles, devolver éxito sin credenciales
+        return Json(new { 
+            success = true, 
+            isVendedor = false
+        });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error al crear trabajador");
+        return Json(new { 
+            success = false, 
+            message = "Error al crear el trabajador" 
+        });
+    }
+}
 
         public IActionResult Credenciales(string email, string password)
         {

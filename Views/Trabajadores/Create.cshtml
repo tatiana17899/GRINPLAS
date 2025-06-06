@@ -101,64 +101,67 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function() {
-            $('#btnCrearTrabajador').click(function(e) {
-                e.preventDefault();
+    $('#btnCrearTrabajador').click(function(e) {
+        e.preventDefault();
+        if ($('#trabajadorForm').valid()) {
+            $('#alertaCamposVaciosCrear').hide();
+            $('#confirmacionModal').modal('show');
+        } else {
+            $('#alertaCamposVaciosCrear').show();
+            setTimeout(function() {
+                $('#alertaCamposVaciosCrear').fadeOut();
+            }, 3000);
+        }
+    });
 
-                if ($('#trabajadorForm').valid()) {
-                    $('#alertaCamposVaciosCrear').hide();
-                    $('#confirmacionModal').modal('show');
-                } else {
-                    $('#alertaCamposVaciosCrear').show();
+    // Confirmar guardado
+    $('#btnConfirmarGuardar').click(function() {
+        $('#confirmacionModal').modal('hide');
+        
+        // Enviar el formulario via AJAX
+        $.ajax({
+            url: $('#trabajadorForm').attr('action'),
+            type: 'POST',
+            data: $('#trabajadorForm').serialize(),
+            headers: {
+                'RequestVerificationToken': '@token'
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Mostrar modal de éxito
+                    $('#exitoModal').modal('show');
+                    
+                    // Después de 2 segundos, cerrar modal y redirigir
                     setTimeout(function() {
-                        $('#alertaCamposVaciosCrear').fadeOut();
-                    }, 3000);
-                }
-            });
-            
-            // Confirmar guardado
-            $('#btnConfirmarGuardar').click(function() {
-                $('#confirmacionModal').modal('hide');
-                
-                // Enviar el formulario via AJAX
-                $.ajax({
-                    url: $('#trabajadorForm').attr('action'),
-                    type: 'POST',
-                    data: $('#trabajadorForm').serialize(),
-                    headers: {
-                        'RequestVerificationToken': '@token'
-                    },
-                    success: function(response) {
-                        if (response.redirectUrl) {
-                            // Si hay una URL de redirección (para vendedores)
-                            window.location.href = response.redirectUrl;
+                        $('#exitoModal').modal('hide');
+                        
+                        if (response.isVendedor) {
+                            // Si es vendedor, redirigir a credenciales con parámetros
+                            window.location.href = '@Url.Action("Credenciales")' + 
+                                '?email=' + encodeURIComponent(response.email) + 
+                                '&password=' + encodeURIComponent(response.password);
                         } else {
-                            // Para otros casos, mostrar modal de éxito
-                            $('#exitoModal').modal('show');
-                            
-                            // Cerrar automáticamente después de 2 segundos y redirigir
-                            setTimeout(function() {
-                                $('#exitoModal').modal('hide');
-                                window.location.href = '@Url.Action("Index")';
-                            }, 2000);
+                            // Para otros roles, redirigir al índice
+                            window.location.href = '@Url.Action("Index")';
                         }
-                    },
-                    error: function(xhr) {
-                        // Manejar errores
-                        alert('Error al guardar el trabajador: ' + xhr.responseText);
-                    }
-                });
-            });
-            
-            // Redirigir al index después de OK en el modal de éxito
-            $('#exitoModal').on('hidden.bs.modal', function () {
-                window.location.href = '@Url.Action("Index")';
-            });
-            
-            // Botón NO: cerrar modal y redirigir al historial
-            $('#confirmacionModal .btn-outline-success').click(function() {
-                $('#confirmacionModal').modal('hide');
-                window.location.href = '@Url.Action("Index")';
-            });
+                    }, 2000);
+                } else {
+                    // Manejar error en la respuesta
+                    alert('Error: ' + (response.message || 'Error desconocido'));
+                }
+            },
+            error: function(xhr) {
+                // Manejar errores de AJAX
+                alert('Error al guardar el trabajador: ' + xhr.responseText);
+            }
         });
+    });
+    
+    // Botón NO: cerrar modal y redirigir al historial
+    $('#confirmacionModal .btn-outline-success').click(function() {
+        $('#confirmacionModal').modal('hide');
+        window.location.href = '@Url.Action("Index")';
+    });
+});
     </script>
 }
