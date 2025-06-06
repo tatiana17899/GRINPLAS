@@ -53,10 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   });
 
-  // Cargar datos iniciales
   loadData(today);
 
-  // Manejar cambio de fecha
   datePicker.addEventListener("change", function () {
     loadData(new Date(this.value));
   });
@@ -78,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error(result.error || "Error en los datos");
       }
 
-      // Mostrar mensaje si no hay datos
       if (result.emptyData) {
         chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
         chart.options.plugins.title.display = true;
@@ -86,13 +83,13 @@ document.addEventListener("DOMContentLoaded", function () {
         chart.options.plugins.title.color = "#dc3545";
         chart.options.plugins.title.text = result.message;
         chart.update();
-        return; // ¡Importante! Salir de la función aquí
+        return;
       }
 
       // Actualizar gráfico con datos normales
       chart.data.datasets[0].data = result.data;
       chart.options.plugins.title.text = `Clientes registrados (${result.inicioSemana} a ${result.finSemana})`;
-      chart.options.plugins.title.color = "#000"; // Restaurar color negro
+      chart.options.plugins.title.color = "#000";
       chart.update();
     } catch (error) {
       console.error("Error al cargar datos:", error);
