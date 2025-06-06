@@ -2,11 +2,12 @@ $(document).ready(function () {
   // Inicializar DataTable
   var table = $("#trabajadoresTable").DataTable({
     language: {
-      url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json",
+      search: "Buscar:",
       paginate: {
         previous: "Anterior",
         next: "Siguiente",
       },
+      emptyTable: " ",
     },
     paging: true,
     lengthChange: false,
@@ -82,6 +83,34 @@ $(document).ready(function () {
         orderable: false,
       },
     ],
+    initComplete: function () {
+      let api = this.api();
+      if (api.data().count() === 0) {
+        $("#alertaSinTrabajadores").show();
+      } else {
+        $("#alertaSinTrabajadores").hide();
+      }
+    },
+  });
+
+  table.on("draw", function () {
+    if (table.data().count() === 0) {
+      $("#alertaSinTrabajadores").show();
+    } else {
+      $("#alertaSinTrabajadores").hide();
+    }
+    // Forzar estilos en los botones después de cada redibujado
+    $(".edit-btn").css({
+      "background-color": "#096623",
+      color: "white",
+      border: "none",
+    });
+
+    $(".delete-btn").css({
+      "background-color": "#096623",
+      color: "white",
+      border: "none",
+    });
   });
 
   // Manejar click en botón editar
@@ -145,6 +174,17 @@ $(document).ready(function () {
 
   // Manejar envío del formulario de edición
   $("#editForm").on("submit", function (e) {
+    var form = this;
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      e.stopPropagation();
+      $("#alertaCamposVacios").show();
+      setTimeout(function () {
+        $("#alertaCamposVacios").fadeOut();
+      }, 3000);
+      return; // Detener aquí si no es válido
+    }
+
     e.preventDefault();
 
     // Primero cerrar el modal de edición
@@ -254,19 +294,18 @@ $(document).ready(function () {
     });
   });
 
-  // Aplicar estilos después de que la tabla se cargue
-  table.on("draw", function () {
-    // Forzar estilos en los botones después de cada redibujado
-    $(".edit-btn").css({
-      "background-color": "#096623",
-      color: "white",
-      border: "none",
-    });
-
-    $(".delete-btn").css({
-      "background-color": "#096623",
-      color: "white",
-      border: "none",
-    });
+  // Manejar envío del formulario de creación
+  $("#createForm").on("submit", function (e) {
+    var form = this;
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      e.stopPropagation();
+      $("#alertaCamposVaciosCrear").show();
+      setTimeout(function () {
+        $("#alertaCamposVaciosCrear").fadeOut();
+      }, 3000);
+      return;
+    }
+    // Si usas AJAX, aquí tu lógica para crear
   });
 });
