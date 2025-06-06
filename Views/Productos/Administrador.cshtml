@@ -239,46 +239,57 @@
           "search": "Buscar:"
         }
       });
+      // Personalizar mensaje de campos requeridos
+      document.querySelectorAll('input[required], textarea[required], select[required]').forEach(function (element) {
+        element.oninvalid = function (e) {
+          e.target.setCustomValidity('Complete todos los campos obligatorios');
+        };
+
+        element.oninput = function (e) {
+          e.target.setCustomValidity('');
+        };
+      });
+
 
       $('#btnExportExcel').click(function () {
-      // Crear un array con los índices de las columnas que quieres exportar (0, 2, 3, 4, 5, 6)
-      var columnsToExport = [0, 2, 3, 4, 5, 6];
-      
-      var tempTable = $('<table></table>');
-      var headerRow = $('<tr></tr>');
-      
-      // Solo agregar los encabezados de las columnas que queremos
-      $('#ordersTable thead th').each(function(index) {
-          if (columnsToExport.includes(index)) {
-              headerRow.append($('<th></th>').text($(this).text()));
-          }
-      });
-      tempTable.append(headerRow);
+        // Crear un array con los índices de las columnas que quieres exportar (0, 2, 3, 4, 5, 6)
+        var columnsToExport = [0, 2, 3, 4, 5, 6];
 
-      var allData = [];
-      table.rows({ search: 'applied' }).every(function () {
+        var tempTable = $('<table></table>');
+        var headerRow = $('<tr></tr>');
+
+        // Solo agregar los encabezados de las columnas que queremos
+        $('#ordersTable thead th').each(function (index) {
+          if (columnsToExport.includes(index)) {
+            headerRow.append($('<th></th>').text($(this).text()));
+          }
+        });
+        tempTable.append(headerRow);
+
+        var allData = [];
+        table.rows({ search: 'applied' }).every(function () {
           var rowData = this.data();
           // Filtrar solo las columnas que queremos
           var filteredRowData = [];
           for (var i = 0; i < rowData.length; i++) {
-              if (columnsToExport.includes(i)) {
-                  filteredRowData.push(rowData[i]);
-              }
+            if (columnsToExport.includes(i)) {
+              filteredRowData.push(rowData[i]);
+            }
           }
           allData.push(filteredRowData);
-      });
+        });
 
-      allData.forEach(function (rowData) {
+        allData.forEach(function (rowData) {
           var row = $('<tr></tr>');
           rowData.forEach(function (cellData) {
-              row.append($('<td></td>').text(cellData));
+            row.append($('<td></td>').text(cellData));
           });
           tempTable.append(row);
-      });
+        });
 
-      var wb = XLSX.utils.table_to_book(tempTable[0], { sheet: "Productos" });
-      XLSX.writeFile(wb, "Historial_Productos.xlsx");
-  });
+        var wb = XLSX.utils.table_to_book(tempTable[0], { sheet: "Productos" });
+        XLSX.writeFile(wb, "Historial_Productos.xlsx");
+      });
     });
 
     function confirmDelete(productId) {
