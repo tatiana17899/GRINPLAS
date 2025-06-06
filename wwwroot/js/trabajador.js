@@ -174,6 +174,17 @@ $(document).ready(function () {
 
   // Manejar envío del formulario de edición
   $("#editForm").on("submit", function (e) {
+    var form = this;
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      e.stopPropagation();
+      $("#alertaCamposVacios").show();
+      setTimeout(function () {
+        $("#alertaCamposVacios").fadeOut();
+      }, 3000);
+      return; // Detener aquí si no es válido
+    }
+
     e.preventDefault();
 
     // Primero cerrar el modal de edición
@@ -281,5 +292,20 @@ $(document).ready(function () {
         Swal.fire("Error!", "Ocurrió un error al eliminar: " + error, "error");
       },
     });
+  });
+
+  // Manejar envío del formulario de creación
+  $("#createForm").on("submit", function (e) {
+    var form = this;
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      e.stopPropagation();
+      $("#alertaCamposVaciosCrear").show();
+      setTimeout(function () {
+        $("#alertaCamposVaciosCrear").fadeOut();
+      }, 3000);
+      return;
+    }
+    // Si usas AJAX, aquí tu lógica para crear
   });
 });
