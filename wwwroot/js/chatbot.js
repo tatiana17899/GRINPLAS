@@ -20,9 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "Voy a ayudarte con eso. ¿Podrías darme más detalles?",
     ],
     claimResponses: [
-      "Entiendo que necesitas hacer un reclamo. Para agilizar el proceso, puedes usar nuestro formulario dedicado.",
+      "Lamento escuchar eso, Entiendo que necesitas hacer un reclamo. Para agilizar el proceso, puedes usar nuestro formulario dedicado.",
       "Lamento escuchar que tienes un problema. Para asistirte mejor con tu reclamo, te recomiendo usar nuestro sistema especializado.",
-      "Para gestionar tu reclamo de manera eficiente, tenemos un proceso establecido. Permíteme guiarte.",
+      "¡Oh vaya, Lamento mucho escuchar eso!Para gestionar tu reclamo de manera eficiente, tenemos un proceso establecido. Permíteme guiarte.",
     ],
     thanksResponses: [
       "¡Gracias a ti por contactarnos! ¿Hay algo más en lo que pueda ayudarte?",
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function addReclamoButton() {
     const buttonHtml = `
       <div style="text-align: center; margin: 10px 0;">
-        <button onclick="window.location.href='/Reclamos'" 
+        <button onclick="window.location.href='/Reclamaciones/Cliente'" 
           style="background: #1B665E; color: white; border: none; padding: 10px 20px; 
           border-radius: 20px; cursor: pointer; font-weight: 500;">
           Ir al Formulario de Reclamos

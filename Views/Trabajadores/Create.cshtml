@@ -89,7 +89,7 @@
                     </svg>
                 </div>
                 <h4 class="mb-4">Nuevo trabajador guardado</h4>
-                <button type="button" class="btn btn-success px-4 py-2" data-bs-dismiss="modal">OK</button>
+                
             </div>
         </div>
     </div>
@@ -126,6 +126,12 @@
                         } else {
                             // Para otros casos, mostrar modal de éxito
                             $('#exitoModal').modal('show');
+                            
+                            // Cerrar automáticamente después de 2 segundos y redirigir
+                            setTimeout(function() {
+                                $('#exitoModal').modal('hide');
+                                window.location.href = '@Url.Action("Index")';
+                            }, 2000);
                         }
                     },
                     error: function(xhr) {

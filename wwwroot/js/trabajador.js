@@ -177,15 +177,14 @@ $(document).ready(function () {
           },
           success: function (response) {
             if (response.success) {
-              // Mostrar modal de éxito (ID corregido)
               $("#exitoEditModal").modal("show");
 
-              // Recargar la tabla cuando se cierre el modal de éxito
-              $("#exitoEditModal").on("hidden.bs.modal", function () {
+              // Cerrar automáticamente después de 2 segundos
+              setTimeout(function () {
+                $("#exitoEditModal").modal("hide");
                 table.ajax.reload(null, false);
-              });
+              }, 2000);
             } else {
-              // Si hay error, mostrar SweetAlert como antes
               Swal.fire(
                 "Error!",
                 response.message || "No se pudo actualizar el trabajador.",
@@ -193,6 +192,7 @@ $(document).ready(function () {
               );
             }
           },
+
           error: function (xhr, status, error) {
             console.error(xhr.responseText);
             Swal.fire(
@@ -233,13 +233,12 @@ $(document).ready(function () {
       },
       success: function (response) {
         if (response.success) {
-          // Mostrar modal de éxito para eliminación
           $("#exitoDeleteModal").modal("show");
 
-          // Recargar la tabla cuando se cierre el modal de éxito
-          $("#exitoDeleteModal").on("hidden.bs.modal", function () {
+          setTimeout(function () {
+            $("#exitoDeleteModal").modal("hide");
             table.ajax.reload(null, false);
-          });
+          }, 2000);
         } else {
           Swal.fire(
             "Error!",
