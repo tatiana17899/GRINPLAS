@@ -77,22 +77,25 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!result.success) {
         throw new Error(result.error || "Error en los datos");
       }
+
+      // Mostrar mensaje si no hay datos
       if (result.emptyData) {
         chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
         chart.options.plugins.title.display = true;
         chart.options.plugins.title.font = { size: 14, weight: "bold" };
-        chart.options.plugins.title.color = "#dc3545"; // Color rojo
+        chart.options.plugins.title.color = "#dc3545";
         chart.options.plugins.title.text = result.message;
         chart.update();
+        return; // ¡Importante! Salir de la función aquí
       }
 
-      // Actualizar gráfico
+      // Actualizar gráfico con datos normales
       chart.data.datasets[0].data = result.data;
       chart.options.plugins.title.text = `Clientes registrados (${result.inicioSemana} a ${result.finSemana})`;
+      chart.options.plugins.title.color = "#000"; // Restaurar color negro
       chart.update();
     } catch (error) {
       console.error("Error al cargar datos:", error);
-      // Mostrar gráfico vacío
       chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
       chart.options.plugins.title.text = "Error al cargar datos";
       chart.update();
