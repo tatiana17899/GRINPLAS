@@ -239,14 +239,54 @@
         }
       });
 
-      $('#btnExportExcel').click(function () {
-        // Crear un array con los índices de las columnas que quieres exportar (0, 2, 3, 4, 5, 6)
-        var columnsToExport = [0, 2, 3, 4, 5, 6];
+      // ✅ Validaciones personalizadas
+      document.querySelectorAll('input[required], textarea[required], select[required]').forEach(function (element) {
+        element.oninvalid = function (e) {
+          const name = e.target.name;
 
+          if (name === 'Precio') {
+            e.target.setCustomValidity('Ingrese un precio válido mayor a 0');
+          } else if (name === 'Stock') {
+            e.target.setCustomValidity('El stock debe ser un número entero positivo');
+          } else {
+            e.target.setCustomValidity('Complete todos los campos obligatorios');
+          }
+        };
+
+        element.oninput = function (e) {
+          e.target.setCustomValidity('');
+        };
+      });
+
+      // ✅ Validación al enviar formularios (registro/edición)
+      document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+          const precio = form.querySelector('input[name="Precio"]');
+          const stock = form.querySelector('input[name="Stock"]');
+          let valid = true;
+
+          if (precio && parseFloat(precio.value) <= 0) {
+            precio.setCustomValidity('Ingrese un precio válido mayor a 0');
+            valid = false;
+          }
+
+          if (stock && (!Number.isInteger(Number(stock.value)) || Number(stock.value) <= 0)) {
+            stock.setCustomValidity('El stock debe ser un número entero positivo');
+            valid = false;
+          }
+
+          if (!valid) {
+            e.preventDefault();
+            form.reportValidity();
+          }
+        });
+      });
+
+      $('#btnExportExcel').click(function () {
+        var columnsToExport = [0, 2, 3, 4, 5, 6];
         var tempTable = $('<table></table>');
         var headerRow = $('<tr></tr>');
 
-        // Solo agregar los encabezados de las columnas que queremos
         $('#ordersTable thead th').each(function (index) {
           if (columnsToExport.includes(index)) {
             headerRow.append($('<th></th>').text($(this).text()));
@@ -257,7 +297,6 @@
         var allData = [];
         table.rows({ search: 'applied' }).every(function () {
           var rowData = this.data();
-          // Filtrar solo las columnas que queremos
           var filteredRowData = [];
           for (var i = 0; i < rowData.length; i++) {
             if (columnsToExport.includes(i)) {
@@ -297,8 +336,6 @@
       });
     }
 
-
-
     $('#editModal').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget);
       var productId = button.data('id');
@@ -318,9 +355,8 @@
       modal.find('#Imagen').val(imagen);
       modal.find('#CategoriaId').val(categoria);
     });
-
-
   </script>
+
   @if (TempData["SuccessMessage"] != null)
   {
     <script>
@@ -338,5 +374,4 @@
       Swal.fire('Error', '@TempData["ErrorMessage"]', 'error');
     </script>
   }
-
 }
