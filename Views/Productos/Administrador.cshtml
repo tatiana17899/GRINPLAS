@@ -282,6 +282,81 @@
           this.reportValidity();
         }
       });
+      $(document).ready(function () {
+        function validarPrecio(input) {
+          if (input.value.trim() === '') {
+            input.setCustomValidity('Complete todos los campos obligatorios');
+            return false;
+          }
+
+          const val = parseFloat(input.value);
+          if (isNaN(val) || val <= 0) {
+            input.setCustomValidity('Ingrese un precio válido mayor a 0');
+            return false;
+          }
+
+          input.setCustomValidity('');
+          return true;
+        }
+
+        function validarStock(input) {
+          if (input.value.trim() === '') {
+            input.setCustomValidity('Complete todos los campos obligatorios');
+            return false;
+          }
+
+          const val = Number(input.value);
+          if (!Number.isInteger(val) || val <= 0) {
+            input.setCustomValidity('El stock debe ser un número entero positivo');
+            return false;
+          }
+
+          input.setCustomValidity('');
+          return true;
+        }
+
+        function validarProducto(input) {
+          if (input.value.trim() === '') {
+            input.setCustomValidity('Complete todos los campos obligatorios');
+            return false;
+          }
+
+          input.setCustomValidity('');
+          return true;
+        }
+
+        // Validar mientras se escribe
+        $('input[name="Producto"]').on('input', function () {
+          validarProducto(this);
+        });
+
+        $('input[name="Precio"]').on('input', function () {
+          validarPrecio(this);
+        });
+
+        $('input[name="Stock"]').on('input', function () {
+          validarStock(this);
+        });
+
+        // Validación al enviar formulario
+        $('form').on('submit', function (e) {
+          let valid = true;
+
+          const producto = $(this).find('input[name="Producto"]')[0];
+          const precio = $(this).find('input[name="Precio"]')[0];
+          const stock = $(this).find('input[name="Stock"]')[0];
+
+          if (producto && !validarProducto(producto)) valid = false;
+          if (precio && !validarPrecio(precio)) valid = false;
+          if (stock && !validarStock(stock)) valid = false;
+
+          if (!valid) {
+            e.preventDefault(); // Evita enviar el formulario
+            this.reportValidity(); // Muestra los mensajes de error nativos
+          }
+        });
+      });
+
 
       // El resto del código DataTables, exportar, etc...
     });
