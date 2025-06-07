@@ -133,9 +133,12 @@
             <input type="number" class="form-control" id="Precio" name="Precio" step="0.01" required />
           </div>
           <div class="mb-3">
-            <label for="Stock" class="form-label">Stock</label>
-            <input type="number" class="form-control" id="Stock" name="Stock" required />
+            <label for="StockRegistrar" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="StockRegistrar" name="Stock" required min="1" step="1" />
+
+
           </div>
+
           <div class="mb-3">
             <label for="Imagen" class="form-label">Imagen URL</label>
             <input type="text" class="form-control" id="Imagen" name="Imagen" required />
@@ -156,7 +159,7 @@
   </div>
 </div>
 
-
+<!-- Modal Edicion Producto -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -166,10 +169,11 @@
       </div>
       <div class="modal-body">
         <form id="editProductForm" method="post" asp-action="EditarProducto">
+          @Html.AntiForgeryToken()
           <input type="hidden" id="ProductoId" name="ProductoId" />
           <div class="mb-3">
             <label for="Nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="Nombre" name="Nombre" />
+            <input type="text" class="form-control" id="NombreEditar" name="Nombre" />
           </div>
           <div class="mb-3">
             <label for="Descripcion" class="form-label">Descripción</label>
@@ -180,16 +184,18 @@
             <input type="number" class="form-control" id="Precio" name="Precio" step="0.01" />
           </div>
           <div class="mb-3">
-            <label for="Stock" class="form-label">Stock</label>
-            <input type="number" class="form-control" id="Stock" name="Stock" />
+            <label for="StockEditar" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="StockEditar" name="Stock" required min="1" step="1"
+              title="El stock debe ser un número entero positivo mayor que cero." />
           </div>
+
           <div class="mb-3">
             <label for="Imagen" class="form-label">Imagen URL</label>
             <input type="text" class="form-control" id="Imagen" name="Imagen" />
           </div>
           <div class="mb-3">
             <label for="CategoriaId" class="form-label">Categoría</label>
-            <select class="form-select" id="CategoriaId" name="CategoriaId">
+            <select class="form-select" id="CategoriaIdEditar" name="CategoriaId">
               @foreach (var categoria in Model.Categorias)
               {
                 <option value="@categoria.CategoriaId">@categoria.Nombre</option>
@@ -224,6 +230,7 @@
     }
 
     $(document).ready(function () {
+      // Inicializar DataTables
       var table = $('#ordersTable').DataTable({
         "pageLength": 4,
         "lengthChange": false,
@@ -239,11 +246,10 @@
         }
       });
 
-      // ✅ Validaciones personalizadas
-      document.querySelectorAll('input[required], textarea[required], select[required]').forEach(function (element) {
-        element.oninvalid = function (e) {
-          const name = e.target.name;
-
+      // Validaciones personalizadas para inputs required
+      $('input[required], textarea[required], select[required]').each(function () {
+        this.oninvalid = function (e) {
+          var name = e.target.name;
           if (name === 'Precio') {
             e.target.setCustomValidity('Ingrese un precio válido mayor a 0');
           } else if (name === 'Stock') {
@@ -252,38 +258,36 @@
             e.target.setCustomValidity('Complete todos los campos obligatorios');
           }
         };
-
-        element.oninput = function (e) {
+        this.oninput = function (e) {
           e.target.setCustomValidity('');
         };
       });
 
-      // ✅ Validación al enviar formularios (registro/edición)
-      document.querySelectorAll('form').forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-          const precio = form.querySelector('input[name="Precio"]');
-          const stock = form.querySelector('input[name="Stock"]');
-          let valid = true;
+      // Validación al enviar formularios (registro/edición)
+      $('form').on('submit', function (e) {
+        var precio = $(this).find('input[name="Precio"]');
+        var stock = $(this).find('input[name="Stock"]');
+        var valid = true;
 
-          if (precio && parseFloat(precio.value) <= 0) {
-            precio.setCustomValidity('Ingrese un precio válido mayor a 0');
-            valid = false;
-          }
+        if (precio.length && parseFloat(precio.val()) <= 0) {
+          precio[0].setCustomValidity('Ingrese un precio válido mayor a 0');
+          valid = false;
+        }
 
-          if (stock && (!Number.isInteger(Number(stock.value)) || Number(stock.value) <= 0)) {
-            stock.setCustomValidity('El stock debe ser un número entero positivo');
-            valid = false;
-          }
+        if (stock.length && (!Number.isInteger(Number(stock.val())) || Number(stock.val()) <= 0)) {
+          stock[0].setCustomValidity('El stock debe ser un número entero positivo');
+          valid = false;
+        }
 
-          if (!valid) {
-            e.preventDefault();
-            form.reportValidity();
-          }
-        });
+        if (!valid) {
+          e.preventDefault();
+          this.reportValidity();
+        }
       });
 
+      // Exportar tabla filtrada a Excel
       $('#btnExportExcel').click(function () {
-        var columnsToExport = [0, 2, 3, 4, 5, 6];
+        var columnsToExport = [0, 2, 3, 4, 5, 6]; // Columnas a exportar
         var tempTable = $('<table></table>');
         var headerRow = $('<tr></tr>');
 
@@ -297,12 +301,7 @@
         var allData = [];
         table.rows({ search: 'applied' }).every(function () {
           var rowData = this.data();
-          var filteredRowData = [];
-          for (var i = 0; i < rowData.length; i++) {
-            if (columnsToExport.includes(i)) {
-              filteredRowData.push(rowData[i]);
-            }
-          }
+          var filteredRowData = columnsToExport.map(i => rowData[i]);
           allData.push(filteredRowData);
         });
 
@@ -319,15 +318,16 @@
       });
     });
 
+    // Confirmación para eliminar producto
     function confirmDelete(productId) {
       Swal.fire({
         title: '¿Deseas eliminar este producto?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Sí, Guardar',
+        confirmButtonText: 'Sí, eliminar',
         cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#dc3545'
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d'
       }).then((result) => {
         if (result.isConfirmed) {
           document.getElementById('deleteProductId').value = productId;
@@ -336,25 +336,20 @@
       });
     }
 
+    // Cargar datos en el modal de edición al abrirlo
     $('#editModal').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget);
-      var productId = button.data('id');
-      var nombre = button.data('nombre');
-      var descripcion = button.data('descripcion');
-      var precio = button.data('precio');
-      var stock = button.data('stock');
-      var imagen = button.data('imagen');
-      var categoria = button.data('categoria');
-
       var modal = $(this);
-      modal.find('#ProductoId').val(productId);
-      modal.find('#Nombre').val(nombre);
-      modal.find('#Descripcion').val(descripcion);
-      modal.find('#Precio').val(precio);
-      modal.find('#Stock').val(stock);
-      modal.find('#Imagen').val(imagen);
-      modal.find('#CategoriaId').val(categoria);
+
+      modal.find('#ProductoId').val(button.data('id'));
+      modal.find('#NombreEditar').val(button.data('nombre')).trigger('input');
+      modal.find('#Descripcion').val(button.data('descripcion')).trigger('input');
+      modal.find('#Precio').val(button.data('precio')).trigger('input');
+      modal.find('#StockEditar').val(button.data('stock')).trigger('input');
+      modal.find('#Imagen').val(button.data('imagen'));
+      modal.find('#CategoriaIdEditar').val(button.data('categoria')).trigger('change');
     });
+
   </script>
 
   @if (TempData["SuccessMessage"] != null)
