@@ -228,6 +228,64 @@
       document.getElementById("categoriaFiltro").value = "0";
       window.location.href = '@Url.Action("Administrador", "Productos")';
     }
+    $(document).ready(function () {
+      // Función para validar precio
+      function validarPrecio(input) {
+        const val = parseFloat(input.value);
+        if (isNaN(val) || val <= 0) {
+          input.setCustomValidity('Ingrese un precio válido mayor a 0');
+          return false;
+        } else {
+          input.setCustomValidity('');
+          return true;
+        }
+      }
+
+      // Función para validar stock
+      function validarStock(input) {
+        const val = Number(input.value);
+        if (!Number.isInteger(val) || val <= 0) {
+          input.setCustomValidity('El stock debe ser un número entero positivo');
+          return false;
+        } else {
+          input.setCustomValidity('');
+          return true;
+        }
+      }
+
+      // Asignar eventos input para limpiar mensaje de error en precio y stock
+      $('input[name="Precio"]').on('input', function () {
+        validarPrecio(this);
+      });
+
+      $('input[name="Stock"]').on('input', function () {
+        validarStock(this);
+      });
+
+      // Validar todo el formulario al submit
+      $('form').on('submit', function (e) {
+        let valid = true;
+
+        const precio = $(this).find('input[name="Precio"]')[0];
+        const stock = $(this).find('input[name="Stock"]')[0];
+
+        if (precio && !validarPrecio(precio)) {
+          valid = false;
+        }
+
+        if (stock && !validarStock(stock)) {
+          valid = false;
+        }
+
+        if (!valid) {
+          e.preventDefault();
+          this.reportValidity();
+        }
+      });
+
+      // El resto del código DataTables, exportar, etc...
+    });
+
 
     $(document).ready(function () {
       // Inicializar DataTables
