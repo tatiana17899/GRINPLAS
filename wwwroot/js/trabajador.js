@@ -1,4 +1,6 @@
 $(document).ready(function () {
+  var originalData = {}; // Objeto para almacenar los datos originales
+
   // Inicializar DataTable
   var table = $("#trabajadoresTable").DataTable({
     language: {
@@ -42,7 +44,6 @@ $(document).ready(function () {
       {
         data: "sueldo",
         render: function (data, type, row) {
-          // Debugging: verificar qué datos llegan
           console.log("Sueldo data:", data, "Row:", row);
           if (data !== null && data !== undefined && data !== "") {
             return "S/ " + parseFloat(data).toFixed(2);
@@ -53,17 +54,12 @@ $(document).ready(function () {
       {
         data: null,
         render: function (data, type, row) {
-          // Debugging: verificar los datos de la fila
           console.log("Row data for buttons:", row);
-
           return `
           <button class="btn btn-sm edit-btn" 
                   data-id="${row.idTrabajador || ""}" 
-                  data-nombre="${(row.nombre || "").replace(/"/g, "&quot;")}" 
-                  data-apellidos="${(row.apellidos || "").replace(
-                    /"/g,
-                    "&quot;"
-                  )}" 
+                  data-nombre="${(row.nombre || "").replace(/"/g, '"')}" 
+                  data-apellidos="${(row.apellidos || "").replace(/"/g, '"')}" 
                   data-telefono="${row.telefono || ""}" 
                   data-dni="${row.dni || ""}" 
                   data-posicionlaboral="${row.posicionLaboral || ""}" 
@@ -105,7 +101,6 @@ $(document).ready(function () {
       color: "white",
       border: "none",
     });
-
     $(".delete-btn").css({
       "background-color": "#096623",
       color: "white",
@@ -115,10 +110,7 @@ $(document).ready(function () {
 
   // Manejar click en botón editar
   $(document).on("click", ".edit-btn", function () {
-    // Debugging
     console.log("Edit button clicked");
-
-    // Obtener datos del botón
     var $button = $(this);
     var id = $button.data("id");
     var nombre = $button.data("nombre");
@@ -138,7 +130,6 @@ $(document).ready(function () {
       sueldo: sueldo,
     });
 
-    // Verificar que los elementos del modal existen
     console.log("Elementos del modal:", {
       editId: $("#editId").length,
       editNombre: $("#editNombre").length,
@@ -158,7 +149,17 @@ $(document).ready(function () {
     $("#editPosicion").val(posicion || "Vendedor");
     $("#editSueldo").val(sueldo || "0.00");
 
-    // Configurar la acción del formulario
+    // Almacenar datos originales para comparación
+    originalData = {
+      id: id,
+      nombre: nombre || "",
+      apellidos: apellidos || "",
+      telefono: telefono || "",
+      dni: dni || "",
+      posicionLaboral: posicion || "Vendedor",
+      sueldo: parseFloat(sueldo || "0.00"),
+    };
+
     $("#editForm").attr("action", urls.edit);
 
     console.log("Valores establecidos en el modal:", {
@@ -178,88 +179,107 @@ $(document).ready(function () {
     if (!form.checkValidity()) {
       e.preventDefault();
       e.stopPropagation();
-      $("#alertaCamposVacios").show();
+      $("#alertaCamposVacios").show(); // Mensaje: "Debe completar todos los campos obligatorios"
       setTimeout(function () {
         $("#alertaCamposVacios").fadeOut();
       }, 3000);
-      return; // Detener aquí si no es válido
+      return; // Detener si el formulario no es válido
     }
 
     e.preventDefault();
 
-    // Primero cerrar el modal de edición
+    // Obtener valores actuales del formulario
+    var currentData = {
+      id: $("#editId").val(),
+      nombre: $("#editNombre").val(),
+      apellidos: $("#editApellidos").val(),
+      telefono: $("#editTelefono").val(),
+      dni: $("#editDNI").val(),
+      posicionLaboral: $("#editPosicion").val(),
+      sueldo: parseFloat($("#editSueldo").val() || "0.00"),
+    };
+
+    // Verificar si se realizaron cambios
+    var hasChanges = false;
+    for (var key in originalData) {
+      if (originalData[key] != currentData[key]) {
+        hasChanges = true;
+        break;
+      }
+    }
+
+    if (!hasChanges) {
+      Swal.fire({
+        icon: "info",
+        title: "No se han realizado cambios.",
+        showConfirmButton: false, // Sin botón de confirmación
+        timer: 3000 
+      });
+      // Cerrar el modal de edición y recargar la tabla para mostrar la vista de historial
+      $("#editModal").modal("hide");
+      $("#editModal").on("hidden.bs.modal", function () {
+        $("#editModal").off("hidden.bs.modal");
+        table.ajax.reload(null, false); // Recargar la tabla para asegurar la vista de historial
+      });
+      return;
+    }
+
+    // Si hay cambios, cerrar modal de edición y mostrar modal de confirmación
     $("#editModal").modal("hide");
-
-    // Esperar a que se cierre completamente el modal de edición antes de mostrar el de confirmación
     $("#editModal").on("hidden.bs.modal", function () {
-      // Remover el evento para evitar múltiples llamadas
       $("#editModal").off("hidden.bs.modal");
-
-      // Mostrar modal de confirmación
       $("#confirmacionEditModal").modal("show");
     });
+  });
 
-    // Configurar el botón de confirmación para enviar el formulario
-    $("#btnConfirmarEditar")
-      .off("click")
-      .on("click", function () {
-        $("#confirmacionEditModal").modal("hide");
+  // Configurar el botón de confirmación para enviar el formulario
+  $("#btnConfirmarEditar").off("click").on("click", function () {
+    $("#confirmacionEditModal").modal("hide");
 
-        var formData = $("#editForm").serialize();
-        $.ajax({
-          url: $("#editForm").attr("action"),
-          type: "POST",
-          data: formData,
-          headers: {
-            RequestVerificationToken: $(
-              'input[name="__RequestVerificationToken"]'
-            ).val(),
-          },
-          success: function (response) {
-            if (response.success) {
-              $("#exitoEditModal").modal("show");
-
-              // Cerrar automáticamente después de 2 segundos
-              setTimeout(function () {
-                $("#exitoEditModal").modal("hide");
-                table.ajax.reload(null, false);
-              }, 2000);
-            } else {
-              Swal.fire(
-                "Error!",
-                response.message || "No se pudo actualizar el trabajador.",
-                "error"
-              );
-            }
-          },
-
-          error: function (xhr, status, error) {
-            console.error(xhr.responseText);
-            Swal.fire(
-              "Error!",
-              "Ocurrió un error al actualizar: " + error,
-              "error"
-            );
-          },
-        });
-      });
+    var formData = $("#editForm").serialize();
+    $.ajax({
+      url: $("#editForm").attr("action"),
+      type: "POST",
+      data: formData,
+      headers: {
+        RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+      },
+      success: function (response) {
+        if (response.success) {
+          $("#exitoEditModal").modal("show");
+          setTimeout(function () {
+            $("#exitoEditModal").modal("hide");
+            table.ajax.reload(null, false);
+          }, 2000);
+        } else {
+          Swal.fire(
+            "Error!",
+            response.message || "No se pudo actualizar el trabajador.",
+            "error"
+          );
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+        Swal.fire(
+          "Error!",
+          "Ocurrió un error al actualizar: " + error,
+          "error"
+        );
+      },
+    });
   });
 
   // Configurar eliminación
   $(document).on("click", ".delete-btn", function () {
     var id = $(this).data("id");
-
-    // Guardar el ID para usar después
     $("#confirmacionDeleteModal").data("trabajador-id", id);
-
-    // Mostrar modal de confirmación para eliminación
     $("#confirmacionDeleteModal").modal("show");
   });
 
   // Manejar confirmación de eliminación
   $("#btnConfirmarEliminar").on("click", function () {
     var id = $("#confirmacionDeleteModal").data("trabajador-id");
-
     $("#confirmacionDeleteModal").modal("hide");
 
     $.ajax({
@@ -267,14 +287,11 @@ $(document).ready(function () {
       type: "POST",
       data: {
         id: id,
-        __RequestVerificationToken: $(
-          'input[name="__RequestVerificationToken"]'
-        ).val(),
+        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
       },
       success: function (response) {
         if (response.success) {
           $("#exitoDeleteModal").modal("show");
-
           setTimeout(function () {
             $("#exitoDeleteModal").modal("hide");
             table.ajax.reload(null, false);
@@ -306,6 +323,5 @@ $(document).ready(function () {
       }, 3000);
       return;
     }
-    // Si usas AJAX, aquí tu lógica para crear
   });
 });
