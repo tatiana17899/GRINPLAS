@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "Hola, soy el asistente de reclamos. ¿Qué necesitas?",
     ],
     fallbackResponses: [
-      "No estoy seguro de entender completamente. ¿Podrías reformular tu pregunta?",
-      "Creo que no he captado bien tu consulta. ¿Te importaría explicarlo de otra manera?",
-      "Voy a ayudarte con eso. ¿Podrías darme más detalles?",
+      "No entiendo su solicitud. ¿Puede ser más específico?",
+      "No entiendo su solicitud. ¿Puede ser más específico?",
+      "No entiendo su solicitud. ¿Puede ser más específico?",
     ],
     claimResponses: [
       "Lamento escuchar eso, Entiendo que necesitas hacer un reclamo. Para agilizar el proceso, puedes usar nuestro formulario dedicado.",
