@@ -52,7 +52,7 @@
         </div>
         <div class="container py-4">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-6">
                     <div class="card mb-4" style="border: none;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-4" style="background-color: #E1EDE5; padding: 8px; color: #096623; font-size: 22px">Informe</h5>
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                     <div class="card" style="background-color: #e8f5e9;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-3">Ingresos y Gastos</h5>
@@ -104,22 +104,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @if (!Model.Any())
                             {
                                 <tr>
-                                    <td>@item.Id</td>
-                                    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                                    <td>@item.Concepto</td>
-                                    <td>S/@item.Valor.ToString("N2")</td>
-                                    <td class="text-center">
-                                        <a href="#" class="text-decoration-none me-2" onclick="editarGasto(@item.Id)">
-                                            <i class="fas fa-edit" style="color:#078751;"></i>
-                                        </a>
-                                        <a href="#" class="text-decoration-none" onclick="confirmarEliminar(@item.Id)">
-                                            <i class="fas fa-trash-alt" style="color: #078751;"></i>
-                                        </a>
+                                    <td colspan="5" class="text-center text-danger fw-bold">
+                                        No hay registros en el rango de fechas seleccionado
                                     </td>
                                 </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.Concepto</td>
+                                        <td>S/@item.Valor.ToString("N2")</td>
+                                        <td class="text-center">
+                                            <a href="#" class="text-decoration-none me-2" onclick="editarGasto(@item.Id)">
+                                                <i class="fas fa-edit" style="color:#078751;"></i>
+                                            </a>
+                                            <a href="#" class="text-decoration-none" onclick="confirmarEliminar(@item.Id)">
+                                                <i class="fas fa-trash-alt" style="color: #078751;"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
@@ -283,6 +294,7 @@
                         <input type="number" step="0.01" class="form-control" id="editValor" name="Valor" required 
                                style="border-radius: 15px; border: 1px solid #ced4da;">
                     </div>
+                    <div id="errorCamposEditarContainer"></div>
                     <div class="text-center mt-4">
                         <button type="submit" class="btn px-4 py-2" 
                                 style="background-color: #1B983E; color: white; border-radius: 25px; width: 200px;">
@@ -319,8 +331,7 @@
             }
             });
         });
-    </script>
-    <script>
+
         function confirmarEliminar(id) {
             document.getElementById('gastoIdToDelete').value = id;
             var modal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
@@ -355,7 +366,6 @@
             });
         }
 
-
         // editar gasto
         function editarGasto(id) {
             fetch(`/EstadoContable/GetGasto/${id}`)
@@ -373,6 +383,15 @@
                         document.getElementById('editConcepto').value = data.data.concepto;
                         document.getElementById('editValor').value = data.data.valor;
                         
+                        // Limpiar mensajes de error previos
+                        let errorCampos = document.getElementById('errorCamposEditar');
+                        if (errorCampos) errorCampos.remove();
+                        let errorMonto = document.getElementById('errorMontoEditar');
+                        if (errorMonto) errorMonto.remove();
+                        document.getElementById('editFecha').style.borderColor = '#ced4da';
+                        document.getElementById('editConcepto').style.borderColor = '#ced4da';
+                        document.getElementById('editValor').style.borderColor = '#ced4da';
+
                         // Mostrar el modal
                         const modal = new bootstrap.Modal(document.getElementById('editarGastoModal'));
                         modal.show();
@@ -396,46 +415,43 @@
             const valor = formData.get('Valor');
             const modalBody = this.querySelector('.modal-body');
 
-            // Validar campos obligatorios
+            // Elimina mensajes de error previos
             let errorCampos = document.getElementById('errorCamposEditar');
-            if (!fecha || !concepto || !valor) {
-                if (!errorCampos) {
-                    errorCampos = document.createElement('span');
-                    errorCampos.id = 'errorCamposEditar';
-                    errorCampos.className = 'text-danger d-block mb-2';
-                    errorCampos.style.fontSize = '14px';
-                    errorCampos.innerText = 'Complete todos los campos obligatorios';
-                    modalBody.prepend(errorCampos);
-                }
+            if (errorCampos) errorCampos.remove();
+            let errorMonto = document.getElementById('errorMontoEditar');
+            if (errorMonto) errorMonto.remove();
+
+            // Validar campos obligatorios
+            if (!fecha || !concepto.trim() || !valor) {
+                errorCampos = document.createElement('span');
+                errorCampos.id = 'errorCamposEditar';
+                errorCampos.className = 'text-danger d-block mb-2';
+                errorCampos.style.fontSize = '14px';
+                errorCampos.innerText = 'Complete todos los campos obligatorios';
+                modalBody.prepend(errorCampos);
+
                 this.querySelector('[name="Fecha"]').style.borderColor = fecha ? '#ced4da' : 'red';
-                this.querySelector('[name="Concepto"]').style.borderColor = concepto ? '#ced4da' : 'red';
+                this.querySelector('[name="Concepto"]').style.borderColor = concepto.trim() ? '#ced4da' : 'red';
                 this.querySelector('[name="Valor"]').style.borderColor = valor ? '#ced4da' : 'red';
-                // Elimina mensaje de monto si existe
-                let errorMonto = document.getElementById('errorMontoEditar');
-                if (errorMonto) errorMonto.remove();
                 return;
             } else {
-                if (errorCampos) errorCampos.remove();
                 this.querySelector('[name="Fecha"]').style.borderColor = '#ced4da';
                 this.querySelector('[name="Concepto"]').style.borderColor = '#ced4da';
                 this.querySelector('[name="Valor"]').style.borderColor = '#ced4da';
             }
 
             // Validar monto mayor a 0
-            let errorMonto = document.getElementById('errorMontoEditar');
             if (parseFloat(valor) <= 0 || isNaN(parseFloat(valor))) {
-                if (!errorMonto) {
-                    errorMonto = document.createElement('span');
-                    errorMonto.id = 'errorMontoEditar';
-                    errorMonto.className = 'text-danger d-block mb-2';
-                    errorMonto.style.fontSize = '14px';
-                    errorMonto.innerText = 'Ingrese un monto válido mayor a 0';
-                    modalBody.prepend(errorMonto);
-                }
+                errorMonto = document.createElement('span');
+                errorMonto.id = 'errorMontoEditar';
+                errorMonto.className = 'text-danger d-block mb-2';
+                errorMonto.style.fontSize = '14px';
+                errorMonto.innerText = 'Ingrese un monto válido mayor a 0';
+                modalBody.prepend(errorMonto);
+
                 this.querySelector('[name="Valor"]').style.borderColor = 'red';
                 return;
             } else {
-                if (errorMonto) errorMonto.remove();
                 this.querySelector('[name="Valor"]').style.borderColor = '#ced4da';
             }
             
@@ -491,12 +507,12 @@
             const errorCampos = document.getElementById('errorCamposCrear');
             const errorMonto = document.getElementById('errorMontoCrear');
 
-            // Validar campos obligatorios
-            if (!fecha.value || !concepto.value || !valor.value) {
+            // Validar campos obligatorios (mejorado)
+            if (!fecha.value || !concepto.value.trim() || !valor.value) {
                 e.preventDefault();
                 errorCampos.style.display = 'block';
                 if (!fecha.value) fecha.style.borderColor = 'red'; else fecha.style.borderColor = '#ced4da';
-                if (!concepto.value) concepto.style.borderColor = 'red'; else concepto.style.borderColor = '#ced4da';
+                if (!concepto.value.trim()) concepto.style.borderColor = 'red'; else concepto.style.borderColor = '#ced4da';
                 if (!valor.value) valor.style.borderColor = 'red'; else valor.style.borderColor = '#ced4da';
                 errorMonto.style.display = 'none';
                 return;
