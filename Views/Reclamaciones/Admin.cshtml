@@ -53,6 +53,13 @@
                     </td>
                 </tr>
             }
+
+            @if (Model.Reclamaciones.Count == 0)
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No hay reclamos registrados en el sistema.</td>
+                </tr>
+            }
         </tbody>
       </table>
       <div class="d-flex justify-content-end mt-4">
@@ -91,6 +98,8 @@
                         <label class="form-label" style="color: #096623; font-weight: bold;">Detalle de la respuesta</label>
                         <textarea class="form-control" id="respuestaTexto" rows="5" required 
                                   style="border: 2px solid #096623; border-radius: 10px; background-color: #fff"></textarea>
+                        <span id="errorRespuesta" class="text-danger" style="display: none; font-size: 14px;">Debe ingresar la respuesta al reclamo</span>
+                        <span id="errorLongitudRespuesta" class="text-danger" style="display: none; font-size: 14px;">La respuesta no puede exceder los 256 caracteres</span>
                     </div>
                 </form>
             </div>
@@ -131,6 +140,27 @@
         function enviarRespuesta() {
             const id = $('#reclamoId').val();
             const respuesta = $('#respuestaTexto').val();
+            const errorRespuesta = document.getElementById('errorRespuesta');
+            const errorLongitudRespuesta = document.getElementById('errorLongitudRespuesta');
+
+            if (!respuesta) {
+                errorRespuesta.style.display = 'block'; // Muestra el mensaje de error
+                document.getElementById('respuestaTexto').style.borderColor = 'red'; // Cambia el borde del textarea a rojo
+                errorLongitudRespuesta.style.display = 'none';
+                return;
+            }
+
+            // Validación de longitud
+            if (respuesta.length > 256) {
+                errorLongitudRespuesta.style.display = 'block'; // Muestra el mensaje de longitud
+                document.getElementById('respuestaTexto').style.borderColor = 'red'; // Cambia el borde del textarea a rojo
+                errorRespuesta.style.display = 'none'; // Oculta el mensaje de campo vacío
+                return;
+            }
+
+            errorRespuesta.style.display = 'none';
+            errorLongitudRespuesta.style.display = 'none';
+            document.getElementById('respuestaTexto').style.borderColor = '#096623'; 
 
             fetch(`/Reclamaciones/ResponderReclamo/${id}`, {
                 method: 'POST',
@@ -151,5 +181,32 @@
                 alert('Error al guardar la respuesta.');
             });
         }
+
+        // Evento para ocultar el mensaje de error mientras el usuario escribe
+        document.addEventListener('DOMContentLoaded', function () {
+            const respuestaTexto = document.getElementById('respuestaTexto');
+            const errorRespuesta = document.getElementById('errorRespuesta');
+
+            if (respuestaTexto) {
+                respuestaTexto.addEventListener('input', function () {
+                    const texto = respuestaTexto.value.trim();
+
+                    // Oculta el mensaje de error si el campo no está vacío
+                    if (texto) {
+                        errorRespuesta.style.display = 'none';
+                        respuestaTexto.style.borderColor = '#096623';
+                    }
+
+                    // Muestra o oculta el mensaje de longitud
+                    if (texto.length > 256) {
+                        errorLongitudRespuesta.style.display = 'block';
+                        respuestaTexto.style.borderColor = 'red';
+                    } else {
+                        errorLongitudRespuesta.style.display = 'none';
+                        respuestaTexto.style.borderColor = '#096623';
+                    }
+                });
+            }
+        });
     </script>
 }

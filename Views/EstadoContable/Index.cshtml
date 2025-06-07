@@ -182,23 +182,24 @@
                 <h5 class="modal-title" id="crearGastoModalLabel" style="color: #096623;">Crear nuevo Gasto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="Create" asp-controller="EstadoContable" method="post">
+            <form id="formCreate" asp-action="Create" asp-controller="EstadoContable" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="fecha" class="form-label" style="color: #096623;">Fecha</label>
-                        <input type="date" class="form-control" id="fecha" name="Fecha" required 
+                        <input type="date" class="form-control" id="fecha" name="Fecha" 
                                style="border-radius: 15px; border: 1px solid #ced4da;">
                     </div>
                     <div class="mb-3">
                         <label for="concepto" class="form-label" style="color: #096623;">Concepto</label>
-                        <input type="text" class="form-control" id="concepto" name="Concepto" required 
+                        <input type="text" class="form-control" id="concepto" name="Concepto" required
                                style="border-radius: 15px; border: 1px solid #ced4da;">
                     </div>
                     <div class="mb-3">
                         <label for="valor" class="form-label" style="color: #096623;">Valor</label>
-                        <input type="number" step="0.01" class="form-control" id="valor" name="Valor" required 
+                        <input type="number" step="0.01" class="form-control" id="valor" name="Valor" 
                                style="border-radius: 15px; border: 1px solid #ced4da;">
                     </div>
+                    <span id="errorCampos" class="text-danger" style="display: none; font-size: 14px;">Complete todos los campos obligatorios</span>
                     <div class="text-center mt-4">
                         <button type="submit" class="btn px-4 py-2" 
                                 style="background-color: #1B983E; color: white; border-radius: 25px; width: 200px;">
@@ -323,6 +324,52 @@
                 maintainAspectRatio: false,
             }
             });
+
+            const form = document.getElementById('formCreate');;
+            const fecha = document.getElementById('fecha');
+            const valor = document.getElementById('valor');
+            const errorCampos = document.getElementById('errorCampos');
+
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    // Validación de campos obligatorios
+                    if (!fecha.value || !valor.value) {
+                        e.preventDefault(); // Evita el envío del formulario
+                        errorCampos.style.display = 'block'; // Muestra el mensaje de error
+                        if (!fecha.value) {
+                            fecha.style.borderColor = 'red'; // Cambia el borde del campo fecha a rojo
+                        } else {
+                            fecha.style.borderColor = '#ced4da'; // Restaura el borde del campo fecha
+                        }
+                        if (!valor.value) {
+                            valor.style.borderColor = 'red'; // Cambia el borde del campo valor a rojo
+                        } else {
+                            valor.style.borderColor = '#ced4da'; // Restaura el borde del campo valor
+                        }
+                        return;
+                    }
+
+                    // Oculta el mensaje de error si los campos están completos
+                    errorCampos.style.display = 'none';
+                    fecha.style.borderColor = '#ced4da';
+                    valor.style.borderColor = '#ced4da';
+                });
+
+                // Evento para ocultar el mensaje de error mientras el usuario escribe
+                fecha.addEventListener('input', function () {
+                    if (fecha.value) {
+                        errorCampos.style.display = 'none'; // Oculta el mensaje de error
+                        fecha.style.borderColor = '#ced4da'; // Restaura el borde del campo fecha
+                    }
+                });
+
+                valor.addEventListener('input', function () {
+                    if (valor.value) {
+                        errorCampos.style.display = 'none'; // Oculta el mensaje de error
+                        valor.style.borderColor = '#ced4da'; // Restaura el borde del campo valor
+                    }
+                });
+            }
         });
     </script>
     <script>

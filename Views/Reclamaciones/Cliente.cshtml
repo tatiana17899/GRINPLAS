@@ -54,8 +54,8 @@
 
                 <div class="form-group mb-4">
                     <label asp-for="Detalle" class="mb-2" style="color: #096623">Detalle del Reclamo</label>
-                    <textarea asp-for="Detalle" class="form-control" rows="5" required 
-                        style="border: 1px solid #096623; border-radius: 8px; padding: 10px;"></textarea>
+                    <textarea id="Detalle" asp-for="Detalle" class="form-control" rows="5" style="border: 1px solid #096623; border-radius: 8px; padding: 10px;"></textarea>
+                    <span id="errorDetalle" class="text-danger" style="display: none; font-size: 14px;">Debe ingresar el detalle del reclamo</span>
                 </div>
 
                 <div class="text-center">
@@ -122,8 +122,39 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var form = document.getElementById('formReclamo');
+        var detalle = document.getElementById('Detalle');
+        var errorDetalle = document.getElementById('errorDetalle');
+
+        if (detalle) {
+            detalle.addEventListener('input', function () {
+                if (detalle.value.trim()) {
+                    errorDetalle.style.display = 'none'; 
+                    detalle.style.borderColor = '#096623'; 
+                }
+            });
+        }
+
         if (form) {
             form.addEventListener('submit', function (e) {
+
+
+                if (!detalle) {
+                    console.error('El campo Detalle no se encontró en el DOM.');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (!detalle.value.trim()) {
+                    e.preventDefault();
+                    errorDetalle.style.display = 'block'; 
+                    detalle.style.borderColor = 'red'; 
+                    return;
+                }
+
+                errorDetalle.style.display = 'none';
+                detalle.style.borderColor = '#096623';
+
+
                 if (!window.confirmacionMostrada) {
                     e.preventDefault();
                     document.getElementById('modalConfirmacion').style.display = 'flex';
@@ -138,7 +169,7 @@
 
         setTimeout(function () {
             document.getElementById('modalExito').style.display = 'none';
-        }, 6500); 
+        }, 5000); 
     });
 
     function cerrarModal(id) {
