@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250605055204_decimal")]
-    partial class @decimal
+    [Migration("20250921030235_MigracionInicio")]
+    partial class MigracionInicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -167,6 +167,38 @@ namespace GRINPLAS.Migrations
                         .IsUnique();
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("GRINPLAS.Models.Comentarios", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Contenido")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EsPositivo")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Nombres")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comentarios");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.DetalleCarrito", b =>
@@ -372,6 +404,46 @@ namespace GRINPLAS.Migrations
                     b.ToTable("Productos");
                 });
 
+            modelBuilder.Entity("GRINPLAS.Models.Reclamaciones", b =>
+                {
+                    b.Property<int>("ReclamacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReclamacionId"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Correo")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Detalle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Respuesta")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telefono")
+                        .HasColumnType("text");
+
+                    b.HasKey("ReclamacionId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("Reclamaciones");
+                });
+
             modelBuilder.Entity("GRINPLAS.Models.Trabajadores", b =>
                 {
                     b.Property<int>("IdTrabajador")
@@ -398,6 +470,9 @@ namespace GRINPLAS.Migrations
                     b.Property<string>("PosicionLaboral")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("Sueldo")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
@@ -644,6 +719,17 @@ namespace GRINPLAS.Migrations
                         .IsRequired();
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("GRINPLAS.Models.Reclamaciones", b =>
+                {
+                    b.HasOne("GRINPLAS.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("GRINPLAS.Models.Trabajadores", b =>

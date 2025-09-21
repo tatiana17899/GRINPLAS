@@ -468,8 +468,7 @@ namespace GRINPLAS.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal?>("Sueldo")
-                        .IsRequired()
+                    b.Property<decimal>("Sueldo")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Telefono")

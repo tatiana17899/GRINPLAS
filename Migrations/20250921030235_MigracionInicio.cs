@@ -66,6 +66,38 @@ namespace GRINPLAS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comentarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombres = table.Column<string>(type: "text", nullable: false),
+                    Telefono = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Contenido = table.Column<string>(type: "text", nullable: false),
+                    EsPositivo = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comentarios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Gastos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Fecha = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Concepto = table.Column<string>(type: "text", nullable: true),
+                    Valor = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Gastos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -202,12 +234,13 @@ namespace GRINPLAS.Migrations
                 {
                     IdTrabajador = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ApplicationUserId = table.Column<string>(type: "text", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "text", nullable: true),
                     Nombre = table.Column<string>(type: "text", nullable: false),
                     Apellidos = table.Column<string>(type: "text", nullable: false),
                     Telefono = table.Column<string>(type: "text", nullable: false),
                     DNI = table.Column<string>(type: "text", nullable: false),
-                    PosicionLaboral = table.Column<string>(type: "text", nullable: false)
+                    PosicionLaboral = table.Column<string>(type: "text", nullable: false),
+                    Sueldo = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -292,6 +325,32 @@ namespace GRINPLAS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reclamaciones",
+                columns: table => new
+                {
+                    ReclamacionId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombre = table.Column<string>(type: "text", nullable: true),
+                    Correo = table.Column<string>(type: "text", nullable: true),
+                    Telefono = table.Column<string>(type: "text", nullable: true),
+                    Detalle = table.Column<string>(type: "text", nullable: false),
+                    Respuesta = table.Column<string>(type: "text", nullable: true),
+                    Estado = table.Column<bool>(type: "boolean", nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ClienteId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reclamaciones", x => x.ReclamacionId);
+                    table.ForeignKey(
+                        name: "FK_Reclamaciones_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DetalleCarrito",
                 columns: table => new
                 {
@@ -346,6 +405,36 @@ namespace GRINPLAS.Migrations
                         principalTable: "Productos",
                         principalColumn: "ProductoId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notificaciones",
+                columns: table => new
+                {
+                    NotificacionId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UsuarioId = table.Column<string>(type: "text", nullable: false),
+                    Titulo = table.Column<string>(type: "text", nullable: false),
+                    Mensaje = table.Column<string>(type: "text", nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Leida = table.Column<bool>(type: "boolean", nullable: false),
+                    Tipo = table.Column<string>(type: "text", nullable: true),
+                    PedidoId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notificaciones", x => x.NotificacionId);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Pedidos_PedidoId",
+                        column: x => x.PedidoId,
+                        principalTable: "Pedidos",
+                        principalColumn: "PedidoId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -418,6 +507,16 @@ namespace GRINPLAS.Migrations
                 column: "ProductoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_PedidoId",
+                table: "Notificaciones",
+                column: "PedidoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_UsuarioId",
+                table: "Notificaciones",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_ClienteId",
                 table: "Pedidos",
                 column: "ClienteId");
@@ -426,6 +525,11 @@ namespace GRINPLAS.Migrations
                 name: "IX_Productos_CategoriaId",
                 table: "Productos",
                 column: "CategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reclamaciones_ClienteId",
+                table: "Reclamaciones",
+                column: "ClienteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trabajadores_ApplicationUserId",
@@ -453,10 +557,22 @@ namespace GRINPLAS.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Comentarios");
+
+            migrationBuilder.DropTable(
                 name: "DetalleCarrito");
 
             migrationBuilder.DropTable(
                 name: "DetallePedidos");
+
+            migrationBuilder.DropTable(
+                name: "Gastos");
+
+            migrationBuilder.DropTable(
+                name: "Notificaciones");
+
+            migrationBuilder.DropTable(
+                name: "Reclamaciones");
 
             migrationBuilder.DropTable(
                 name: "Trabajadores");
@@ -468,16 +584,16 @@ namespace GRINPLAS.Migrations
                 name: "Carrito");
 
             migrationBuilder.DropTable(
-                name: "Pedidos");
-
-            migrationBuilder.DropTable(
                 name: "Productos");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Pedidos");
 
             migrationBuilder.DropTable(
                 name: "Categorias");
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
