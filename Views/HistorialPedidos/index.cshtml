@@ -554,6 +554,76 @@
 
                     document.getElementById('modalImagen').style.display = 'flex';
                 }
+                function abrirEditarDireccion(id) {
+                    pedidoIdSeleccionado = id;
+                    document.getElementById('modalEditar').style.display = 'flex';
+                    
+                    document.getElementById('nuevaDireccion').value = '';
+                }
+
+                function confirmarDireccion() {
+                const nuevaDireccion = document.getElementById('nuevaDireccion').value;
+                if (nuevaDireccion.trim() === "") {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campo requerido',
+                        text: 'Debes ingresar una dirección válida',
+                        confirmButtonColor: '#70A67F'
+                    });
+                    return;
+                }
+
+                fetch('/Pedidos/ActualizarDireccion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `pedidoId=${pedidoIdSeleccionado}&nuevaDireccion=${encodeURIComponent(nuevaDireccion)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Dirección actualizada',
+                            text: `La dirección del pedido #${pedidoIdSeleccionado} ha sido modificada correctamente`,
+                            confirmButtonColor: '#70A67F',
+                            timer: 3000
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.error || 'No se pudo actualizar la dirección',
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Ocurrió un error al intentar actualizar la dirección',
+                        confirmButtonColor: '#d33'
+                    });
+                });
+
+                cerrarModal('modalEditar');
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Dirección actualizada',
+                        text: `La dirección del pedido #${pedidoIdSeleccionado} ha sido modificada correctamente`,
+                        showConfirmButton: true,
+                        confirmButtonColor: '#70A67F',
+                        timer: 3000
+                    }).then(() => {
+                    });
+                }
             </script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
