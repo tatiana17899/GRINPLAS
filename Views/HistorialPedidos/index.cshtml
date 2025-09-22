@@ -539,6 +539,21 @@
                 function cerrarModal1(id) {
                     document.getElementById(id).style.display = 'none';
                 }
+                function descargarImagen1() {
+                const imageUrl = document.getElementById('imgComprobante').src;
+                const link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = 'imagen_pedido_' + new Date().toISOString().slice(0, 10);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                }
+
+                function mostrarImagen(ruta) {
+                    rutaActual = ruta;
+
+                    document.getElementById('modalImagen').style.display = 'flex';
+                }
             </script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
