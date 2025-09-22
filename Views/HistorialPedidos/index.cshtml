@@ -525,7 +525,6 @@
                     </div>
                 </div>
             </div>
-            </body>
             <script>
                 let pedidoIdSeleccionado = 0;
                 let rutaActual = '';
@@ -701,6 +700,24 @@
             </script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
-
+                $(document).ready(function () {
+                        $('.table').DataTable({
+                            pageLength: 4, 
+                            lengthChange: false, 
+                            info: false,
+                            language: {
+                                lengthMenu: "Mostrar _MENU_ registros por página",
+                                zeroRecords: "No se encontraron resultados",
+                                search: "Buscar:",
+                                paginate: {
+                                    first: "Primero",
+                                    last: "Último",
+                                    next: "Siguiente",
+                                    previous: "Anterior"
+                                }
+                            }
+                        });
+                    });
             </script>
+    </body>
 </html>
