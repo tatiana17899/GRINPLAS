@@ -560,6 +560,26 @@
                     
                     document.getElementById('nuevaDireccion').value = '';
                 }
+                function abrirCancelarPedido(id) {
+                    pedidoIdSeleccionado = id;
+                    document.getElementById('modalCancelar').style.display = 'flex';
+                }
+
+
+                function cerrarModal(id) {
+                    document.getElementById(id).style.display = 'none';
+                }
+
+                function descargarImagen() {
+                    if (!rutaActual) return;
+
+                    const link = document.createElement('a');
+                    link.href = rutaActual;
+                    link.download = 'documento-pedido-' + new Date().toISOString().slice(0, 10); // nombre personalizado
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
 
                 function confirmarDireccion() {
                 const nuevaDireccion = document.getElementById('nuevaDireccion').value;
@@ -622,6 +642,60 @@
                         confirmButtonColor: '#70A67F',
                         timer: 3000
                     }).then(() => {
+                    });
+                }
+                function confirmarCancelacion() {
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "Esta acción cancelará permanentemente tu pedido",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Sí, cancelar',
+                        cancelButtonText: 'No, volver',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('/Pedidos/CancelarPedido', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `pedidoId=${pedidoIdSeleccionado}`
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'success',
+                                        title: 'Pedido cancelado',
+                                        text: `El pedido #${pedidoIdSeleccionado} ha sido cancelado correctamente`,
+                                        confirmButtonColor: '#70A67F',
+                                        timer: 3000
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: data.error || 'No se pudo cancelar el pedido',
+                                        confirmButtonColor: '#d33'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Ocurrió un error al intentar cancelar el pedido',
+                                    confirmButtonColor: '#d33'
+                                });
+                            });
+                        }
                     });
                 }
             </script>
