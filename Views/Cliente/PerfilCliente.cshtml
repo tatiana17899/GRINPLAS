@@ -1,0 +1,163 @@
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Perfil";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    .profile-wrapper {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px 10px;
+    }
+
+    .back-arrow {
+        font-size: 20px;
+        color: #aaa;
+        text-decoration: none;
+    }
+
+    .profile-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #888;
+    }
+
+    .avatar-container {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 20px;
+    }
+
+    .avatar-container img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .camera-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: #096623;
+        border-radius: 50%;
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    .camera-icon i {
+        color: white;
+        font-size: 16px;
+    }
+
+    .form-control {
+        border-radius: 20px;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        padding-right: 40px;
+    }
+
+    .btn-outline-custom {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #096623;
+        border-radius: 5px;
+        background-color: white;
+        color: #096623;
+        font-weight: 500;
+        margin-bottom: 10px;
+        text-align: center;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .btn-outline-custom:hover {
+        background-color: #096623;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-solid-custom {
+        width: 100%;
+        padding: 12px;
+        background-color: #096623;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .btn-solid-custom:hover {
+        background-color: #07551d;
+    }
+
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .edit-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        cursor: pointer;
+    }
+</style>
+
+<div class="profile-wrapper">
+    <a href="#" class="back-arrow"><i class="bi bi-arrow-left"></i></a>
+    <h5 class="profile-title">PERFIL</h5>
+
+    <div class="avatar-container">
+        <img src="https://storage.googleapis.com/a1aa/image/-oruAM08FFeceuN2Y-t0_Zr19mVSEAYYH-Ngt_-6MNs.jpg" alt="Avatar">
+        <!--<label class="camera-icon">
+            <i class="bi bi-camera"></i>
+            <input type="file" class="d-none" />
+        </label>-->
+    </div>
+
+    <form>
+        <div class="input-wrapper">
+            <input type="text" class="form-control" placeholder="Tatiana Mercedes Suarez Rosas" readonly />
+            <i class="bi bi-pencil edit-icon"></i>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="email" class="form-control" placeholder="tatianasuarezrosas332@gmail.com" readonly />
+            <i class="bi bi-pencil edit-icon"></i>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="text" class="form-control" placeholder="2234425678i" readonly />
+            <i class="bi bi-pencil edit-icon"></i>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="text" class="form-control" placeholder="+51 970420050" readonly />
+            <i class="bi bi-pencil edit-icon"></i>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="password" class="form-control" placeholder="Contraseña" readonly />
+            <i class="bi bi-pencil edit-icon"></i>
+        </div> <br>
+
+        <a href="#" class="btn-outline-custom">Ver Historial de Pedidos</a>
+        <a href="~/Identity/Account/Logout" class="btn-solid-custom">Cerrar Sesión</a>
+    </form><br>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
