@@ -1,0 +1,73 @@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Credenciales";
+    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <h4 class="alert-heading">¡Trabajador creado exitosamente!</h4>
+            <p>Por favor proporcione estas credenciales al nuevo usuario:</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="font-weight-bold">Email:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="@ViewBag.Email" id="email" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" onclick="copiarEmail()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="font-weight-bold">Contraseña:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="@ViewBag.Password" id="password" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" onclick="copiarPassword()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-3">
+            <strong>Importante:</strong> Esta contraseña es temporal. El usuario deberá cambiarla en su primer acceso.
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-action="Index" class="btn btn-primary">Volver al listado</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copiarEmail() {
+            var copyText = document.getElementById("email");
+            copyText.select();
+            document.execCommand("copy");
+            toastr.success("Email copiado al portapapeles");
+        }
+
+        function copiarPassword() {
+            var copyText = document.getElementById("password");
+            copyText.select();
+            document.execCommand("copy");
+            toastr.success("Contraseña copiada al portapapeles");
+        }
+    </script>
+}
