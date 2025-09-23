@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace GRINPLAS.Models
 {
+
+//variables del carrito de commpra
     public class Carrito
     {
         [Key]
