@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 //Variables para los productos
 namespace GRINPLAS.Models
 {
+
+//Entidad Producto
     [Table("Productos")]
     public class Producto
     {

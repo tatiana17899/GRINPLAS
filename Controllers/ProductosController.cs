@@ -12,6 +12,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Build.Framework;
 
 //controlador del producto
+=======
+
+
+
 namespace GRINPLAS.Controllers
 {
     public class ProductosController : Controller
@@ -64,6 +68,8 @@ namespace GRINPLAS.Controllers
                 Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync(),
                 Categorias = await _context.Categorias.ToListAsync(),
             };
+
+
 
 
             return View(viewModel);
@@ -123,7 +129,7 @@ namespace GRINPLAS.Controllers
             {
                 if (producto.ProductoId == 0)
                 {
-                    // Inserción: no asignar ProductoId, que lo genere la BD
+                    // Inserción: no asignar ProductoId, que sea generada por la base de datos
                     _context.Add(producto);
                 }
                 else
@@ -137,7 +143,7 @@ namespace GRINPLAS.Controllers
                 return RedirectToAction("Administrador");
             }
 
-            // Si el modelo no es válido, recarga vista con datos actuales
+            // Si el modelo no es válido se recargará la vista con datos actuales
             var viewModel = new ProductoViewModel
             {
                 nuevoProducto = producto,
