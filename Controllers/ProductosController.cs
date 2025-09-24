@@ -11,6 +11,9 @@ using GRINPLAS.ViewModel;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Build.Framework;
 
+//controlador del producto
+=======
+
 
 
 namespace GRINPLAS.Controllers

@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
+
+
+//Variables para los productos
 namespace GRINPLAS.Models
 {
 
