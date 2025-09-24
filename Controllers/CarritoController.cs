@@ -47,6 +47,7 @@ namespace GRINPLAS.Controllers
         {
             if (_userManager == null)
             {
+                //verificar que usermanager esta disponible
                 return View("NoAutorizado");
             }
             var user = await _userManager.GetUserAsync(User);
@@ -84,6 +85,7 @@ namespace GRINPLAS.Controllers
             // Verificar si el carrito está vacío
             if (carrito.detalleCarrito == null || carrito.detalleCarrito.Count == 0)
             {
+            //Mensaje cuando el carrito está vacío
                 TempData["CarritoVacioError"] = "No hay productos seleccionados en el carrito";
             }
 

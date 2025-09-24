@@ -9,6 +9,8 @@ namespace GRINPLAS.Models
 {
     public class DetalleCarrito
     {
+
+        //variables del detalle de carrito
         [Key]
         public int DetalleId { get; set; }
         [Required]
