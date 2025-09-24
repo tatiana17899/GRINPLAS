@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace GRINPLAS.Models
 {
+
+//Entidad Producto
     [Table("Productos")]
     public class Producto
     {
