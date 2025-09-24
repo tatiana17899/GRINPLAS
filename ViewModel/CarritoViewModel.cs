@@ -6,6 +6,7 @@ using GRINPLAS.Models;
 
 namespace GRINPLAS.ViewModel
 {
+//modales paea el carrito
     public class CarritoViewModel
     {
         public List<Producto> Productos { get; set; }
