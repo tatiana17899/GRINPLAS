@@ -20,7 +20,7 @@ namespace GRINPLAS.Controllers
         private readonly ApplicationDbContext _context;
 
         //Manejo de usuaruios e identidad
-        private readonly UserManager<ApplicationUser>? _UserManager;
+        private readonly UserManager<ApplicationUser>? _userManager;
 
          // Logger para registrar eventos y errores
         private readonly ILogger<ProductosController> _logger;
