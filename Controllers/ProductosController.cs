@@ -16,10 +16,17 @@ namespace GRINPLAS.Controllers
 {
     public class ProductosController : Controller
     {
+        //Contexto de base de datos
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser>? _userManager;
-        private readonly ILogger<ProductosController> _logger;
 
+        //Manejo de usuaruios e identidad
+        private readonly UserManager<ApplicationUser>? _UserManager;
+
+         // Logger para registrar eventos y errores
+        private readonly ILogger<ProductosController> _logger;
+        
+
+        // Constructor principal con inyección de dependencias
         [ActivatorUtilitiesConstructor]
         public ProductosController(
         ApplicationDbContext context,
