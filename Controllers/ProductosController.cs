@@ -38,6 +38,7 @@ namespace GRINPLAS.Controllers
             _logger = logger;
         }
 
+        //Constructor alternativo (cuando no se proveee un logger real)
         public ProductosController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager)
@@ -45,6 +46,7 @@ namespace GRINPLAS.Controllers
         {
         }
 
+        //Vista para administrador 
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Administrador(DateTime? fechaInicio, DateTime? fechaFin)
         {
