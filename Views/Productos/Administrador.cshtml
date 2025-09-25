@@ -1,4 +1,10 @@
-
+@using GRINPLAS.ViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Administrador";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
 <!-- Contenedor principal -->
 <div class="d-flex flex-column">
 <!-- Breadcrumb navegación -->
