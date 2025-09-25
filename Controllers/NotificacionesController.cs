@@ -142,7 +142,9 @@ namespace GRINPLAS.Controllers
                 return StatusCode(500, new { success = false, message = "Error interno del servidor", error = ex.Message });
             }
         }
-
+        /// <summary>
+        /// Devuelve todas las notificaciones del usuario autenticado
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Todas()
         {
@@ -178,6 +180,9 @@ namespace GRINPLAS.Controllers
                 return Json(new { success = false, message = "Error interno del servidor" });
             }
         }
+         /// <summary>
+        /// Obtiene las 10 últimas notificaciones no leídas del usuario
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> ObtenerNotificacionesNoLeidas()
         {
