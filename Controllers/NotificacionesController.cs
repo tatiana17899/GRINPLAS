@@ -10,12 +10,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GRINPLAS.Controllers
 {
+    // Controlador protegido: solo usuarios autenticados pueden acceder
     [Authorize]
     public class NotificacionesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        // Constructor: se inyecta el contexto de BD y el manejador de usuarios
         public NotificacionesController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -25,6 +27,10 @@ namespace GRINPLAS.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Obtiene las últimas 10 notificaciones del usuario autenticado
+        /// </summary>
+        /// 
         [HttpGet]
         public async Task<IActionResult> ObtenerNotificaciones()
         {
