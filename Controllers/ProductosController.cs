@@ -46,7 +46,7 @@ namespace GRINPLAS.Controllers
         {
         }
 
-        //Vista para administrador 
+        //Vista para el administrador
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Administrador(DateTime? fechaInicio, DateTime? fechaFin)
         {
@@ -126,6 +126,8 @@ namespace GRINPLAS.Controllers
 
             return View("Administrador", viewModel);
         }
+
+        //Registrar o actualizar un producto
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegistrarProducto(Producto producto)
@@ -312,7 +314,7 @@ namespace GRINPLAS.Controllers
 
             TempData["SuccessMessage"] = "Producto agregado al carrito correctamente.";
 
-            return RedirectToAction("Cliente", "Productos");
+            return RedirectToAction("Cliente", "Produtos");
         }
     }
 }
