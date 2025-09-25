@@ -126,41 +126,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-/*
-    $(document).ready(function() {
-    // Cargar notificaciones al abrir el dropdown
-    $('#navbarDropdownNotifications').on('show.bs.dropdown', function() {
-        // Aquí iría la lógica para cargar notificaciones dinámicamente
-        console.log("Cargando notificaciones...");
-    });
-
-    // Marcar como leída al hacer clic
-    $(document).on('click', '.notification-item', function(e) {
-        e.preventDefault();
-        var notificacionId = $(this).data('id');
-        console.log("Marcando notificación " + notificacionId + " como leída");
-        
-        // Aquí iría la llamada AJAX para marcar como leída
-        $.post('/Notificaciones/MarcarComoLeida', { id: notificacionId }, function() {
-            window.location.href = $(this).attr('href');
-        });
-    });
-    // Actualizar contador de notificaciones
-    function actualizarContador() {
-            // Aquí iría la llamada AJAX para obtener el contador
-            console.log("Actualizando contador de notificaciones...");
-            // Ejemplo:
-            // $.get('/Notificaciones/ContadorNoLeidas', function(count) {
-            //     $('.badge').text(count > 0 ? count : '');
-            // });
-        }
-
-        // Actualizar cada 30 segundos
-        setInterval(actualizarContador, 30000);
-        actualizarContador();
-    });
-
-    */
     // Habilita la edición de campos de texto
     function enableEdit(fieldName) {
         const field = document.querySelector(`input[name="${fieldName}"]`);
