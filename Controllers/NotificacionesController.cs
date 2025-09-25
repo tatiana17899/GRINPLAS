@@ -56,7 +56,9 @@ namespace GRINPLAS.Controllers
 
             return Json(new { success = true, data = notificaciones });
         }
-
+        /// <summary>
+        /// Devuelve el número de notificaciones no leídas del usuario
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> ContadorNoLeidas()
         {
@@ -73,10 +75,13 @@ namespace GRINPLAS.Controllers
             }
             catch (Exception ex)
             {
+                // Si ocurre un error, devuelve 0 por defecto
                 return Json(0);
             }
         }
-
+         /// <summary>
+        /// Marca una notificación específica como leída
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> MarcarComoLeida([FromForm] int id)
         {
@@ -107,7 +112,9 @@ namespace GRINPLAS.Controllers
                 return StatusCode(500, new { success = false, message = "Error interno del servidor", error = ex.Message });
             }
         }
-
+         /// <summary>
+        /// Marca todas las notificaciones del usuario como leídas
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> MarcarTodasComoLeidas()
         {
