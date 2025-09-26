@@ -315,7 +315,7 @@ namespace GRINPLAS.Controllers
 
             TempData["SuccessMessage"] = "Producto agregado al carrito correctamente.";
 
-            return RedirectToAction("Cliente", "Produtos");
+            return RedirectToAction("Cliente", "Productos");
         }
     }
 }
