@@ -45,12 +45,13 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessage = "El correo electrónico es requerido")]
-            [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido")]
+            /// Reestablecer por correo electrónico
+            [Required(ErrorMessage = "El correo electrónico es obligatorio")]
+            [EmailAddress(ErrorMessage = "Porfavor,Ingrese un correo electrónico válido")]
             [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
         }
-
+//lÓGICA DE REESTABLECER CONTRASEÑA
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
@@ -100,12 +101,12 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         <div class='content'>
                             <h3>Restablecimiento de contraseña</h3>
                             <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
-                            <p>Por favor, haz clic en el siguiente botón para continuar con el proceso:</p>
-                            <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}' class='button' style={{color: white}}>Restablecer contraseña</a></p>
-                            <p>Si no solicitaste este cambio, por favor ignora este mensaje.</p>
+                            <p>Por favor estimado, haz clic en el siguiente botón para continuar con el proceso:</p>
+                            <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}' class='button' style={{color: white}}>Restablecer tu contraseña</a></p>
+                            <p>Si no solicitaste este cambio, por favor ignora este mensaje. Gracias</p>
                         </div>
                         <div class='footer'>
-                            <p>© {DateTime.Now.Year} GRINPLAS. Todos los derechos reservados.</p>
+                            <p>© {DateTime.Now.Year} G&R. Todos los derechos reservados.</p>
                         </div>
                     </div>
                 </body>
@@ -113,7 +114,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
-                    "Restablecimiento de contraseña - GRINPLAS",
+                    "Restablecimiento de contraseña - G&R",
                     emailBody);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
