@@ -46,12 +46,12 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             /// Reestablecer por correo electrónico
-            [Required(ErrorMessage = "El correo electrónico es requerido")]
-            [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido")]
+            [Required(ErrorMessage = "El correo electrónico es obligatorio")]
+            [EmailAddress(ErrorMessage = "Porfavor,Ingrese un correo electrónico válido")]
             [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
         }
-
+//lÓGICA DE REESTABLECER CONTRASEÑA
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
@@ -114,7 +114,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
-                    "Restablecimiento de contraseña - GRINPLAS",
+                    "Restablecimiento de contraseña - G&R",
                     emailBody);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
