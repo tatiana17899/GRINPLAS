@@ -118,3 +118,71 @@
         position: relative;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('formReclamo');
+        var detalle = document.getElementById('Detalle');
+        var errorDetalle = document.getElementById('errorDetalle');
+
+        if (detalle) {
+            detalle.addEventListener('input', function () {
+                if (detalle.value.trim()) {
+                    errorDetalle.style.display = 'none'; 
+                    detalle.style.borderColor = '#096623'; 
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+
+
+                if (!detalle) {
+                    console.error('El campo Detalle no se encontró en el DOM.');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (!detalle.value.trim()) {
+                    e.preventDefault();
+                    errorDetalle.style.display = 'block'; 
+                    detalle.style.borderColor = 'red'; 
+                    return;
+                }
+
+                errorDetalle.style.display = 'none';
+                detalle.style.borderColor = '#096623';
+
+
+                if (!window.confirmacionMostrada) {
+                    e.preventDefault();
+                    document.getElementById('modalConfirmacion').style.display = 'flex';
+                }
+            });
+        }
+
+        var exito = @((TempData["Success"] != null).ToString().ToLower());
+        if (exito) {
+            document.getElementById('modalExito').style.display = 'flex';
+        }
+
+        setTimeout(function () {
+            document.getElementById('modalExito').style.display = 'none';
+        }, 2000); 
+    });
+
+    function cerrarModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function enviarReclamo() {
+        window.confirmacionMostrada = true;
+        cerrarModal('modalConfirmacion');
+        document.getElementById('formReclamo').submit();
+    }
+
+    function cerrarModalExito() {
+        cerrarModal('modalExito');
+    }
+</script>
