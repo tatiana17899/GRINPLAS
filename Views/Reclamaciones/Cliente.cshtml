@@ -1,0 +1,188 @@
+@model GRINPLAS.Models.Reclamaciones
+@using GRINPLAS.ViewModel
+@using System.Linq
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    ViewData["Title"] = "Reclamaciones";
+    Layout = "~/Views/Shared/_LayoutReclamaciones.cshtml";
+    var token = Xsrf.GetAndStoreTokens(Context).RequestToken;
+}
+
+<div class="container-fluid" style="background-color: #2EA950; padding: 80px; border-radius: 15px; color: white;">
+    <div class="d-flex justify-content-center align-content-center" style="margin-top: 30px;">
+        <div style="width: 80%; background-color: #71BC85; padding: 40px; border-radius: 10px; margin-bottom: 20px; font-size: 16px; letter-spacing: 0.2px; line-height: 1.5;">
+        
+            <h2 class="text-center" style="font-weight: 700; font-size: 40px">LIBRO DE RECLAMACIONES</h2>
+
+            <div class="mb-4">
+                <h5>1. Objetivo</h5>
+                <p>Garantizar la satisfacción del cliente y la mejora continua de nuestros productos y servicios.</p>
+            </div>
+
+            <div class="mb-4">
+                <h5>2. Presentación del Reclamo</h5>
+                <p>Los clientes pueden presentar reclamos a través de:</p>
+                <ul>
+                    <li>Correo electrónico: soporte@grinplas.com</li>
+                    <li>Teléfono</li>
+                    <li>Mediante la página web de www.Grinplas.com</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h5>3. Proceso de Resolución</h5>
+                <ul>
+                    <li>Confirmación de recepción en 24 horas hábiles.</li>
+                    <li>Evaluación y contacto con el cliente si es necesario.</li>
+                    <li>Propuesta de solución: reemplazo del producto, reembolso, crédito o acuerdo mutuo.</li>
+                    <li>Resolución en un máximo de 10 días hábiles.</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h5>4. Confidencialidad</h5>
+                <p>Toda la información será tratada con confidencialidad y utilizada solo para resolver el reclamo y mejorar nuestros servicios.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center align-content-center">
+        <div style="width: 90%; background-color: white; padding: 40px; border-radius: 25px; color: #2EA950; border: 2px solid #2EA950;">
+            <h3 class="text-center mb-4" style="font-weight: 700; color: #2EA950;">¿Cuál es su reclamo?</h3>
+
+            <form id="formReclamo" asp-action="CrearReclamo" method="post">
+
+                <div class="form-group mb-4">
+                    <label asp-for="Detalle" class="mb-2" style="color: #096623">Detalle del Reclamo</label>
+                    <textarea id="Detalle" asp-for="Detalle" class="form-control" rows="5" style="border: 1px solid #096623; border-radius: 8px; padding: 10px;"></textarea>
+                    <span id="errorDetalle" class="text-danger" style="display: none; font-size: 14px;">Debe ingresar el detalle del reclamo</span>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn" 
+                        style="background-color: #096623; color: white; padding: 10px 40px; border-radius: 8px; font-size: 16px;">
+                        <i class="fas fa-paper-plane me-2"></i> Enviar Mensaje
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de Confirmación -->
+<div id="modalConfirmacion" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div style="font-size:90px; margin-bottom:10px; font-weight:bold;">
+            <span style="font-weight:bold;">&#33;</span>
+        </div>
+        <div style="font-size:22px; margin-bottom:30px; color:#222; font-weight:bold;">¿Estás seguro de que deseas enviar tu reclamo?</div>
+        <div style="display:flex; justify-content:center; gap:30px;">
+            <button type="button" onclick="enviarReclamo()" style="background:#096623; color:white; border:none; border-radius:8px; padding:16px 60px; font-size:20px; font-weight:bold;">Sí</button>
+            <button type="button" onclick="cerrarModal('modalConfirmacion')" style="background:white; color:#096623; border:3px solid #096623; border-radius:8px; padding:16px 60px; font-size:20px; font-weight:bold;">NO</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Éxito -->
+<div id="modalExito" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div style="font-size:90px; margin-bottom:10px; font-weight:bold;">
+            <span style="font-weight:bold;">&#10003;</span>
+        </div>
+        <div style="font-size:22px; margin-bottom:30px; color:#222; font-weight:bold;">Reclamo Registrado</div>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.3);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        background: white;
+        border-radius: 30px;
+        padding: 60px 50px;
+        max-width: 500px;
+        width: 90vw;
+        margin: auto;
+        text-align: center;
+        color: #096623;
+        box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+        font-weight: bold;
+        position: relative;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('formReclamo');
+        var detalle = document.getElementById('Detalle');
+        var errorDetalle = document.getElementById('errorDetalle');
+
+        if (detalle) {
+            detalle.addEventListener('input', function () {
+                if (detalle.value.trim()) {
+                    errorDetalle.style.display = 'none'; 
+                    detalle.style.borderColor = '#096623'; 
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+
+
+                if (!detalle) {
+                    console.error('El campo Detalle no se encontró en el DOM.');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (!detalle.value.trim()) {
+                    e.preventDefault();
+                    errorDetalle.style.display = 'block'; 
+                    detalle.style.borderColor = 'red'; 
+                    return;
+                }
+
+                errorDetalle.style.display = 'none';
+                detalle.style.borderColor = '#096623';
+
+
+                if (!window.confirmacionMostrada) {
+                    e.preventDefault();
+                    document.getElementById('modalConfirmacion').style.display = 'flex';
+                }
+            });
+        }
+
+        var exito = @((TempData["Success"] != null).ToString().ToLower());
+        if (exito) {
+            document.getElementById('modalExito').style.display = 'flex';
+        }
+
+        setTimeout(function () {
+            document.getElementById('modalExito').style.display = 'none';
+        }, 2000); 
+    });
+
+    function cerrarModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function enviarReclamo() {
+        window.confirmacionMostrada = true;
+        cerrarModal('modalConfirmacion');
+        document.getElementById('formReclamo').submit();
+    }
+
+    function cerrarModalExito() {
+        cerrarModal('modalExito');
+    }
+</script>
