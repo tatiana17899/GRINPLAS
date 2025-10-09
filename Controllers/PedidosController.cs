@@ -37,6 +37,43 @@ namespace GRINPLAS.Controllers
         {
         }
 
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Administrador(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            if (_userManager == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (!userRoles.Contains("Administrador"))
+            {
+                return RedirectToPage("/Account/AccessDenied");
+            }
+            var viewModel = new PedidoViewModel
+            {
+                Pedidos = await _context.Pedidos.Include(p => p.Cliente).ToListAsync(),
+                nuevoPedido = new Pedido(),
+                Clientes = await _context.Clientes.ToListAsync(),
+                Productos = await _context.Productos.Include(p => p.Categoria).ToListAsync()
+            };
+            ViewBag.TotalMangas = await _context.DetallePedidos
+            .Where(dp => dp.Producto.Categoria.Nombre == "Mangas")
+            .SumAsync(dp => dp.PrecioTotal);
+
+            ViewBag.TotalBolsas = await _context.DetallePedidos
+                .Where(dp => dp.Producto.Categoria.Nombre == "Bolsas")
+                .SumAsync(dp => dp.PrecioTotal);
+
+
+            return View(viewModel);
+        }
 
         [Authorize(Roles = "Vendedor")]
         public async Task<IActionResult> GerenteGeneral(DateTime? fechaInicio, DateTime? fechaFin)
