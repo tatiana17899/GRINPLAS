@@ -128,3 +128,85 @@
       </form>
       </div>
     </div>
+
+@section Scripts{
+    <script src="~/js/administrador.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+     
+$(document).ready(function () {
+   
+
+
+    function filtrarPorFechas(inicio, fin) {
+
+        var fechaInicio = new Date(inicio + 'T00:00:00');
+        var fechaFin = new Date(fin + 'T23:59:59');
+        
+        console.log('Rango de filtro:');
+        console.log('Desde:', fechaInicio);
+        console.log('Hasta:', fechaFin);
+        
+
+        $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(function(fn) {
+            return fn.name !== 'filtroFechas';
+        });
+        
+
+        var filtroFechas = function(settings, data, dataIndex) {
+            var fechaEmisionTexto = data[4]; 
+            
+            console.log('Procesando fila:', dataIndex, 'Fecha texto:', fechaEmisionTexto);
+            
+            if (!fechaEmisionTexto || fechaEmisionTexto.trim() === '') {
+                console.log('Fecha vacía, excluir');
+                return false;
+            }
+            
+            try {
+
+                var fechaLimpia = fechaEmisionTexto.trim();
+                var partes = fechaLimpia.split('/');
+                
+                if (partes.length !== 3) {
+                    console.log('Formato de fecha inválido:', fechaLimpia);
+                    return false;
+                }
+                
+                var dia = parseInt(partes[0]);
+                var mes = parseInt(partes[1]) - 1; 
+                var año = parseInt(partes[2]);
+                
+                if (isNaN(dia) || isNaN(mes) || isNaN(año)) {
+                    console.log('Partes de fecha no numéricas:', dia, mes + 1, año);
+                    return false;
+                }
+                
+                var fechaTabla = new Date(año, mes, dia, 12, 0, 0, 0);
+                
+                console.log('Fecha convertida:', fechaTabla);
+                console.log('¿Está en rango?', fechaTabla >= fechaInicio && fechaTabla <= fechaFin);
+                
+                return fechaTabla >= fechaInicio && fechaTabla <= fechaFin;
+                
+            } catch (error) {
+                console.error('Error procesando fecha:', fechaEmisionTexto, error);
+                return false;
+            }
+        };
+        
+
+        filtroFechas.name = 'filtroFechas';
+        
+        $.fn.dataTable.ext.search.push(filtroFechas);
+        
+        table.draw();
+    }
+
+
+    $('#filter-all').click();
+});
+    </script>
+}
