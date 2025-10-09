@@ -137,7 +137,75 @@
     <script>
      
 $(document).ready(function () {
+
+    var table = $('#ordersTable').DataTable({
+        "pageLength": 4,           
+        "lengthChange": false,     
+        "language": {
+            "paginate": {
+                "previous": "Anterior",
+                "next": "Siguiente"
+            },
+            "info": "Página _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay datos disponibles",
+            "emptyTable": "No hay pedidos registrados",
+            "search": "Buscar:"
+        }
+    });
+
+
+    $('#filter-all').click(function() {
+      
+        table.column(6).search('proceso|entregado|cancelado', true, false).draw();
+        actualizarBotonActivo(this);
+    });
+
+    $('#filter-entregado').click(function() {
+        table.column(6).search('^entregado$', true, false).draw();
+        actualizarBotonActivo(this);
+    });
+
+    $('#filter-proceso').click(function() {
+        table.column(6).search('^proceso$', true, false).draw();
+        actualizarBotonActivo(this);
+    });
+
+    $('#filter-cancelado').click(function() {
+        table.column(6).search('^cancelado$', true, false).draw();
+        actualizarBotonActivo(this);
+    });
+
    
+    function actualizarBotonActivo(botonActivo) {
+       
+        $('#filter-all, #filter-entregado, #filter-proceso, #filter-cancelado')
+            .removeClass('text-success fw-bold')
+            .addClass('text-muted');
+        
+       
+        $(botonActivo).removeClass('text-muted').addClass('text-success fw-bold');
+    }
+
+
+    $('#btnFiltrar').click(function() {
+        var fechaInicio = $('#fechaInicio').val();
+        var fechaFin = $('#fechaFin').val();
+        
+        console.log('Fechas seleccionadas:', fechaInicio, 'a', fechaFin);
+        
+        if (fechaInicio && fechaFin) {
+            filtrarPorFechas(fechaInicio, fechaFin);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Fechas requeridas',
+                text: 'Por favor selecciona ambas fechas para filtrar.'
+            });
+        }
+    });
+
+   
+
 
     $('#btnResetear').click(function() {
         $('#fechaInicio').val('');
