@@ -139,6 +139,23 @@
 $(document).ready(function () {
    
 
+    $('#btnResetear').click(function() {
+        $('#fechaInicio').val('');
+        $('#fechaFin').val('');
+        
+        
+        $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(function(fn) {
+            return fn.name !== 'filtroFechas';
+        });
+        
+        table.search('').columns().search('').draw();
+        
+ 
+        table.column(6).search('proceso|entregado|cancelado', true, false).draw();
+        
+
+        actualizarBotonActivo('#filter-all');
+    });
 
     function filtrarPorFechas(inicio, fin) {
 
