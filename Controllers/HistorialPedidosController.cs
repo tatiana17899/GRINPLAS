@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+
+//funcionalidad fecha de entrega y validaciones
 namespace GRINPLAS.Controllers
 {
     [Authorize]
