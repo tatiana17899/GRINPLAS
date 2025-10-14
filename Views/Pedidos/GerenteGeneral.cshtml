@@ -94,7 +94,7 @@
                   <th>Boleta</th>
                   <th>Fecha Emisión</th>
                   <th>Fecha Entrega</th>
-                  <th>Estado</th>
+
                   <th>Total</th>
                   <th>Pago</th>
                   <th>Comprobante</th>
@@ -121,44 +121,13 @@
                           <td>
                               <input type="date" class="form-control fecha-entrega" name="fechaEntrega" value="@(pedido.FechaEntrega?.ToString("yyyy-MM-dd"))" />
                           </td>
-                          <td>
-                              <select class="form-control status-select" name="status">
-                                  @if (pedido.Status == "espera")
-                                  {
-                                      <option value="espera" selected>Espera</option>
-                                  }
-                                  else
-                                  {
-                                      <option value="espera">Espera</option>
-                                  }
-                                  
-                                  @if (pedido.Status == "entregado")
-                                  {
-                                      <option value="entregado" selected>Entregado</option>
-                                  }
-                                  else
-                                  {
-                                      <option value="entregado">Entregado</option>
-                                  }
-                                  
-                                  @if (pedido.Status == "proceso")
-                                  {
-                                      <option value="proceso" selected>Proceso</option>
-                                  }
-                                  else
-                                  {
-                                      <option value="proceso">Proceso</option>
-                                  }
-                                  @if (pedido.Status == "cancelado")
-                                  {
-                                      <option value="cancelado" selected>Cancelado</option>
-                                  }
-                                  else
-                                  {
-                                      <option value="cancelado">Cancelado</option>
-                                  }
-                              </select>
-                          </td>
+
+
+
+
+
+
+
                           <td>@pedido.Total</td>
                           <td>
                               <select class="form-control pago-select" name="pago">
