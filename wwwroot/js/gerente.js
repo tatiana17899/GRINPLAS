@@ -6,8 +6,54 @@ document.addEventListener("DOMContentLoaded", function () {
     cancelado: document.querySelector("#filter-cancelado"),
     entregado: document.querySelector("#filter-entregado"),
   };
-
-
+  Object.keys(filterButtons).forEach((status) => {
+    if (filterButtons[status]) {
+      filterButtons[status].addEventListener("click", () =>
+        filterOrders(status)
+      );
+    }
+  });
+  
+  function filterOrders(status) {
+    const rows = document.querySelectorAll("#ordersTable tbody tr");
+    let visibleRows = 0;
+  
+    rows.forEach((row) => {
+      const statusCell = row.querySelector(".status-select");
+      const currentStatus = statusCell ? statusCell.value : "";
+  
+      if (status === "all" || currentStatus === status) {
+        row.style.display = "";
+        visibleRows++;
+      } else {
+        row.style.display = "none";
+      }
+    });
+  
+    updateFilterButtonStyles(status);
+  
+    if (visibleRows === 0) {
+      Swal.fire({
+        title: "Sin resultados",
+        text: "No se encontraron pedidos con ese filtro",
+        icon: "info",
+      });
+    }
+  }
+  
+  function updateFilterButtonStyles(activeFilter) {
+    Object.keys(filterButtons).forEach((status) => {
+      if (filterButtons[status]) {
+        if (status === activeFilter) {
+          filterButtons[status].classList.add("text-success", "fw-bold");
+          filterButtons[status].classList.remove("text-muted");
+        } else {
+          filterButtons[status].classList.remove("text-success", "fw-bold");
+          filterButtons[status].classList.add("text-muted");
+        }
+      }
+    });
+  }
 
   
   const btnFiltrar = document.querySelector("#btnFiltrar");
