@@ -134,3 +134,76 @@
                 body: JSON.stringify({ estado: estado })
             });
         }
+        function enviarRespuesta() {
+            const id = $('#reclamoId').val();
+            const respuesta = $('#respuestaTexto').val();
+            const errorRespuesta = document.getElementById('errorRespuesta');
+            const errorLongitudRespuesta = document.getElementById('errorLongitudRespuesta');
+
+            if (!respuesta) {
+                errorRespuesta.style.display = 'block'; // Muestra el mensaje de error
+                document.getElementById('respuestaTexto').style.borderColor = 'red'; // Cambia el borde del textarea a rojo
+                errorLongitudRespuesta.style.display = 'none';
+                return;
+            }
+
+            // Validación de longitud
+            if (respuesta.length > 256) {
+                errorLongitudRespuesta.style.display = 'block'; // Muestra el mensaje de longitud
+                document.getElementById('respuestaTexto').style.borderColor = 'red'; // Cambia el borde del textarea a rojo
+                errorRespuesta.style.display = 'none'; // Oculta el mensaje de campo vacío
+                return;
+            }
+
+            errorRespuesta.style.display = 'none';
+            errorLongitudRespuesta.style.display = 'none';
+            document.getElementById('respuestaTexto').style.borderColor = '#096623'; 
+
+            fetch(`/Reclamaciones/ResponderReclamo/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(respuesta) // Enviar solo la respuesta como string
+            }).then(response => {
+                if (response.ok) {
+                    $('#responderModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error al guardar la respuesta.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error al guardar la respuesta.');
+            });
+        }
+
+        // Evento para ocultar el mensaje de error mientras el usuario escribe
+        document.addEventListener('DOMContentLoaded', function () {
+            const respuestaTexto = document.getElementById('respuestaTexto');
+            const errorRespuesta = document.getElementById('errorRespuesta');
+
+            if (respuestaTexto) {
+                respuestaTexto.addEventListener('input', function () {
+                    const texto = respuestaTexto.value.trim();
+
+                    // Oculta el mensaje de error si el campo no está vacío
+                    if (texto) {
+                        errorRespuesta.style.display = 'none';
+                        respuestaTexto.style.borderColor = '#096623';
+                    }
+
+                    // Muestra o oculta el mensaje de longitud
+                    if (texto.length > 256) {
+                        errorLongitudRespuesta.style.display = 'block';
+                        respuestaTexto.style.borderColor = 'red';
+                    } else {
+                        errorLongitudRespuesta.style.display = 'none';
+                        respuestaTexto.style.borderColor = '#096623';
+                    }
+                });
+            }
+        });
+    </script>
+}
