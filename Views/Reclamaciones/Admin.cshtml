@@ -125,3 +125,12 @@
             }
             $('#responderModal').modal('show');
         }
+        function cambiarEstado(id, estado) {
+            fetch(`/Reclamaciones/CambiarEstado/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estado: estado })
+            });
+        }
