@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
+
+
 namespace GRINPLAS.Controllers
 {
     [Authorize]
@@ -22,10 +24,11 @@ namespace GRINPLAS.Controllers
 
         public async Task<IActionResult> Index(DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1)
         {
-            // Consulta base de gastos para la paginación
+            // Consulta a la base de gastos para la paginación
             var query = _context.Gastos.AsQueryable();
 
-            // Calcular totales
+            // Calcular los totales
+            
             decimal totalIngresos;
             decimal totalGastos;
 
@@ -34,17 +37,17 @@ namespace GRINPLAS.Controllers
                 ViewBag.FechaInicio = fechaInicio.Value.ToString("yyyy-MM-dd");
                 ViewBag.FechaFin = fechaFin.Value.ToString("yyyy-MM-dd");
 
-                // Filtrar gastos por fecha
+                // Filtrar los gastos por fecha
                 query = query.Where(g => g.Fecha.Date >= fechaInicio.Value.Date && 
                                         g.Fecha.Date <= fechaFin.Value.Date);
 
-                // Calcular ingresos filtrados por fecha
+                // Calcular los ingresos filtrados por fecha
                 totalIngresos = await _context.Pedidos
                     .Where(p => p.FechaEmision.Date >= fechaInicio.Value.Date &&
                             p.FechaEmision.Date <= fechaFin.Value.Date)
                     .SumAsync(p => p.Total);
 
-                // Calcular gastos filtrados por fecha
+                // Calcular los gastos filtrados por fecha
                 totalGastos = await _context.Gastos
                     .Where(g => g.Fecha.Date >= fechaInicio.Value.Date &&
                             g.Fecha.Date <= fechaFin.Value.Date)
@@ -73,7 +76,7 @@ namespace GRINPLAS.Controllers
             if (pageNumber < 1) pageNumber = 1;
             if (pageNumber > totalPages && totalPages > 0) pageNumber = totalPages;
 
-            // Obtener los gastos paginados (4 por página)
+            // Obtener los gastos paginados (4 por cada página)
             var gastos = await query
                 .OrderByDescending(g => g.Fecha)
                 .Skip((pageNumber - 1) * _pageSize)
