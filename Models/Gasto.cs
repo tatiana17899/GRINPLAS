@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
+//detalle de variables para gastos
 namespace GRINPLAS.Models
 {
     public class Gasto
