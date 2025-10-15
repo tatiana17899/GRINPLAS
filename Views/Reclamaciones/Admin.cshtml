@@ -111,3 +111,17 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function responderReclamo(id, respuesta, estado) {
+            $('#reclamoId').val(id);
+            $('#respuestaTexto').val(respuesta);
+            if (estado === true || estado === "true") {
+                $('#respuestaTexto').prop('readonly', true);
+                $('.btn-success[onclick="enviarRespuesta()"]').hide(); // Oculta el botón Enviar
+            } else {
+                $('#respuestaTexto').prop('readonly', false);
+                $('.btn-success[onclick="enviarRespuesta()"]').show(); // Muestra el botón Enviar
+            }
+            $('#responderModal').modal('show');
+        }
