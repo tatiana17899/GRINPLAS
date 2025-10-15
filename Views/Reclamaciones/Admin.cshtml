@@ -82,3 +82,32 @@
       </div>
     </div>
 </div>
+<!-- Modal para responder reclamo -->
+<div class="modal fade" id="responderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px; border: none;">
+            <div class="modal-header" style="border-bottom: none;">
+                <h5 class="modal-title text-center w-100" style="color: #2EA950; font-weight: 700;">Responder reclamo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="respuestaForm">
+                    <input type="hidden" id="reclamoId" />
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #096623; font-weight: bold;">Detalle de la respuesta</label>
+                        <textarea class="form-control" id="respuestaTexto" rows="5" required 
+                                  style="border: 2px solid #096623; border-radius: 10px; background-color: #fff"></textarea>
+                        <span id="errorRespuesta" class="text-danger" style="display: none; font-size: 14px;">Debe ingresar la respuesta al reclamo</span>
+                        <span id="errorLongitudRespuesta" class="text-danger" style="display: none; font-size: 14px;">La respuesta no puede exceder los 256 caracteres</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center" style="border-top: none;">
+                <button type="button" class="btn" onclick="enviarRespuesta()" 
+                        style="background-color: #1B665E; color: white; padding: 10px 40px; border-radius: 10px; font-size: 16px;">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
