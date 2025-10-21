@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GRINPLAS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250921030235_MigracionInicio")]
+    [Migration("20251021185252_MigracionInicio")]
     partial class MigracionInicio
     {
         /// <inheritdoc />
