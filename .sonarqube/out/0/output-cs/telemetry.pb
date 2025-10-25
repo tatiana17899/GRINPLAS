@@ -1,0 +1,1 @@
+DR.C:\Users\ACER\Desktop\GRINPLAS\GRINPLAS.csproj¢net8.0òCSharp12
