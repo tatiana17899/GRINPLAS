@@ -215,3 +215,39 @@
         </div>
     </div>
 </div>
+<!-- Modal Confirmación Eliminar -->
+<div class="modal fade" id="confirmarEliminarModal" tabindex="-1" aria-labelledby="confirmarEliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-body text-center p-4">
+                <div class="mb-4">
+                    <i class="fas fa-question-circle" style="font-size: 50px; color: #096623;"></i>
+                </div>
+                <h5 style="color: #333;">¿Deseas eliminar este gasto?</h5>
+                <input type="hidden" id="gastoIdToDelete" />
+                <div class="mt-4">
+                    <button type="button" class="btn btn-success me-2" onclick="eliminarGasto()" style="background-color: #1B983E; border-radius: 5px;">
+                        Sí, Eliminar
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="background-color: #dc3545; border-radius: 5px;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Éxito Eliminación -->
+<div class="modal fade" id="exitoEliminarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-body text-center p-4">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle" style="font-size: 50px; color: #1B983E;"></i>
+                </div>
+                <h5 style="color: #333;">El gasto fue eliminado</h5>
+            </div>
+        </div>
+    </div>
+</div>
