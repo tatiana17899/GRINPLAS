@@ -71,4 +71,478 @@
                                     </div>
                                 </div>
                             </div>
-                            
+                            <div class="text-center mt-4">
+                                <button class="btn px-4 py-2" data-bs-toggle="modal" data-bs-target="#crearGastoModal" style="background-color: #1B983E; color: white; border-radius: 25px; font-size: 18px;">
+                                    Crear Nuevo Gasto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card" style="background-color: #e8f5e9;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center mb-3">Ingresos y Gastos</h5>
+                            <div style="height: 200px;">
+                                <canvas id="gastosChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4" style="border: none;">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="bg-light">
+                            <tr>
+                                <th style="width: 5%">Id</th>
+                                <th style="width: 20%">Fecha</th>
+                                <th style="width: 45%">Concepto</th>
+                                <th style="width: 20%">Valor</th>
+                                <th style="width: 10%">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-danger fw-bold">
+                                        No hay registros en el rango de fechas seleccionado
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.Concepto</td>
+                                        <td>S/@item.Valor.ToString("N2")</td>
+                                        <td class="text-center">
+                                            <a href="#" class="text-decoration-none me-2" onclick="editarGasto(@item.Id)">
+                                                <i class="fas fa-edit" style="color:#078751;"></i>
+                                            </a>
+                                            <a href="#" class="text-decoration-none" onclick="confirmarEliminar(@item.Id)">
+                                                <i class="fas fa-trash-alt" style="color: #078751;"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation" class="mt-3">
+                        <ul class="pagination justify-content-end">
+                            @if (ViewBag.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        pageNumber = ViewBag.CurrentPage - 1, 
+                                        fechaInicio = ViewBag.FechaInicio,
+                                        fechaFin = ViewBag.FechaFin 
+                                    })" style="color: #00A52B;">Anterior</a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        pageNumber = i,
+                                        fechaInicio = ViewBag.FechaInicio,
+                                        fechaFin = ViewBag.FechaFin 
+                                    })" style="@(i == ViewBag.CurrentPage ? "background-color: #00A52B; border-color: #00A52B;" : "color: #00A52B;")">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (ViewBag.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        pageNumber = ViewBag.CurrentPage + 1,
+                                        fechaInicio = ViewBag.FechaInicio,
+                                        fechaFin = ViewBag.FechaFin 
+                                    })" style="color: #00A52B;">Siguiente</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Crear Gasto -->
+<div class="modal fade" id="crearGastoModal" tabindex="-1" aria-labelledby="crearGastoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="crearGastoModalLabel" style="color: #096623;">Crear nuevo Gasto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Create" asp-controller="EstadoContable" method="post" id="formCreate">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label" style="color: #096623;">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" name="Fecha" 
+                               style="border-radius: 15px; border: 1px solid #ced4da;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="concepto" class="form-label" style="color: #096623;">Concepto</label>
+                        <input type="text" class="form-control" id="concepto" name="Concepto" required 
+                               style="border-radius: 15px; border: 1px solid #ced4da;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="valor" class="form-label" style="color: #096623;">Valor</label>
+                        <input type="number" step="0.01" class="form-control" id="valor" name="Valor" 
+                               style="border-radius: 15px; border: 1px solid #ced4da;">
+                    </div>
+                    <span id="errorCamposCrear" class="text-danger" style="display: none; font-size: 14px;">Complete todos los campos obligatorios</span>
+                    <span id="errorMontoCrear" class="text-danger" style="display: none; font-size: 14px;">Ingrese un monto válido mayor a 0</span>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn px-4 py-2" 
+                                style="background-color: #1B983E; color: white; border-radius: 25px; width: 200px;">
+                            Crear nuevo gasto
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Confirmación Eliminar -->
+<div class="modal fade" id="confirmarEliminarModal" tabindex="-1" aria-labelledby="confirmarEliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-body text-center p-4">
+                <div class="mb-4">
+                    <i class="fas fa-question-circle" style="font-size: 50px; color: #096623;"></i>
+                </div>
+                <h5 style="color: #333;">¿Deseas eliminar este gasto?</h5>
+                <input type="hidden" id="gastoIdToDelete" />
+                <div class="mt-4">
+                    <button type="button" class="btn btn-success me-2" onclick="eliminarGasto()" style="background-color: #1B983E; border-radius: 5px;">
+                        Sí, Eliminar
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="background-color: #dc3545; border-radius: 5px;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Éxito Eliminación -->
+<div class="modal fade" id="exitoEliminarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-body text-center p-4">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle" style="font-size: 50px; color: #1B983E;"></i>
+                </div>
+                <h5 style="color: #333;">El gasto fue eliminado</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Éxito Edición -->
+<div class="modal fade" id="exitoEditarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-body text-center p-4">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle" style="font-size: 50px; color: #1B983E;"></i>
+                </div>
+                <h5 style="color: #333;">El gasto fue editado</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Gasto -->
+<div class="modal fade" id="editarGastoModal" tabindex="-1" aria-labelledby="editarGastoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" style="color: #096623;">Editar nuevo Gasto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarGasto">
+                <div class="modal-body">
+                    <input type="hidden" id="editGastoId" name="Id">
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #096623;">Fecha</label>
+                        <input type="date" class="form-control" id="editFecha" name="Fecha" 
+                               style="border-radius: 15px; border: 1px solid #ced4da;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #096623;">Concepto</label>
+                        <input type="text" class="form-control" id="editConcepto" name="Concepto" required 
+                               style="border-radius: 15px; border: 1px solid #ced4da;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #096623;">Valor</label>
+                        <input type="number" step="0.01" class="form-control" id="editValor" name="Valor" 
+                               style="border-radius: 15px; border: 1px solid #ced4da;">
+                    </div>
+                    <span id="errorCamposCrear" class="text-danger" style="display: none; font-size: 14px;">Complete todos los campos obligatorios</span>
+                    <div id="errorCamposEditarContainer"></div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn px-4 py-2" 
+                                style="background-color: #1B983E; color: white; border-radius: 25px; width: 200px;">
+                            Editar nuevo gasto
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('gastosChart').getContext('2d');
+            var chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Ingresos (S/)', 'Gastos (S/)'],
+                datasets: [{
+                data: [@ViewBag.ChartData.Ingresos.ToString("F2", System.Globalization.CultureInfo.InvariantCulture), 
+                       @ViewBag.ChartData.Gastos.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)],
+                backgroundColor: [
+                    '#00A52B',
+                    'rgba(125, 174, 138,0.8)'
+                ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+            });
+        });
+
+        function confirmarEliminar(id) {
+            document.getElementById('gastoIdToDelete').value = id;
+            var modal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+            modal.show();
+        }
+
+        function eliminarGasto() {
+            var id = document.getElementById('gastoIdToDelete').value;
+            fetch(`/EstadoContable/Delete/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Cerrar el modal de confirmación
+                    var confirmarModal = bootstrap.Modal.getInstance(document.getElementById('confirmarEliminarModal'));
+                    confirmarModal.hide();
+                    
+                    // Mostrar el modal de éxito
+                    var exitoModal = new bootstrap.Modal(document.getElementById('exitoEliminarModal'));
+                    exitoModal.show();
+                    
+                    // Recargar la página después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alert('Error al eliminar el gasto');
+                }
+            });
+        }
+
+        // editar gasto
+        function editarGasto(id) {
+            fetch(`/EstadoContable/GetGasto/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los datos del gasto');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Llenar el formulario con los datos
+                        document.getElementById('editGastoId').value = data.data.id;
+                        document.getElementById('editFecha').value = data.data.fecha.split('T')[0];
+                        document.getElementById('editConcepto').value = data.data.concepto;
+                        document.getElementById('editValor').value = data.data.valor;
+                        
+                        // Limpiar mensajes de error previos
+                        let errorCampos = document.getElementById('errorCamposEditar');
+                        if (errorCampos) errorCampos.remove();
+                        let errorMonto = document.getElementById('errorMontoEditar');
+                        if (errorMonto) errorMonto.remove();
+                        document.getElementById('editFecha').style.borderColor = '#ced4da';
+                        document.getElementById('editConcepto').style.borderColor = '#ced4da';
+                        document.getElementById('editValor').style.borderColor = '#ced4da';
+
+                        // Mostrar el modal
+                        const modal = new bootstrap.Modal(document.getElementById('editarGastoModal'));
+                        modal.show();
+                    } else {
+                        alert('Error al cargar los datos del gasto');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al cargar los datos del gasto');
+                });
+        }
+
+        // Manejar el envío del formulario de edición
+        document.getElementById('formEditarGasto').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const fecha = formData.get('Fecha');
+            const concepto = formData.get('Concepto');
+            const valor = formData.get('Valor');
+            const modalBody = this.querySelector('.modal-body');
+
+            // Elimina mensajes de error previos
+            let errorCampos = document.getElementById('errorCamposEditar');
+            if (errorCampos) errorCampos.remove();
+            let errorMonto = document.getElementById('errorMontoEditar');
+            if (errorMonto) errorMonto.remove();
+
+            // Validar campos obligatorios
+            if (!fecha || !concepto.trim() || !valor) {
+                errorCampos = document.createElement('span');
+                errorCampos.id = 'errorCamposEditar';
+                errorCampos.className = 'text-danger d-block mb-2';
+                errorCampos.style.fontSize = '14px';
+                errorCampos.innerText = 'Complete todos los campos obligatorios';
+                modalBody.prepend(errorCampos);
+                this.querySelector('[name="Fecha"]').style.borderColor = fecha ? '#ced4da' : 'red';
+                this.querySelector('[name="Concepto"]').style.borderColor = concepto.trim() ? '#ced4da' : 'red';
+                this.querySelector('[name="Valor"]').style.borderColor = valor ? '#ced4da' : 'red';
+                return;
+            } else {
+                this.querySelector('[name="Fecha"]').style.borderColor = '#ced4da';
+                this.querySelector('[name="Concepto"]').style.borderColor = '#ced4da';
+                this.querySelector('[name="Valor"]').style.borderColor = '#ced4da';
+            }
+
+            // Validar monto mayor a 0
+            if (parseFloat(valor) <= 0 || isNaN(parseFloat(valor))) {
+                errorMonto = document.createElement('span');
+                errorMonto.id = 'errorMontoEditar';
+                errorMonto.className = 'text-danger d-block mb-2';
+                errorMonto.style.fontSize = '14px';
+                errorMonto.innerText = 'Ingrese un monto válido mayor a 0';
+                modalBody.prepend(errorMonto);
+
+                this.querySelector('[name="Valor"]').style.borderColor = 'red';
+                return;
+            } else {
+                this.querySelector('[name="Valor"]').style.borderColor = '#ced4da';
+            }
+            
+            const gastoData = {
+                Id: parseInt(formData.get('Id')),
+                Fecha: formData.get('Fecha'),
+                Concepto: formData.get('Concepto'),
+                Valor: parseFloat(formData.get('Valor'))
+            };
+            
+            fetch('/EstadoContable/Edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(gastoData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Cerrar el modal de edición
+                    var editarModal = bootstrap.Modal.getInstance(document.getElementById('editarGastoModal'));
+                    editarModal.hide();
+                    
+                    // Mostrar el modal de éxito
+                    var exitoModal = new bootstrap.Modal(document.getElementById('exitoEditarModal'));
+                    exitoModal.show();
+                    
+                    // Recargar la página después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alert('Error al editar el gasto: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al editar el gasto. Por favor, intente nuevamente.');
+            });
+        });
+
+        document.getElementById('formCreate').addEventListener('submit', function(e) {
+            const fecha = document.getElementById('fecha');
+            const concepto = document.getElementById('concepto');
+            const valor = document.getElementById('valor');
+            const errorCampos = document.getElementById('errorCamposCrear');
+            const errorMonto = document.getElementById('errorMontoCrear');
+
+            // Validar campos obligatorios (mejorado)
+            if (!fecha.value || !concepto.value.trim() || !valor.value) {
+                e.preventDefault();
+                errorCampos.style.display = 'block';
+                if (!fecha.value) fecha.style.borderColor = 'red'; else fecha.style.borderColor = '#ced4da';
+                if (!concepto.value.trim()) concepto.style.borderColor = 'red'; else concepto.style.borderColor = '#ced4da';
+                if (!valor.value) valor.style.borderColor = 'red'; else valor.style.borderColor = '#ced4da';
+                errorMonto.style.display = 'none';
+                return;
+            } else {
+                errorCampos.style.display = 'none';
+                fecha.style.borderColor = '#ced4da';
+                concepto.style.borderColor = '#ced4da';
+                valor.style.borderColor = '#ced4da';
+            }
+
+            // Validar monto mayor a 0
+            if (parseFloat(valor.value) <= 0 || isNaN(parseFloat(valor.value))) {
+                e.preventDefault();
+                errorMonto.style.display = 'block';
+                valor.style.borderColor = 'red';
+                return;
+            } else {
+                errorMonto.style.display = 'none';
+                valor.style.borderColor = '#ced4da';
+            }
+        });
+
+        ['fecha', 'concepto', 'valor'].forEach(function(id) {
+            document.getElementById(id).addEventListener('input', function() {
+                document.getElementById('errorCamposCrear').style.display = 'none';
+                this.style.borderColor = '#ced4da';
+            });
+        });
+        document.getElementById('valor').addEventListener('input', function() {
+            const errorMonto = document.getElementById('errorMontoCrear');
+            if (parseFloat(this.value) > 0) {
+                errorMonto.style.display = 'none';
+                this.style.borderColor = '#ced4da';
+            }
+        });
+    </script>
+}
