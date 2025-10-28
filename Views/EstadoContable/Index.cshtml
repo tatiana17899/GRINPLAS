@@ -304,3 +304,245 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('gastosChart').getContext('2d');
+            var chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Ingresos (S/)', 'Gastos (S/)'],
+                datasets: [{
+                data: [@ViewBag.ChartData.Ingresos.ToString("F2", System.Globalization.CultureInfo.InvariantCulture), 
+                       @ViewBag.ChartData.Gastos.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)],
+                backgroundColor: [
+                    '#00A52B',
+                    'rgba(125, 174, 138,0.8)'
+                ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+            });
+        });
+
+        function confirmarEliminar(id) {
+            document.getElementById('gastoIdToDelete').value = id;
+            var modal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+            modal.show();
+        }
+
+        function eliminarGasto() {
+            var id = document.getElementById('gastoIdToDelete').value;
+            fetch(`/EstadoContable/Delete/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Cerrar el modal de confirmación
+                    var confirmarModal = bootstrap.Modal.getInstance(document.getElementById('confirmarEliminarModal'));
+                    confirmarModal.hide();
+                    
+                    // Mostrar el modal de éxito
+                    var exitoModal = new bootstrap.Modal(document.getElementById('exitoEliminarModal'));
+                    exitoModal.show();
+                    
+                    // Recargar la página después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alert('Error al eliminar el gasto');
+                }
+            });
+        }
+
+        // editar gasto
+        function editarGasto(id) {
+            fetch(`/EstadoContable/GetGasto/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los datos del gasto');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Llenar el formulario con los datos
+                        document.getElementById('editGastoId').value = data.data.id;
+                        document.getElementById('editFecha').value = data.data.fecha.split('T')[0];
+                        document.getElementById('editConcepto').value = data.data.concepto;
+                        document.getElementById('editValor').value = data.data.valor;
+                        
+                        // Limpiar mensajes de error previos
+                        let errorCampos = document.getElementById('errorCamposEditar');
+                        if (errorCampos) errorCampos.remove();
+                        let errorMonto = document.getElementById('errorMontoEditar');
+                        if (errorMonto) errorMonto.remove();
+                        document.getElementById('editFecha').style.borderColor = '#ced4da';
+                        document.getElementById('editConcepto').style.borderColor = '#ced4da';
+                        document.getElementById('editValor').style.borderColor = '#ced4da';
+
+                        // Mostrar el modal
+                        const modal = new bootstrap.Modal(document.getElementById('editarGastoModal'));
+                        modal.show();
+                    } else {
+                        alert('Error al cargar los datos del gasto');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al cargar los datos del gasto');
+                });
+        }
+
+        // Manejar el envío del formulario de edición
+        document.getElementById('formEditarGasto').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const fecha = formData.get('Fecha');
+            const concepto = formData.get('Concepto');
+            const valor = formData.get('Valor');
+            const modalBody = this.querySelector('.modal-body');
+
+            // Elimina mensajes de error previos
+            let errorCampos = document.getElementById('errorCamposEditar');
+            if (errorCampos) errorCampos.remove();
+            let errorMonto = document.getElementById('errorMontoEditar');
+            if (errorMonto) errorMonto.remove();
+
+            // Validar campos obligatorios
+            if (!fecha || !concepto.trim() || !valor) {
+                errorCampos = document.createElement('span');
+                errorCampos.id = 'errorCamposEditar';
+                errorCampos.className = 'text-danger d-block mb-2';
+                errorCampos.style.fontSize = '14px';
+                errorCampos.innerText = 'Complete todos los campos obligatorios';
+                modalBody.prepend(errorCampos);
+                this.querySelector('[name="Fecha"]').style.borderColor = fecha ? '#ced4da' : 'red';
+                this.querySelector('[name="Concepto"]').style.borderColor = concepto.trim() ? '#ced4da' : 'red';
+                this.querySelector('[name="Valor"]').style.borderColor = valor ? '#ced4da' : 'red';
+                return;
+            } else {
+                this.querySelector('[name="Fecha"]').style.borderColor = '#ced4da';
+                this.querySelector('[name="Concepto"]').style.borderColor = '#ced4da';
+                this.querySelector('[name="Valor"]').style.borderColor = '#ced4da';
+            }
+
+            // Validar monto mayor a 0
+            if (parseFloat(valor) <= 0 || isNaN(parseFloat(valor))) {
+                errorMonto = document.createElement('span');
+                errorMonto.id = 'errorMontoEditar';
+                errorMonto.className = 'text-danger d-block mb-2';
+                errorMonto.style.fontSize = '14px';
+                errorMonto.innerText = 'Ingrese un monto válido mayor a 0';
+                modalBody.prepend(errorMonto);
+
+                this.querySelector('[name="Valor"]').style.borderColor = 'red';
+                return;
+            } else {
+                this.querySelector('[name="Valor"]').style.borderColor = '#ced4da';
+            }
+            
+            const gastoData = {
+                Id: parseInt(formData.get('Id')),
+                Fecha: formData.get('Fecha'),
+                Concepto: formData.get('Concepto'),
+                Valor: parseFloat(formData.get('Valor'))
+            };
+            
+            fetch('/EstadoContable/Edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(gastoData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Cerrar el modal de edición
+                    var editarModal = bootstrap.Modal.getInstance(document.getElementById('editarGastoModal'));
+                    editarModal.hide();
+                    
+                    // Mostrar el modal de éxito
+                    var exitoModal = new bootstrap.Modal(document.getElementById('exitoEditarModal'));
+                    exitoModal.show();
+                    
+                    // Recargar la página después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alert('Error al editar el gasto: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al editar el gasto. Por favor, intente nuevamente.');
+            });
+        });
+
+        document.getElementById('formCreate').addEventListener('submit', function(e) {
+            const fecha = document.getElementById('fecha');
+            const concepto = document.getElementById('concepto');
+            const valor = document.getElementById('valor');
+            const errorCampos = document.getElementById('errorCamposCrear');
+            const errorMonto = document.getElementById('errorMontoCrear');
+
+            // Validar campos obligatorios (mejorado)
+            if (!fecha.value || !concepto.value.trim() || !valor.value) {
+                e.preventDefault();
+                errorCampos.style.display = 'block';
+                if (!fecha.value) fecha.style.borderColor = 'red'; else fecha.style.borderColor = '#ced4da';
+                if (!concepto.value.trim()) concepto.style.borderColor = 'red'; else concepto.style.borderColor = '#ced4da';
+                if (!valor.value) valor.style.borderColor = 'red'; else valor.style.borderColor = '#ced4da';
+                errorMonto.style.display = 'none';
+                return;
+            } else {
+                errorCampos.style.display = 'none';
+                fecha.style.borderColor = '#ced4da';
+                concepto.style.borderColor = '#ced4da';
+                valor.style.borderColor = '#ced4da';
+            }
+
+            // Validar monto mayor a 0
+            if (parseFloat(valor.value) <= 0 || isNaN(parseFloat(valor.value))) {
+                e.preventDefault();
+                errorMonto.style.display = 'block';
+                valor.style.borderColor = 'red';
+                return;
+            } else {
+                errorMonto.style.display = 'none';
+                valor.style.borderColor = '#ced4da';
+            }
+        });
+
+        ['fecha', 'concepto', 'valor'].forEach(function(id) {
+            document.getElementById(id).addEventListener('input', function() {
+                document.getElementById('errorCamposCrear').style.display = 'none';
+                this.style.borderColor = '#ced4da';
+            });
+        });
+        document.getElementById('valor').addEventListener('input', function() {
+            const errorMonto = document.getElementById('errorMontoCrear');
+            if (parseFloat(this.value) > 0) {
+                errorMonto.style.display = 'none';
+                this.style.borderColor = '#ced4da';
+            }
+        });
+    </script>
+}
