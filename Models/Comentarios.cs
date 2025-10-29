@@ -1,3 +1,9 @@
+//validaciones para ingresar los comentarios
+
+
+
+
+
 using System.ComponentModel.DataAnnotations;
 
 namespace GRINPLAS.Models
