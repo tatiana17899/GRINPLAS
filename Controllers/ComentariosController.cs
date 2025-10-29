@@ -8,6 +8,11 @@ using GRINPLAS.Models;
 using ClasificacionModelo;
 using ClosedXML.Excel;
 
+//logica del controlador 
+
+
+
+
 namespace GRINPLAS.Controllers
 {
     public class ComentariosController : Controller
@@ -64,7 +69,14 @@ namespace GRINPLAS.Controllers
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Comentarios");
 
-            // Encabezados
+
+
+
+
+
+
+            // Encabezados de las columnas
+
             worksheet.Cell(1, 1).Value = "Id";
             worksheet.Cell(1, 2).Value = "Nombres";
             worksheet.Cell(1, 3).Value = "Teléfono";
@@ -72,6 +84,8 @@ namespace GRINPLAS.Controllers
             worksheet.Cell(1, 5).Value = "Comentario";
             worksheet.Cell(1, 6).Value = "Tipo";
 
+
+//variables y clasificacion 
             int fila = 2;
             foreach (var c in comentarios)
             {
