@@ -24,10 +24,7 @@ namespace GRINPLAS.Controllers
 
         public async Task<IActionResult> Index(DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1)
         {
-            // Consulta a la base de gastos para la paginación
             var query = _context.Gastos.AsQueryable();
-
-            // Calcular los totales
             
             decimal totalIngresos;
             decimal totalGastos;
@@ -37,7 +34,7 @@ namespace GRINPLAS.Controllers
                 ViewBag.FechaInicio = fechaInicio.Value.ToString("yyyy-MM-dd");
                 ViewBag.FechaFin = fechaFin.Value.ToString("yyyy-MM-dd");
 
-                // Filtrar los gastos por fecha
+
                 query = query.Where(g => g.Fecha.Date >= fechaInicio.Value.Date && 
                                         g.Fecha.Date <= fechaFin.Value.Date);
 
@@ -47,7 +44,7 @@ namespace GRINPLAS.Controllers
                             p.FechaEmision.Date <= fechaFin.Value.Date)
                     .SumAsync(p => p.Total);
 
-                // Calcular los gastos filtrados por fecha
+                // Calcular gastos por fecha
                 totalGastos = await _context.Gastos
                     .Where(g => g.Fecha.Date >= fechaInicio.Value.Date &&
                             g.Fecha.Date <= fechaFin.Value.Date)
@@ -55,16 +52,15 @@ namespace GRINPLAS.Controllers
             }
             else
             {
-                // Usar el mes actual por defecto para la visualización
                 fechaInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 fechaFin = DateTime.Now;
                 ViewBag.FechaInicio = fechaInicio.Value.ToString("yyyy-MM-dd");
                 ViewBag.FechaFin = fechaFin.Value.ToString("yyyy-MM-dd");
 
-                // Calcular todos los ingresos
+                // Calcular los ingresos
                 totalIngresos = await _context.Pedidos.SumAsync(p => p.Total);
 
-                // Calcular todos los gastos
+                // Calcular los gastos
                 totalGastos = await _context.Gastos.SumAsync(g => g.Valor);
             }
 
@@ -83,7 +79,7 @@ namespace GRINPLAS.Controllers
                 .Take(_pageSize)
                 .ToListAsync();
 
-            // Configurar ViewBag para la paginación
+            // Configurar ViewBag por paginación
             ViewBag.CurrentPage = pageNumber;
             ViewBag.TotalPages = totalPages;
             ViewBag.HasPreviousPage = pageNumber > 1;
