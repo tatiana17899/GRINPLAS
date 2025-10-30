@@ -59,10 +59,10 @@ namespace GRINPLAS.Controllers
                     return Json(new
                     {
                         success = true,
-                        emptyData = true, // Nuevo campo para indicar que no hay datos
+                        emptyData = true,
                         message = "No hay usuarios registrados en la fecha seleccionada",
                         labels = new[] { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" },
-                        data = new int[7], // Datos vacíos
+                        data = new int[7], 
                         inicioSemana = inicioSemana.ToString("yyyy-MM-dd"),
                         finSemana = finSemana.ToString("yyyy-MM-dd")
                     });
@@ -74,7 +74,6 @@ namespace GRINPLAS.Controllers
                     if (cliente.User?.FechaRegistro != null)
                     {
                         var dia = (int)cliente.User.FechaRegistro.DayOfWeek;
-                        // Ajuste para que Lunes sea 0
                         var index = (dia == 0) ? 6 : dia - 1;
                         data[index]++;
                     }
@@ -91,7 +90,7 @@ namespace GRINPLAS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener clientes por semana");
+                _logger.LogError(ex, "Sucedió un error al obtner la lista de clientes por semana");
                 return StatusCode(500, new { success = false, error = ex.Message });
             }
         }

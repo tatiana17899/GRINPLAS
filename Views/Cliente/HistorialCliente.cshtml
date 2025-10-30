@@ -8,7 +8,7 @@
 </head>
 <style>
     .chart-title-empty {
-        color:rgba(220, 53, 70, 0.87); /* Rojo para destacar */
+        color:rgba(255, 0, 25, 0.87); 
         font-weight: bold;
         text-align: center;
     }
@@ -19,7 +19,7 @@
         <div class="content" id="content">
             <div class="container" style="padding: 40px">
                 <div class="text-sm mb-4">
-                    <a href="#" style="color: #7f7f7f; text-decoration: none">Inicio</a>
+                    <a href="#" style="color: #929191ff; text-decoration: none">Inicio</a>
                     <span class="mx-2">/</span>
                     <span style="color: #09c33d; font-weight: bold">Clientes</span>
                 </div>
@@ -40,7 +40,7 @@
                     <div class="d-flex justify-content-end mb-3">
                             <button id="exportExcelBtn" class="btn btn-success d-flex align-items-center gap-2 px-3 py-2 shadow-sm">
                                 <i class="fa-solid fa-file-excel fa-lg"></i>
-                                <span>Exportar a Excel</span>
+                                <span>Exportar Excel</span>
                             </button>
 
                     </div>
@@ -100,7 +100,7 @@
 
             // Exportar a Excel
             $('#exportExcelBtn').click(function () {
-                // Obtener todos los datos de la tabla (incluyendo los que no están visibles)
+                // Obtener todos los datos de la tabla
                 var allData = table.rows().data().toArray();
 
                 // Crear una tabla HTML temporal con todos los datos
