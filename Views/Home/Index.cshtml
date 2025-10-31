@@ -89,74 +89,7 @@
     </article>
   </div>
 </div>
-<div class="d-flex align-items-center justify-content-center">
-  <div class="position-relative bg-teal-200 p-5 rounded w-100 h-100 d-flex justify-content-end align-items-end"
-    style="background-color: rgba(0, 186, 167, 0.278)">
-    <h1 class="background-text" style="color: #00a21b; font-size: 80px; margin-left: 30px">
-      TU <br /><span style="color: #00a21b">OPINIÓN</span>
-      <span style="color: rgb(8, 136, 121)">IMPORTA</span>
-    </h1>
-    <div class="form-container w-100" style="max-width: 600px; margin-left: 30px">
-      @* Mensajes de éxito o error *@
 
-
-
-
-
-      <form asp-action="EnviarComentario" method="post" class="mt-5">
-        @Html.AntiForgeryToken()
-        <div class="mb-4">
-          <label class="form-label">Nombre:</label>
-          <input type="text" name="Nombres" class="form-control" asp-for="Nombres" required
-            oninvalid="this.setCustomValidity('Debe ingresar la información solicitada')"
-            oninput="this.setCustomValidity('')" />
-          <span asp-validation-for="Nombres" class="text-danger"></span>
-        </div>
-
-        <div class="row mb-4">
-          <div class="col">
-            <label class="form-label">Teléfono:</label>
-            <input type="text" name="Telefono" class="form-control" asp-for="Telefono" required
-              oninvalid="this.setCustomValidity('Debe ingresar la información solicitada')"
-              oninput="this.setCustomValidity('')" />
-            <span asp-validation-for="Telefono" class="text-danger"></span>
-          </div>
-          <div class="col">
-            <label class="form-label">Email:</label>
-            <input type="email" name="Email" class="form-control" asp-for="Email" required
-              oninvalid="this.setCustomValidity('Debe ingresar la información solicitada')"
-              oninput="this.setCustomValidity('')" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label">Comentario</label>
-          <textarea name="Contenido" class="form-control" asp-for="Contenido" required
-            oninvalid="this.setCustomValidity('Debe ingresar un comentario')"
-            oninput="this.setCustomValidity('')"></textarea>
-          <span asp-validation-for="Contenido" class="text-danger"></span>
-        </div>
-
-
-        <div class="d-flex justify-content-end">
-          <button type="submit" class="btn btn-teal-500 text-white d-flex align-items-center"
-            style="background-color: #38b2ac; padding: 10px; width: 200px">
-            <i class="fas fa-arrow-right me-2" style="
-                      color: #38b2ac;
-                      background: #fff;
-                      padding: 10px;
-                      margin-left: 5px;
-                      border-radius: 20px;
-                      width: 60px;
-                    "></i>
-            <span style="color: #fff; margin-right: 20px">Enviar</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 <!-- Chatbot circular -->
 @if (User.Identity.IsAuthenticated)
 {
