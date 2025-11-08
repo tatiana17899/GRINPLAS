@@ -94,10 +94,15 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Debes aceptar los términos y condiciones")]
             [Display(Name = "Acepto los términos y condiciones")]
             public bool TerminosCondiciones { get; set; }
+
+            [StringLength(500, ErrorMessage = "Los comentarios no pueden exceder los 500 caracteres")]
+            [Display(Name = "Comentarios")]
+            public string Comentarios { get; set; }
+
             public static ValidationResult ValidateDocumentNumber(string numDoc, ValidationContext context)
             {
                 var instance = (InputModel)context.ObjectInstance;
-                
+
                 if (string.IsNullOrEmpty(numDoc))
                     return new ValidationResult("El número de documento es requerido");
 
@@ -173,6 +178,7 @@ namespace GRINPLAS.Areas.Identity.Pages.Account
                         TipDoc = Input.TipDoc,
                         NumDoc = Input.NumDoc,
                         Telefono = Input.Telefono,
+                        Comentarios = Input.Comentarios,
                     };
 
                     try

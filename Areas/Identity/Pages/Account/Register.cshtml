@@ -69,6 +69,17 @@
                     </label>
                     <span asp-validation-for="Input.TerminosCondiciones" class="text-danger"></span>
                 </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Comentarios">
+                        Comentario
+                    </label>
+                    <textarea asp-for="Input.Comentarios" class="form-control" rows="3" 
+                              placeholder="Escribe un comentario opcional...">
+                    </textarea>
+                    <span asp-validation-for="Input.Comentarios" class="text-danger"></span>
+                </div>
+                
                 <div>
                     <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-success">Registrarse</button>
                 </div>
